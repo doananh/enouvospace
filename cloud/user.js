@@ -1,4 +1,6 @@
 var _ = require('underscore');
+var tools = require('./tools');
+
 Parse.Cloud.define('checkLogin', function(request, response) {
   var params = request.params;
   Parse.User.logIn(params.username, params.password, {useMasterKey: true}).then(function(user) {
@@ -17,62 +19,42 @@ Parse.Cloud.define('checkLogin', function(request, response) {
 
 Parse.Cloud.define("checkin", function(req, res) {
   var params = req.params;
-  var code;
   if (params.UserId !== null) {
-    createNewBooking({ __type: "Pointer", className: "_User", objectId: params.UserId }, params, null).then(function (data) {
-      res.success({ status: 'Created'});
-    }, function (error) {
-      res.error(error);
-    });
+    createBookingForLoginUser(params, res);
   } else {
-    getBooking().then(function (data) {
-      if (data.length > 0) {
-        var lastCode = data[data.length -1].get("code");
-        code = getCode(lastCode);
-      } else {
-        code = getCode('A000');
-      }
-      createNewBooking(null, params, code).then(function (data) {
-        res.success({ code: code});
-      }, function (error) {
-        res.error(error);
-      });
-    }, function (error) {
-    });
+    createBookingForAnonymousUser(params, res);
   }
 });
 
-function getCode(_lastCode) {
-  var chars = "ABCDEFGHIJKLMNOPQRSTUVWXTZ";
-  var firstChar, number = parseInt(_lastCode.substring(1)), secondChar, findIndex, code;
-  _.each(chars, function(char, index) {
-    if (char === _lastCode.substring(0, 1)) {
-      findIndex = index;
-    }
+function createBookingForLoginUser(_params, _res) {
+  createNewBooking({ __type: "Pointer", className: "_User", objectId: _params.UserId }, _params, null).then(function (data) {
+    _res.success({ status: 'Created'});
+  }, function (error) {
+    _res.error(error);
   });
-  for (var i=findIndex; i < chars.length-1; i++) {
-    firstChar = chars[findIndex];
-    if (number < 9) {
-      for (var j=number; j < 9; j++) {
-        secondChar = "00" + (j+1).toString();
-        break;
-      }
-    } else if (number < 99) {
-      for (var j=number; j < 99; j++) {
-        secondChar = "0" + (j+1).toString();
-        break;
-      }
-    } else {
-      for (var j=number; j < 999; j++) {
-        secondChar = (j+1).toString();
-        break;
-      }
-    } 
-  }
-  return code = firstChar.concat(secondChar)
 }
 
-function getBooking () {
+function createBookingForAnonymousUser(_params, _res) {
+  var code;
+  getBookings().then(function (data) {
+    if (data.length > 0) {
+      console.log('debug getCode');
+      var lastCode = data[data.length -1].get("code");
+      code = tools.getCode(lastCode);
+      console.log(code);
+    } else {
+      code = tools.getCode('A000');
+    }
+    createNewBooking(null, _params, code).then(function (data) {
+      _res.success({ code: code});
+    }, function (error) {
+      _res.error(error);
+    });
+  }, function (error) {
+  });
+}
+
+function getBookings () {
   var bookingQuery = new Parse.Query("Booking");
       bookingQuery.ascending("code");
   return  bookingQuery.find();
