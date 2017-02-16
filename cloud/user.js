@@ -38,10 +38,8 @@ function createBookingForAnonymousUser(_params, _res) {
   var code;
   getBookings().then(function (data) {
     if (data.length > 0) {
-      console.log('debug getCode');
       var lastCode = data[data.length -1].get("code");
       code = tools.getCode(lastCode);
-      console.log(code);
     } else {
       code = tools.getCode('A000');
     }
