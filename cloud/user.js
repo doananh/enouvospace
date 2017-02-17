@@ -36,9 +36,9 @@ function createBookingForLoginUser(_params, _res) {
 
 function createBookingForAnonymousUser(_params, _res) {
   var code;
-  getBookings().then(function (data) {
-    if (data.length > 0) {
-      var lastCode = data[data.length -1].get("code");
+  getBooking().then(function (data) {
+    if (data) {
+      var lastCode = data.get("code");
       code = tools.getCode(lastCode);
     } else {
       code = tools.getCode('A000');
@@ -52,10 +52,11 @@ function createBookingForAnonymousUser(_params, _res) {
   });
 }
 
-function getBookings () {
+function getBooking () {
   var bookingQuery = new Parse.Query("Booking");
-      bookingQuery.ascending("code");
-  return  bookingQuery.find();
+      bookingQuery.select("code");
+      bookingQuery.descending("code");
+  return  bookingQuery.first();
 }
 
 function createNewBooking(_userData, _params, _code) {
