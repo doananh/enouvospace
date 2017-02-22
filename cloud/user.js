@@ -20,17 +20,22 @@ Parse.Cloud.define('checkLogin', function(request, response) {
 Parse.Cloud.define("checkin", function(req, res) {
   var params = req.params;
   if (params.UserId !== null) {
-    createBookingForLoginUser(params, res);
+    createBookingForLoginUser(params, res)
+    .then(function (data) {
+      return res.success({ status: 'checkin success'});
+    }, function (error) {
+      return res.error(error);
+    });
   } else {
     createBookingForAnonymousUser(params, res);
   }
 });
 
-function createBookingForLoginUser(_params, _res) {
-  createNewBooking({ __type: "Pointer", className: "_User", objectId: _params.UserId }, _params, null).then(function (data) {
-    _res.success({ status: 'Created'});
+function createBookingForLoginUser(_params, res) {
+  return createNewBooking({ __type: "Pointer", className: "_User", objectId: _params.UserId }, _params, null).then(function (data) {
+    res.success({ status: 'Created'});
   }, function (error) {
-    _res.error(error);
+    res.error(error);
   });
 }
 
