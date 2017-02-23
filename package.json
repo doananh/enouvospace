@@ -9,18 +9,20 @@
   },
   "license": "MIT",
   "dependencies": {
+    "better-npm-run": "0.0.13",
+    "cache": "^1.1.2",
+    "clean": "^4.0.2",
+    "docker-links": "^1.0.2",
+    "dotenv": "^2.0.0",
     "express": "~4.11.x",
+    "jimp": "~0.2.21",
     "kerberos": "~0.0.x",
+    "moment": "^2.17.1",
+    "nodemon": "^1.8.1",
     "parse": "~1.8.0",
     "parse-server": "^2.3.1",
     "parse-server-azure-storage": "^1.1.0",
-    "nodemon": "^1.8.1",
-    "better-npm-run": "0.0.13",
-    "docker-links": "^1.0.2",
-    "dotenv": "^2.0.0",
-    "moment": "^2.17.1",
-    "underscore": "^1.8.3",
-    "jimp": "~0.2.21"
+    "underscore": "^1.8.3"
   },
   "scripts": {
     "start": "better-npm-run start:dev",
