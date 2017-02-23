@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var moments = require('moment');
 var tools = require('./tools');
 
 Parse.Cloud.define('checkLogin', function(request, response) {
@@ -32,11 +33,7 @@ Parse.Cloud.define("checkin", function(req, res) {
 });
 
 function createBookingForLoginUser(_params, res) {
-  return createNewBooking({ __type: "Pointer", className: "_User", objectId: _params.UserId }, _params, null).then(function (data) {
-    res.success({ status: 'Created'});
-  }, function (error) {
-    res.error(error);
-  });
+  return createNewBooking({ __type: "Pointer", className: "_User", objectId: _params.UserId }, _params, null);
 }
 
 function createBookingForAnonymousUser(_params, _res) {
@@ -75,6 +72,7 @@ function createNewBooking(_userData, _params, _code) {
   booking.set("status", "Pending");
   booking.set("isPaid", false);
   booking.set("numOfUsers", 1);
+  booking.set("startTime", moments().toDate());
   booking.set("discount", null);
   return booking.save();
 }
