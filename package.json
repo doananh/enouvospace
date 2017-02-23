@@ -1,55 +1,57 @@
 {
-    "name": "parse-server-template",
-    "version": "1.4.0",
-    "description": "An example Parse API server using the parse-server module",
-    "main": "index.js",
-    "repository": {
-        "type": "git",
-        "url": "https://gitlab.com/enouvo/parse-server-template"
+  "name": "parse-server-template",
+  "version": "1.4.0",
+  "description": "An example Parse API server using the parse-server module",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/enouvo/parse-server-template"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "express": "~4.11.x",
+    "kerberos": "~0.0.x",
+    "parse": "~1.8.0",
+    "parse-server": "^2.3.1",
+    "parse-server-azure-storage": "^1.1.0",
+    "nodemon": "^1.8.1",
+    "better-npm-run": "0.0.13",
+    "docker-links": "^1.0.2",
+    "dotenv": "^2.0.0",
+    "moment": "^2.17.1",
+    "underscore": "^1.8.3",
+    "jimp": "~0.2.21"
+  },
+  "scripts": {
+    "start": "better-npm-run start:dev",
+    "start:test": "better-npm-run start:test",
+    "start:prod": "better-npm-run start:prod",
+    "test": "jest --coverage"
+  },
+  "betterScripts": {
+    "start:dev": {
+      "command": "nodemon --watch ./cloud index.js & npm run test -- --watch",
+      "env": {
+        "NODE_ENV": "development"
+      }
     },
-    "license": "MIT",
-    "dependencies": {
-        "better-npm-run": "0.0.13",
-        "cache": "^1.1.2",
-        "clean": "^4.0.2",
-        "docker-links": "^1.0.2",
-        "dotenv": "^2.0.0",
-        "express": "~4.11.x",
-        "jimp": "~0.2.21",
-        "kerberos": "~0.0.x",
-        "moment": "^2.17.1",
-        "nodemon": "^1.8.1",
-        "parse": "~1.8.0",
-        "parse-server": "^2.3.1",
-        "parse-server-azure-storage": "^1.1.0",
-        "underscore": "^1.8.3"
+    "start:test": {
+      "command": "node index.js",
+      "env": {
+        "NODE_ENV": "test"
+      }
     },
-    "scripts": {
-        "start": "better-npm-run start:dev",
-        "start:test": "better-npm-run start:test",
-        "start:prod": "better-npm-run start:prod"
-    },
-    "betterScripts": {
-        "start:dev": {
-            "command": "nodemon --watch ./cloud index.js",
-            "env": {
-                "NODE_ENV": "development"
-            }
-        },
-        "start:test": {
-            "command": "node index.js",
-            "env": {
-                "NODE_ENV": "test"
-            }
-        },
-        "start:prod": {
-            "command": "node index.js",
-            "env": {
-                "NODE_ENV": "production"
-            }
-        }
-    },
-    "engines": {
-        "node": ">=4.3"
+    "start:prod": {
+      "command": "node index.js",
+      "env": {
+        "NODE_ENV": "production"
+      }
     }
+  },
+  "engines": {
+    "node": ">=4.3"
+  },
+  "devDependencies": {
+    "jest": "^18.1.0"
+  }
 }
