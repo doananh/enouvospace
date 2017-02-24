@@ -73,7 +73,11 @@ function createNewBooking(_userData, _params, _code) {
   booking.set("isPaid", false);
   booking.set("numOfUsers", 1);
   booking.set("startTime", moments().toDate());
-  booking.set("discount", { __type: "Pointer", className: "Discount", objectId: _params.DiscountId });
+  if (_params && _params.DiscountId) {
+    booking.set("discount", { __type: "Pointer", className: "Discount", objectId: _params.DiscountId });
+  } else {
+    booking.set("discount", null);
+  }
   return booking.save();
 }
 
