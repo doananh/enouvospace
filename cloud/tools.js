@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var moment = require('moment');
 
 function getCode(_lastCode) {
   var chars = "ABCDEFGHIJKLMNOPQRSTUVWXTZ";
@@ -25,9 +26,16 @@ function getCode(_lastCode) {
         secondChar = (j+1).toString();
         break;
       }
-    } 
+    }
   }
   return code = firstChar.concat(secondChar)
 }
 
+function formatStringTime (dateTime) {
+  var timeFormat = "DD-MM-YYYY hh:mm A";
+  var strFormatDate   = moment(dateTime).format(timeFormat);
+  return strFormatDate;
+}
+
 exports.getCode = getCode;
+exports.formatStringTime = formatStringTime;
