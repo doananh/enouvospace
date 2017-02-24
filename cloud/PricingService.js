@@ -3,8 +3,8 @@ var _ = require('underscore');
 var tools = require('./tools');
 
 Parse.Cloud.define('getPricingDetail', function(req, res) {
-  var params = req.params;
-  var UserId = params.UserId;
+  var params     = req.params;
+  var UserId    = params.UserId;
   var BookingId = params.BookingId; //"exxTso1mFU"
   /* 2 cases
     1. for anonymous - standard package hour
@@ -105,10 +105,10 @@ function getServicePricingDetail (_services) {
   if (_services && _services.length) {
     var totalPrice = 0;
     var i = 0;
-    var item = {};
     for (i = 0; i < _services.length; i++) {
       var servicePackage = _services[i].get('servicePackage');
       var count          = _services[i].get('count');
+      var item           = {};
       totalPrice        += count * servicePackage.get('chargeRate');
       item.unit          = servicePackage.get('unit');
       item.count         = count;
