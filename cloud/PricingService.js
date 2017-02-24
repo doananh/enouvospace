@@ -5,7 +5,7 @@ var tools = require('./tools');
 Parse.Cloud.define('getPricingDetail', function(req, res) {
   var params = req.params;
   var UserId = params.UserId;
-  var BookingId = params.BookingId;
+  var BookingId = params.BookingId; //"exxTso1mFU"
   /* 2 cases
     1. for anonymous - standard package hour
     2. *** for users - by package HOUR - DAY - WEEK - MONTH
@@ -38,14 +38,16 @@ Parse.Cloud.define('getPricingDetail', function(req, res) {
         var numOfUsers      = booking.get('numOfUsers');
         var startTime       = booking.get('startTime');
         var endTime         = booking.get('endTime');
-
         var packagePricing  = getPackagePricingDetail(packagePointer, packageCount, numOfUsers);
+
         // calculate discount price ------------------
         var discountPointer = booking.get('discount');
         packageAmount       = packagePricing.total;
         var discountPricing = getDiscountDetailPricing(discountPointer, packageAmount);
-        var payAmount           = serviceResult.total + packagePricing.total - discountPricing.total;
-        return {
+        var payAmount       = serviceResult.total + packagePricing.total - discountPricing.total;
+
+        // Pricing details
+        return res.success({
           servicePricing: serviceResult,
           packagePricing: packagePricing,
           discountPricing: discountPricing,
@@ -54,9 +56,7 @@ Parse.Cloud.define('getPricingDetail', function(req, res) {
             endTime: tools.formatStringTime(endTime)
           },
           payAmount: payAmount
-        };
-      }).then(function (result) {
-        return res.success(result);
+        });
       }, function (error) {
         return res.error(err);
       });
@@ -101,21 +101,21 @@ function getPackagePricingDetail (_package, _packageCount, _numberOfUsers) {
 }
 
 function getServicePricingDetail (_services) {
-    var result = {total: 0, items: []};
-    if (_services && _services.length) {
-      var totalPrice = 0;
-      var i = 0;
-      var item = {};
-      for (i = 0; i < _services.length; i++) {
-        var servicePackage = _services[i].get('servicePackage');
-        var count          = _services[i].get('count');
-        totalPrice        += count * servicePackage.get('chargeRate');
-        item.unit          = servicePackage.get('unit');
-        item.count         = count;
-        item.chargeRate    = servicePackage.get('chargeRate');
-        result.items.push(item);
-      }
-      result.total = totalPrice;
+  var result = {total: 0, items: []};
+  if (_services && _services.length) {
+    var totalPrice = 0;
+    var i = 0;
+    var item = {};
+    for (i = 0; i < _services.length; i++) {
+      var servicePackage = _services[i].get('servicePackage');
+      var count          = _services[i].get('count');
+      totalPrice        += count * servicePackage.get('chargeRate');
+      item.unit          = servicePackage.get('unit');
+      item.count         = count;
+      item.chargeRate    = servicePackage.get('chargeRate');
+      result.items.push(item);
     }
+    result.total = totalPrice;
+  }
   return result;
 }
