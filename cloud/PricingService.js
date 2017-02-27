@@ -119,3 +119,7 @@ function getServicePricingDetail (_services) {
   }
   return result;
 }
+
+exports.getPackagePricingDetail = getPackagePricingDetail;
+exports.getServicePricingDetail = getServicePricingDetail;
+exports.getDiscountDetailPricing = getDiscountDetailPricing;
