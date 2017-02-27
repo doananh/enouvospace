@@ -7,3 +7,7 @@ require('./reasons.js');
 require('./checkin.js');
 require('./checkout.js');
 require('./PricingService.js');
+
+
+// require test here
+require('./../test/Hello.js')
