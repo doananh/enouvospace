@@ -5,4 +5,5 @@ require('./categories.js');
 require('./businesses.js');
 require('./reasons.js');
 require('./checkin.js');
+require('./checkout.js');
 require('./PricingService.js');
