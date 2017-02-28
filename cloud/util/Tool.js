@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var moment = require('moment');
 
-function getCode(_lastCode) {
+function getCode(_lastCode = 'A000') {
   var chars = "ABCDEFGHIJKLMNOPQRSTUVWXTZ";
   var firstChar, number = parseInt(_lastCode.substring(1)), secondChar, findIndex, code, zero = "0", zeros = "00";
   _.each(chars, function(char, index) {

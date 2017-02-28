@@ -11,7 +11,7 @@ function createBookingForAnonymousUser(_params, _res) {
       var lastCode = data.get("code");
       code = Tool.getCode(lastCode);
     } else {
-      code = Tool.getCode('A000');
+      code = Tool.getCode();
     }
     createNewBooking(null, _params, code).then(function (data) {
       _res.success({ code: code});
