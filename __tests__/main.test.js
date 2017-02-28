@@ -3,6 +3,7 @@ const http = require('http');
 require('dotenv').config({path: "./.env"});
 
 const  PriceCalculatingUtil = require('./../cloud/util/PriceCalculatingUtil')
+const  Tool = require('./../cloud/util/Tool')
 
 const Parse = require('parse/node');
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MASTER_KEY);
@@ -62,6 +63,12 @@ describe('Parse Test', () => {
         expect(pricing.total).toBe(total);
         // expect(pricing.total).toBe(11000);
       });
+    });
+
+    test('get Code for anonymous user', () => {
+      var firstCode = 'A000';
+      var nextCode = Tool.getCode(firstCode);
+        expect(nextCode).not.toBe('A003');
     });
 
     afterAll (() => {
