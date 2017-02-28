@@ -1,76 +1,5 @@
-var _ = require('underscore');
-var moment = require('moment');
-
-Parse.Cloud.define("getStatisticReview", function(req, res) {
-    // Parse.Cloud.useMasterKey();
-    var review = req.params;
-    if (!review.type) return;
-    var timeRange = getStart_EndDay(review);
-    getReviews(review, timeRange).then(function(reviewsData, pointSettingsData, businessData) {
-
-      var reviewCounts = getReviewCounts(reviewsData);
-      var reasonCounts = getReasonCounts(reviewsData);
-      var reasonItems = getReasonSummarys(businessData.get('availableReasons'), reasonCounts);
-      var reviewItems = getReviewSummarys(pointSettingsData, reviewCounts);
-      var result = {
-        businessId: review.businessId,
-        startDate: moment(timeRange.startDateTime).format("DD/MM/YYYY"),
-        endDate: moment(timeRange.endDateTime).format("DD/MM/YYYY"),
-        reviews: { total: reviewsData.length, items: reviewItems },
-        reasons: { total: reasonItems.total, items: reasonItems }
-      };
-      res.success(result);
-
-    }, function(err) {
-      res.error(err);
-    })
-});
-
-Parse.Cloud.define("getReviewHistories", function(req, res) {
-    // Parse.Cloud.useMasterKey();
-    var business = req.params;
-    var businessQuery = new Parse.Query('Business');
-    var reviewsQuery = new Parse.Query("Reviews");
-
-    businessQuery.equalTo('objectId', business.businessId);
-    businessQuery.first().then(function (businessData) {
-      var filterParams = [[], undefined];
-      if (!_.isUndefined(businessData.get('availableReasons'))) {
-        businessData.get('availableReasons').forEach(function (reason) {
-          filterParams.push(reason.id);
-        });
-      }
-      reviewsQuery.equalTo("business", { "__type": "Pointer", "className": "Business", "objectId": business.businessId });
-      reviewsQuery.containedIn("reasonReports", filterParams);
-      reviewsQuery.descending("createdAt");
-      reviewsQuery.find({useMasterKey: true}).then(function (reviewsData) {
-      res.success(reviewsData);
-      }, function (err) {
-      res.error(err);
-      });
-    }, function (err) {
-      res.error(err);
-  });
-});
-
-Parse.Cloud.define("getStatisticReviewsByPeriod", function(req, res) {
-    // Parse.Cloud.useMasterKey();
-    var review = req.params;
-    var timeRange = getCustomTimeRange(review);
-    getReviews(review, timeRange).then(function(reviewsData, pointSettingsData, businessData) {
-      var result = {
-                businessId: review.businessId,
-                periodType: review.type,
-                totalReviews: reviewsData.length,
-                startDate: moment(timeRange.startDateTime).toString(),
-                endDate: moment(timeRange.endDateTime).toString(),
-                reviews: getReviewsForEachPeriod(timeRange, convertReportPeriod(review.type), reviewsData, pointSettingsData),
-              };
-        res.success(result);
-    }, function(err) {
-      res.error(err);
-    });
-});
+var _     = require('underscore');
+var Tool  = require('./Tool') 
 
 function convertReportPeriod(type) {
   switch (type) {
@@ -80,7 +9,6 @@ function convertReportPeriod(type) {
       return 'week';
     case 'monthly':
       return 'month';
-      break;
     default:
       return 'day';
   }
@@ -104,7 +32,6 @@ function getStart_EndDay(review) {
       break;
     case 'custom':
       return getCustomTimeRange(review);
-      break;
     default:
       startDateTime = moment(now).startOf('day').toDate();
       endDateTime = moment(now).endOf('day').toDate();
@@ -273,7 +200,6 @@ function getResultDataForEachPeriod(reviewsPerPeriod, timeRangePerPeriod, valida
   return reviewsPerPeriod;
 }
 
-
 function getDefaultDataForEachPeriod(pointSettingsData) {
   var reviewsPerPeriod = {
         total: 0,
@@ -284,3 +210,13 @@ function getDefaultDataForEachPeriod(pointSettingsData) {
   });
   return reviewsPerPeriod;
 }
+
+exports.getDefaultDataForEachPeriod = getDefaultDataForEachPeriod;
+exports.getResultDataForEachPeriod  = getResultDataForEachPeriod;
+exports.getReviewsForEachPeriod     = getReviewsForEachPeriod;
+exports.getReviewSummarys           = getReviewSummarys;
+exports.getReasonCounts             = getReasonCounts;
+exports.getReviews                  = getReviews;
+exports.getCustomTimeRange          = getCustomTimeRange;
+exports.convertReportPeriod         = convertReportPeriod;
+exports.getStart_EndDay             = getStart_EndDay;

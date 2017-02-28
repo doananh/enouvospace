@@ -1,4 +1,5 @@
 var _ = require('underscore');
+
 Parse.Cloud.define('deleteCategory', function(request, response) {
   var query = new Parse.Query('Categories');
   query.get(request.params.objectId).then(function(data) {

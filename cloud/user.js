@@ -1,4 +1,5 @@
-var _ = require('underscore');
+var _         = require('underscore');
+var UserUtil  = require('./util/UserUtil');
 
 Parse.Cloud.define('checkLogin', function(request, response) {
   var params = request.params;
@@ -74,7 +75,7 @@ Parse.Cloud.define("updateUser", function(req, res) {
 
 Parse.Cloud.beforeDelete(Parse.User, function(request, response) {
   var staffData = request.object.toJSON();
-  getOwnerByPointer(staffData).then(function(result) {
+  UserUtil.getOwnerUserWithStaff(staffData).then(function(result) {
     if (result) {
       var staffs = result.get("staffs");
       if (staffs.length > 0) {
@@ -93,10 +94,3 @@ Parse.Cloud.beforeDelete(Parse.User, function(request, response) {
     response.error(error);
   });
 });
-
-function getOwnerByPointer(_staffData) {
-  var ownerQuery = new Parse.Query(Parse.User);
-  ownerQuery.equalTo("staffs", { "__type": "Pointer", "className": "_User", "objectId": _staffData.objectId });
-  ownerQuery.include("staffs");
-  return ownerQuery.first();
-}

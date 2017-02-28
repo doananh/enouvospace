@@ -1,7 +1,9 @@
 var _ = require('underscore');
+var UserUtil = require('./util/UserUtil')
+
 Parse.Cloud.beforeDelete("Business", function(request, response) {
   var businessData = request.object.toJSON();
-  getUsers(businessData).then(function(results) {
+  UserUtil.getUserWithBusiness(businessData).then(function(results) {
     if (results) {
       var final = _.after(results.length, function finalSuccess() {
         response.success(businessData);
@@ -23,10 +25,3 @@ Parse.Cloud.beforeDelete("Business", function(request, response) {
     response.error(error);
   });
 });
-
-function getUsers(_businessData) {
-  var userQuery = new Parse.Query("User");
-  userQuery.equalTo("business", { "__type": "Pointer", "className": "Business", "objectId": _businessData.objectId });
-  userQuery.include("business");
-  return userQuery.find();
-}

@@ -48,7 +48,7 @@ Parse.Cloud.beforeSave(Parse.Installation, function(request, response) {
             _user.business.forEach(function(business) {
               console.log(business.objectId)
               unsubscribeTopic(business.objectId, installation.deviceToken, installationData.get('localeIdentifier'));
-              
+
             });
             response.success();
           }

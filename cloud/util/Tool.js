@@ -31,11 +31,20 @@ function getCode(_lastCode) {
   return code = firstChar.concat(secondChar)
 }
 
+function getRandomString() {
+  var chars = "ABCDEFGHIJKLMNOPQRSTUVWXTZ";
+  var randomstring = '';
+  var randomNumber = Math.floor(Math.random() * chars.length);
+  randomstring += chars.substring(randomNumber,randomNumber+1);
+  return randomstring;
+}
+
 function formatStringTime (dateTime) {
   var timeFormat = "DD-MM-YYYY hh:mm A";
   var strFormatDate   = moment(dateTime).format(timeFormat);
   return strFormatDate;
 }
 
-exports.getCode = getCode;
-exports.formatStringTime = formatStringTime;
+exports.getCode           = getCode;
+exports.formatStringTime  = formatStringTime;
+exports.getRandomString   = getRandomString;

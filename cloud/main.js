@@ -1,13 +1,13 @@
-require('./reportAPIs.js');
+// require cloud function here
+require('./Report.js');
 require('./PushNotificationAPIs.js');
-require('./user.js');
-require('./categories.js');
-require('./businesses.js');
-require('./reasons.js');
-require('./checkin.js');
-require('./checkout.js');
-require('./PricingService.js');
-
+require('./User.js');
+require('./Category.js');
+require('./Business.js');
+require('./Reason.js');
+require('./CheckIn.js');
+require('./CheckOut.js');
+require('./PriceCalculating.js');
 
 // require test here
 require('./../test/Hello.js')

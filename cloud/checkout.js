@@ -1,11 +1,12 @@
 var _ = require('underscore');
 var moments = require('moment');
-var pricingService = require('./PricingService');
+var PriceCalculatingUtil = require('./util/PriceCalculatingUtil');
+var BookingUtil        = require('./util/BookingUtil');
 
 Parse.Cloud.define("checkout", function(req, res) {
   var params = req.params;
   if (params && params.code) {
-    getAnonymousUserInBooking(params)
+    BookingUtil.getAnonymousUserInBooking(params)
     .then(function (bookingData) {
         const servicePointers = bookingData.get('services');
         var serviceArr = servicePointers ? servicePointers.map(function(e) {return e.id}) : [];
@@ -13,7 +14,7 @@ Parse.Cloud.define("checkout", function(req, res) {
         servicesQuery.include('servicePackage');
         servicesQuery.containedIn('objectId', serviceArr);
         servicesQuery.find().then(function(services) {
-          var servicePricing = pricingService.getServicePricingDetail(services);
+          var servicePricing = PriceCalculatingUtil.getServicePricingDetail(services);
           return servicePricing;
         }).then(function (serviceResult) {
 
@@ -22,11 +23,11 @@ Parse.Cloud.define("checkout", function(req, res) {
           var packageCount    = bookingData.get('packageCount');
           var numOfUsers      = bookingData.get('numOfUsers');
           var startTime       = bookingData.get('startTime');
-          var packagePricing  = pricingService.getPackagePricingDetail(packagePointer, packageCount, numOfUsers);
+          var packagePricing  = PriceCalculatingUtil.getPackagePricingDetail(packagePointer, packageCount, numOfUsers);
           // calculate discount price ------------------
           var discountPointer = bookingData.get('discount');
           packageAmount       = packagePricing.total;
-          var discountPricing = pricingService.getDiscountDetailPricing(discountPointer, packageAmount);
+          var discountPricing = PriceCalculatingUtil.getDiscountDetailPricing(discountPointer, packageAmount);
           // calculate duration time --------------
           var subtractTime = moments().diff(moments(startTime));
           var durationTimeDetails = moments.duration(subtractTime);
@@ -36,7 +37,7 @@ Parse.Cloud.define("checkout", function(req, res) {
           var packageType = packageData.type;
           var packageRate = packageData.chargeRate;
           //calculate total price ----------------
-          var payAmount       = (serviceResult.total + packagePricing.total - discountPricing.total)*(parseInt(durationTimeDetails.hours())+parseInt(durationTimeDetails.minutes())/60);
+          var payAmount   = (serviceResult.total + packagePricing.total - discountPricing.total) * (parseInt(durationTimeDetails.hours()) + parseInt(durationTimeDetails.minutes())/60);
           var data = {
             checkinTime: startTime,
             checkoutTime: moments().toDate(),
@@ -44,7 +45,7 @@ Parse.Cloud.define("checkout", function(req, res) {
             packageRate: packageRate,
             durationTime: durationTime,
             discountAmount: discountAmount,
-            totalPrice: payAmount 
+            totalPrice: payAmount
           };
           res.success(data);
         }, function (error) {
@@ -56,13 +57,4 @@ Parse.Cloud.define("checkout", function(req, res) {
   } else {
     res.success({});
   }
-  
 });
-
-function getAnonymousUserInBooking (_params) {
-  var bookingQuery = new Parse.Query("Booking");
-    bookingQuery.equalTo("code", _params.code);
-    bookingQuery.include("package");
-    bookingQuery.include('discount');
-  return  bookingQuery.first();
-}
