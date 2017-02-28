@@ -2,7 +2,7 @@ const express = require('express');
 const http = require('http');
 require('dotenv').config({path: "./.env"});
 
-const  PriceCalculatingUtil = require('./../../cloud/util/PriceCalculatingUtil')
+const  PriceCalculatingUtil = require('./../../cloud/util/PriceCalculatingUtil');
 
 const Parse = require('parse/node');
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MASTER_KEY);
@@ -13,7 +13,7 @@ describe('Price Calculating Util Test', () => {
       // create sample booking here
     });
 
-    test.skip('Service Price', () => {
+    test('Service Price', () => {
       var services = ["yt9WERhBQ7", "0u7GmmSV4a"];
       var serviceQuery = new Parse.Query('Service');
       serviceQuery.containedIn('objectId', services);
@@ -26,6 +26,7 @@ describe('Price Calculating Util Test', () => {
           expect(jsonObject.servicePackage).not.toBeNull();
         });
         // check pricing
+        
         var pricing = PriceCalculatingUtil.getServicePricingDetail(result);
         expect(pricing.items).not.toBeNull();
         expect(pricing.items.length).toBe(2)
@@ -37,14 +38,15 @@ describe('Price Calculating Util Test', () => {
       });
     });
 
-    test.skip('Package Price', () => {
+    test('Package Price', () => {
       var testPackage = new Parse.Object("Package");
       testPackage.id = "JzZjUF7lU1";
       return testPackage.fetch().then(function(data) {
         var jsonObject = data.toJSON();
-        expect(jsonObject.objectId).toMatch('JzZjUF7lU1');
-        expect(jsonObject.type).toMatch('DAY');
-
+        expect(jsonObject.objectId).toMatch(testPackage.id);
+        expect(jsonObject.type).not.toBeNull();
+        expect(jsonObject.chargeRate).not.toBeUndefined();
+        expect(jsonObject.name).not.toBeNull();
       }, function(error) {
         expect(error).toThrow();
       });
