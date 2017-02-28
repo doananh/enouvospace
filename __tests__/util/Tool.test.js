@@ -12,7 +12,7 @@ describe('Tool Test', () => {
 
     test('Get Code Test',() => {
       var testCode = Tool.getCode();
-      expect(testCode).toBe('A000');
+      expect(testCode).toBe('A001');
     });
 
     afterAll (() => {
