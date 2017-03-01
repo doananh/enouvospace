@@ -29,6 +29,17 @@ describe('Tool Test', () => {
       expect(getCodeFn()).toBe('A001');
     });
 
+    test('Mock Test MultiValue Return', () => {
+      var getCodeFn = Tool.getCode;
+      getCodeFn = jest.fn();
+      getCodeFn.mockReturnValueOnce('A001')
+               .mockReturnValueOnce('A002')
+               .mockReturnValueOnce('A003');
+      expect(getCodeFn()).toBe('A001');
+      expect(getCodeFn()).toBe('A002');
+      expect(getCodeFn()).toBe('A003');               
+    });
+
     test('Format Time Test', () => {
       var date = new Date('2017-02-28');
       var testTime = Tool.formatStringTime(date);
