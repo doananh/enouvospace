@@ -10,10 +10,7 @@ Parse.Cloud.define("checkout", function(req, res) {
     .then(function (bookingData) {
         const servicePointers = bookingData.get('services');
         var serviceArr = servicePointers ? servicePointers.map(function(e) {return e.id}) : [];
-        var servicesQuery = new Parse.Query('Service');
-        servicesQuery.include('servicePackage');
-        servicesQuery.containedIn('objectId', serviceArr);
-        servicesQuery.find().then(function(services) {
+        getServices(serviceArr).then(function(services) {
           var servicePricing = PriceCalculatingUtil.getServicePricingDetail(services);
           return servicePricing;
         }).then(function (serviceResult) {
@@ -59,3 +56,10 @@ Parse.Cloud.define("checkout", function(req, res) {
     res.success({});
   }
 });
+
+function getServices(_serviceArr) {
+  var servicesQuery = new Parse.Query('Service');
+    servicesQuery.include('servicePackage');
+    servicesQuery.containedIn('objectId', _serviceArr);
+    return servicesQuery.find();
+}
