@@ -9,5 +9,7 @@ require('./CheckIn.js');
 require('./CheckOut.js');
 require('./PriceCalculating.js');
 
+
 // require test here
-require('./../test/Hello.js')
+require('./../test/Hello.js');
+require('./request.js);
