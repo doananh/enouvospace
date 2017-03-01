@@ -15,6 +15,20 @@ describe('Tool Test', () => {
       expect(testCode).toBe('A001');
     });
 
+    test('Mock Test Expect GetCode FAILED',() => {
+      var getCodeFn = Tool.getCode;
+      getCodeFn = jest.fn();
+      getCodeFn.mockReturnValueOnce('A000')
+      expect(getCodeFn()).toBe('A001');
+    });
+
+    test('Mock Test Expect GetCode SUCCESS',() => {
+      var getCodeFn = Tool.getCode;
+      getCodeFn = jest.fn();
+      getCodeFn.mockReturnValueOnce('A001')
+      expect(getCodeFn()).toBe('A001');
+    });
+
     test('Format Time Test', () => {
       var date = new Date('2017-02-28');
       var testTime = Tool.formatStringTime(date);
