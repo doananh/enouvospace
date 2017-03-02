@@ -17,50 +17,11 @@ Parse.Cloud.define('getPricingDetail', function(req, res) {
     bookingQuery.equalTo('objectId', BookingId); //BookingId
     bookingQuery.include('package');
     bookingQuery.include('discount');
-    bookingQuery.include('business');
     bookingQuery.first().then(function(booking) {
-      // calculate service price ---------------------
-      const servicePointers = booking.get('services');
-      var serviceArr = servicePointers ? servicePointers.map(function(e) {return e.id}) : [];
-      var servicesQuery = new Parse.Query('Service');
-      servicesQuery.include('servicePackage');
-      servicesQuery.containedIn('objectId', serviceArr);
-      /// --------------------------------------------
-
-      servicesQuery.find().then(function(services) {
-        var servicePricing = PriceCalculatingUtil.getServicePricingDetail(services);
-        return servicePricing;
-      }).then(function (serviceResult) {
-
-        // calculate package price -------------------
-        var packagePointer  = booking.get('package');
-        var packageCount    = booking.get('packageCount');
-        var numOfUsers      = booking.get('numOfUsers');
-        var startTime       = booking.get('startTime');
-        var endTime         = booking.get('endTime');
-        var packagePricing  = PriceCalculatingUtil.getPackagePricingDetail(packagePointer, packageCount, numOfUsers);
-
-        // calculate discount price ------------------
-        var discountPointer = booking.get('discount');
-        packageAmount       = packagePricing.total;
-        var discountPricing = PriceCalculatingUtil.getDiscountDetailPricing(discountPointer, packageAmount);
-        var payAmount       = serviceResult.total + packagePricing.total - discountPricing.total;
-
-        // Pricing details
-        return res.success({
-          servicePricing: serviceResult,
-          packagePricing: packagePricing,
-          discountPricing: discountPricing,
-          validTime: {
-            startTime: Tool.formatStringTime(startTime),
-            endTime: Tool.formatStringTime(endTime)
-          },
-          payAmount: payAmount
-        });
-      }, function (error) {
-        return res.error(err);
-      });
-
+      PriceCalculatingUtil.getBookingPricingDetail(booking)
+        .then(function(result) {
+          return res.success(result);
+        })
     }, function (error) {
       return res.error(err);
     });

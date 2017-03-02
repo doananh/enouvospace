@@ -19,17 +19,17 @@ describe('Main Test', () => {
 
     });
 
-    test.skip('Hello Parse', () => {
+    test.skip('Test Get Pricing', () => {
         return Promise.resolve()
             .then(function() {
-                return Parse.Cloud.run('hello');
+                return Parse.Cloud.run('getPricingDetail',{BookingId: "exxTso1mFU"});
             })
             .then(function(result) {
-                expect(result).toBe("Hi");
+              console.log(result)
             });
     });
 
-    test('getUserBooking Mocks Request', () => {
+    test.skip('getUserBooking Mocks Request', () => {
       // return request.getUserBooking() => for unmock, test real data
         return require('request').getUserBooking()
         .then((data) => {
@@ -38,7 +38,7 @@ describe('Main Test', () => {
         });
     });
 
-    test('getAnonymousBooking Mocks Request', () => {
+    test.skip('getAnonymousBooking Mocks Request', () => {
       // return request.multiReturnValueBooking()
       return require('request').multiReturnValueBooking()
         .then((data) => {

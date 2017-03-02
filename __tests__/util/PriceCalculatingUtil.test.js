@@ -13,7 +13,7 @@ describe('Price Calculating Util Test', () => {
       // create sample booking here
     });
 
-    test('Service Price', () => {
+    test.skip('Service Price', () => {
       var services = ["yt9WERhBQ7", "0u7GmmSV4a"];
       var serviceQuery = new Parse.Query('Service');
       serviceQuery.containedIn('objectId', services);
@@ -38,7 +38,7 @@ describe('Price Calculating Util Test', () => {
       });
     });
 
-    test('Package Price', () => {
+    test.skip('Package Price', () => {
       var testPackage = new Parse.Object("Package");
       testPackage.id = "JzZjUF7lU1";
       return testPackage.fetch().then(function(data) {
