@@ -18,6 +18,8 @@ function multiReturnValueBooking () {
   });
 }
 
-exports.getUserBooking = getUserBooking;
-exports.getAnonymousBooking = getAnonymousBooking;
-exports.multiReturnValueBooking = multiReturnValueBooking;
+module.exports = {
+  getUserBooking,
+  getAnonymousBooking,
+  multiReturnValueBooking
+}

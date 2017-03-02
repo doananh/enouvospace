@@ -40,9 +40,9 @@ function calculatePackagePrice (_packageCount, _chargeRate, _numberOfUsers) {
 function getServicePricingDetail (_services) {
   var result = {total: 0, items: []};
   if (_services && _services.length) {
-    var services    = _services.toJSON()
     var totalPrice  = 0;
-    services.forEach(function(service) {
+    _services.forEach(function(_service) {
+      var service        = _service.toJSON();
       var servicePackage = service.servicePackage;
       var count          = service.count;
       var item           = { unit: servicePackage.unit, count: count, chargeRate: servicePackage.chargeRate };

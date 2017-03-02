@@ -12,4 +12,3 @@ require('./PriceCalculating.js');
 
 // require test here
 require('./../test/Hello.js');
-require('./request.js);
