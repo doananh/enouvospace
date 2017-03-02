@@ -2,7 +2,7 @@ const express = require('express');
 const http = require('http');
 require('dotenv').config({path: "./.env"});
 
-const  PriceCalculatingUtil = require('./../../cloud/util/PriceCalculatingUtil');
+const  PriceCalculatingUtil = require('../../cloud/util/PriceCalculatingUtil');
 
 const Parse = require('parse/node');
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MASTER_KEY);
@@ -26,7 +26,7 @@ describe('Price Calculating Util Test', () => {
           expect(jsonObject.servicePackage).not.toBeNull();
         });
         // check pricing
-        
+
         var pricing = PriceCalculatingUtil.getServicePricingDetail(result);
         expect(pricing.items).not.toBeNull();
         expect(pricing.items.length).toBe(2)
