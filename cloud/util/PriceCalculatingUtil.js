@@ -99,8 +99,9 @@ function getBookingPricingDetail (_booking) {
           StartTimeString: Tool.formatStringTime(startTime),
           strEndTimeString: Tool.formatStringTime(endTime),
           startTime: startTime,
-          endTime: endTime
+          endTime: endTime,
         },
+        packageCount: packageCount,
         payAmount: payAmount
       });
     }, function (error) {
