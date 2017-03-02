@@ -33,7 +33,8 @@ describe('CheckIn Test', () => {
     			var servicePricing = 7000;
     			var packagePricing = 10000;
     			var discountPricing = 0;
-    			var payment = (packagePricing + servicePricing - discountPricing) * (parseInt(durationTimeDetails.hours()) + parseInt(durationTimeDetails.minutes())/60);
+    			var servicePricingFollowTime = servicePricing * (parseInt(durationTimeDetails.hours()) + parseInt(durationTimeDetails.minutes())/60);
+    			var payment = (packagePricing + servicePricingFollowTime - discountPricing);
 		    	expect(payment).toBe(51000);
     		}, function(error) {
     			expect(error).toThrow();
