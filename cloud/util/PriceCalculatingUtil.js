@@ -96,8 +96,10 @@ function getBookingPricingDetail (_booking) {
         packagePricing: packagePricing,
         discountPricing: discountPricing,
         validTime: {
-          startTime: Tool.formatStringTime(startTime),
-          endTime: Tool.formatStringTime(endTime)
+          StartTimeString: Tool.formatStringTime(startTime),
+          strEndTimeString: Tool.formatStringTime(endTime),
+          startTime: startTime,
+          endTime: endTime
         },
         payAmount: payAmount
       });
