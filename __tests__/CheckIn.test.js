@@ -11,7 +11,7 @@ describe('CheckIn Test', () => {
 
     });
 
-    test('Integration test for check in and check out api', () => {
+    test.skip('Integration test for check in and check out api', () => {
 	    var testCode = Tool.getCode();
 	    expect(testCode).toBe('A001');
 	    var params = {

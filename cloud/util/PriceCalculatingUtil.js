@@ -60,11 +60,14 @@ function getServicePricingDetail (_services) {
 function getBookingPricingDetail (_booking) {
   return new Promise((resolve, reject) => {
     // calculate service price ---------------------
-    var servicePointers   = _booking.get('services');
-    var serviceArr        = servicePointers ? servicePointers.map(function(e) {return e.id}) : [];
+    var bookingPointer    = {
+      __type: 'Pointer',
+      className: 'Booking',
+      objectId: _booking.id
+    }
     var servicesQuery     = new Parse.Query('Service');
     servicesQuery.include('servicePackage');
-    servicesQuery.containedIn('objectId', serviceArr);
+    servicesQuery.equalTo('booking', bookingPointer);
     /// --------------------------------------------
     servicesQuery.find().then(function(services) {
       var servicePricing = getServicePricingDetail(services);
