@@ -1,6 +1,5 @@
 
-const BUSINESSES = {
 
-}
-
-exports.BUSINESSES = BUSINESSES;
+exports.BUSINESSES = {
+  
+};

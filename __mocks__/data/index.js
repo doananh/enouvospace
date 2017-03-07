@@ -1,10 +1,10 @@
-const BOOKINGS          = require('./data/bookingData');
-const BUSINESSES        = require('./data/businessData');
-const DISCOUNTS         = require('./data/discountData');
-const PACKAGES          = require('./data/packageData');
-const SERVICES          = require('./data/serviceData');
-const SERVICE_PACKAGES  = require('./data/servicePackage');
-const USERS             = require('./data/userData');
+const BOOKINGS          = require('./bookingData');
+const BUSINESSES        = require('./businessData');
+const DISCOUNTS         = require('./discountData');
+const PACKAGES          = require('./packageData');
+const SERVICES          = require('./serviceData');
+const SERVICE_PACKAGES  = require('./servicePackageData');
+const USERS             = require('./userData');
 
 
 module.exports = {

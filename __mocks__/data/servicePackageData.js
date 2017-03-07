@@ -1,6 +1,4 @@
 
-const SERVICE_PACKAGES = {
+module.exports = {
 
-}
-
-exports.SERVICE_PACKAGES = SERVICE_PACKAGES;
+};

@@ -1,6 +1,5 @@
 
-const SERVICES = {
+
+module.exports = {
 
 }
-
-exports.SERVICES = SERVICES;
