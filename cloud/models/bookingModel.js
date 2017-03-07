@@ -1,4 +1,4 @@
-var Tool = require('./Tool');
+var Tool = require('./../utils/tools');
 var moments = require('moment');
 
 const Parse = require('parse/node');

@@ -1,5 +1,4 @@
 var _     = require('underscore');
-var Tool  = require('./Tool') 
 
 function convertReportPeriod(type) {
   switch (type) {

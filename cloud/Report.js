@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var moment = require('moment');
-var ReportUtil = require('./util/ReportUtil');
+var ReportUtil = require('./models/reportModel');
 
 Parse.Cloud.define("getStatisticReview", function(req, res) {
     // Parse.Cloud.useMasterKey();

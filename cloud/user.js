@@ -1,5 +1,5 @@
 var _         = require('underscore');
-var UserUtil  = require('./util/UserUtil');
+var UserUtil  = require('./models/userModel');
 
 Parse.Cloud.define('checkLogin', function(request, response) {
   var params = request.params;

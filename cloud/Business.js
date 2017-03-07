@@ -1,5 +1,5 @@
 var _ = require('underscore');
-var UserUtil = require('./util/UserUtil')
+var UserUtil = require('./models/userModel')
 
 Parse.Cloud.beforeDelete("Business", function(request, response) {
   var businessData = request.object.toJSON();
