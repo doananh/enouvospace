@@ -10,7 +10,7 @@ describe('Tool Test', () => {
 
     });
 
-    test.skip('Get Code Test',() => {
+    test('Get Code Test',() => {
       var testCode = Tool.getCode();
       expect(testCode).toBe('A001');
     });

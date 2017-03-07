@@ -8,7 +8,3 @@ require('./reason.js');
 require('./checkIn.js');
 require('./checkOut.js');
 require('./priceCalculating.js');
-
-
-// require test here
-require('./../test/Hello.js');

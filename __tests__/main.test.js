@@ -32,7 +32,7 @@ describe('Main Test', () => {
             });
     });
 
-    test.skip('getUserBooking Mocks Request', () => {
+    test('getUserBooking Mocks Request', () => {
       // return request.getUserBooking() => for unmock, test real data
         return require('request').getUserBooking()
         .then((data) => {
