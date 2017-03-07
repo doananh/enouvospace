@@ -1,0 +1,6 @@
+
+const BUSINESSES = {
+
+}
+
+exports.BUSINESSES = BUSINESSES;

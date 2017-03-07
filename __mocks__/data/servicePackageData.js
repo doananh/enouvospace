@@ -1,0 +1,6 @@
+
+const SERVICE_PACKAGES = {
+
+}
+
+exports.SERVICE_PACKAGES = SERVICE_PACKAGES;
