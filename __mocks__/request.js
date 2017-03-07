@@ -2,21 +2,21 @@ var MockData = require('./data');
 
 function getUserBooking () {
   return new Promise((resolve, reject) => {
-    resolve(MockData.BOOKINGS[1]);
+    resolve(MockData.BOOKINGS['USER_HOURS']);
   });
 }
 
 function getAnonymousBooking () {
   return new Promise((resolve, reject) => {
-    resolve(MockData.BOOKINGS[2]);
+    resolve(MockData.BOOKINGS['ANONYMOUS']);
   });
 }
 
 function multiReturnValueBooking () {
   return new Promise((resolve, reject) => {
     var myMock = jest.fn();
-    myMock.mockReturnValueOnce(MockData.BOOKINGS[1])
-          .mockReturnValueOnce(MockData.BOOKINGS[2])
+    myMock.mockReturnValueOnce(MockData.BOOKINGS['USER_HOURS'])
+          .mockReturnValueOnce(MockData.BOOKINGS['ANONYMOUS'])
     resolve([myMock(), myMock()])
   });
 
