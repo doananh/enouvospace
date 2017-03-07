@@ -1,6 +1,4 @@
 
-const VENUES = {
+module.exports = {
 
 }
-
-exports.VENUES;

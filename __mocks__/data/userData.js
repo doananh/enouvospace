@@ -1,6 +1,4 @@
 
-const USERS = {
+module.exports = {
 
-}
-
-exports.USERS = USERS;
+};

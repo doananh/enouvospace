@@ -1,6 +1,5 @@
 
-const PACKAGES = {
 
-}
+module.exports = {
 
-exports.PACKAGES = PACKAGES;
+};

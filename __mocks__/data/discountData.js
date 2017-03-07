@@ -1,6 +1,5 @@
 
-const DISCOUNTS = {
+
+module.exports = {
 
 }
-
-exports.DISCOUNTS = DISCOUNTS;
