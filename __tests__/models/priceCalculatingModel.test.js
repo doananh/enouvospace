@@ -2,11 +2,11 @@ const express = require('express');
 const http = require('http');
 require('dotenv').config({path: "./.env"});
 
-var  PriceCalculatingUtil = require('./../../cloud/models/priceCalculatingModel');
-
 const Parse = require('parse/node');
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MASTER_KEY);
-Parse.serverURL = process.env.SERVER_URL
+Parse.serverURL = process.env.SERVER_URL;
+
+var  PriceCalculatingUtil = require('../../cloud/models/priceCalculatingModel');
 
 describe('Price Calculating Util Test', () => {
     beforeAll (() => {
