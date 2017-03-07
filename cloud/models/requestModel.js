@@ -1,3 +1,9 @@
+const Parse = require('parse/node');
+Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MASTER_KEY);
+Parse.serverURL = process.env.SERVER_URL
+require('es6-promise').polyfill();
+require('isomorphic-fetch');
+
 const query = (method = 'GET', classOrFunc, objOrFilter = {}) => {
   let uri = classOrFunc
   let request = {
@@ -9,12 +15,19 @@ const query = (method = 'GET', classOrFunc, objOrFilter = {}) => {
       'X-Parse-REST-API-Key': process.env.REST_API_KEY
     }
   }
-  let sessionToken = localStorage.getItem('sessionToken')
-  if (sessionToken) request.headers['X-Parse-Session-Token'] = sessionToken
   if (method === 'POST' || method === 'PUT') {
     request.body = JSON.stringify(objOrFilter)
   }
-  return fetch(encodeURI(process.env.SERVER_URL + uri), request).then((response) => response.json())
+  return fetch(process.env.SERVER_URL + uri, request)
+    .then(function(response) {
+        if (response.status >= 400) {
+            throw new Error("Bad response from server");
+        }
+        return response.json();
+    })
+    .then(function(data) {
+      return data;
+    });
 }
 
 const getCloudCodeFunction = (funcName, data) => {
