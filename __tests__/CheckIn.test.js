@@ -2,8 +2,8 @@ const express = require('express');
 const http = require('http');
 require('dotenv').config({path: "./.env"});
 var moments = require('moment');
-var Tool = require('./../cloud/util/Tool');
-var BookingUtil = require('./../cloud/util/BookingUtil');
+var Tool = require('./../cloud/utils/tools');
+var BookingUtil = require('./../cloud/models/bookingModel');
 
 // UNIT test begin
 describe('CheckIn Test', () => {

@@ -1,5 +1,3 @@
-var Tool = require('./Tool');
-
 function getReasonsIntoCategoriesClass(_reasonData) {
   var categoryQuery = new Parse.Query("Categories");
   categoryQuery.equalTo("objectId", _reasonData.category_id);

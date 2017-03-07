@@ -1,6 +1,6 @@
 var _     = require('underscore');
-var Tool  = require('./util/Tool');
-var PriceCalculatingUtil = require('./util/PriceCalculatingUtil');
+var Tool  = require('./utils/tools');
+var PriceCalculatingUtil = require('./models/priceCalculatingModel');
 
 Parse.Cloud.define('getPricingDetail', function(req, res) {
   var params    = req.params;

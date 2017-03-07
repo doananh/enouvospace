@@ -1,5 +1,5 @@
 var _ = require('underscore');
-var ReasonUtil = require('./util/ReasonUtil');
+var ReasonUtil = require('./models/reasonModel');
 
 Parse.Cloud.define('deleteReason', function(request, response) {
   var reasonData = request.params;
