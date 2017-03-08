@@ -11,7 +11,10 @@ Parse.serverURL = process.env.SERVER_URL
 // jest.unmock('request');
 //======== END UNMOCK =====================================
 
-jest.mock('request');
+// jest.mock('request');
+jest.mock('mockData');
+
+var MockData = require('mockData');
 
 // UNIT test begin
 describe('Main Test', () => {
@@ -34,19 +37,27 @@ describe('Main Test', () => {
 
     test.skip('getUserBooking Mocks Request', () => {
       // return request.getUserBooking() => for unmock, test real data
-        return require('request').getUserBooking()
+        return MockData.getBookingByPackage('USER_HOURS')
         .then((data) => {
           console.log(data);
           expect(data.code).toBeNull();
         });
     });
 
-    test.skip('getAnonymousBooking Mocks Request', () => {
+    test.skip('getMultiValueReturnBooking Mocks Request 1', () => {
       // return request.multiReturnValueBooking()
-      return require('request').multiReturnValueBooking()
+      return MockData.getMultiValueReturnBooking()
+      .then((data) => {
+        console.log(data);
+      });
+
+    });
+
+    test.skip('getMultiValueReturnBooking Mocks Request 2', () => {
+      // return request.multiReturnValueBooking()
+      return MockData.getMultiValueReturnBooking()
         .then((data) => {
-          // console.log(data);
-          expect(data.length).toBe(2);
+          console.log(data);
         });
     });
 

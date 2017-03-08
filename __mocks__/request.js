@@ -22,7 +22,7 @@ function multiReturnValueBooking () {
 
 }
 
-const request               = jest.genMockFromModule('request');
+var request               = jest.genMockFromModule('request');
 request.getUserBooking      = getUserBooking;
 request.getAnonymousBooking = getAnonymousBooking;
 request.multiReturnValueBooking = multiReturnValueBooking;
