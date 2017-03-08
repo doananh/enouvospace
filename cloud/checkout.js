@@ -30,8 +30,10 @@ Parse.Cloud.define("checkout", function(req, res) {
             // caculate total price--------------------------- 
             var payAmount = packagePricingFollowTime + servicePricing - discountPricing;
             var data = {
-              checkinTime: StartTimeString,
-              checkoutTime: strEndTimeString,
+              checkinTimeString: StartTimeString,
+              checkoutTimeString: strEndTimeString,
+              checkinTimeToDate: startTime,
+              checkoutTimeToDate: endTime,
               packageType: packageType,
               packageRate: packageRate,
               durationTime: durationTime,
