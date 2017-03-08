@@ -12,7 +12,7 @@ describe('CheckIn Test', () => {
 
     });
 
-    test('Integration test for check in and check out api', () => {
+    test.skip('Integration test for check in and check out api', () => {
     	 var checkinParams = {
     	 	"UserId": null,
 	    	"BusinessId": "vGtoDNyiyS",
