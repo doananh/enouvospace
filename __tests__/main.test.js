@@ -4,13 +4,13 @@ require('dotenv').config({path: "./.env"});
 
 //======== this is a function for preventing __mock =======
 //var request = require('./../cloud/request');
-// jest.unmock('request');
+// jest.unmock('mockData');
 //======== END UNMOCK =====================================
 
 // jest.mock('request');
-jest.mock('mockData');
+jest.mock('models/bookingModel');
 
-var MockData = require('mockData');
+var MockData = require('models/bookingModel');
 
 // UNIT test begin
 describe('Main Test', () => {
@@ -18,7 +18,7 @@ describe('Main Test', () => {
 
     });
 
-    test.skip('getUserBooking Mocks Request', () => {
+    test('getUserBooking Mocks Request', () => {
       // return request.getUserBooking() => for unmock, test real data
         return MockData.getBookingByPackage('USER_HOURS')
         .then((data) => {

@@ -1,4 +1,4 @@
-var TestData = require('./data');
+var TestData = require('../data');
 var bookingMock = jest.fn();
 
 function getBookingByPackage (_package) {
@@ -27,7 +27,7 @@ function getMultiValueReturnBooking () {
   });
 }
 
-const mockData = jest.genMockFromModule('request');
+const mockData = jest.genMockFromModule('./bookingModel');
 mockData.getBookingByPackage         = getBookingByPackage;
 mockData.getMultiValueReturnBooking  = getMultiValueReturnBooking;
 
