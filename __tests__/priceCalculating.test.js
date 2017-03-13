@@ -22,6 +22,7 @@ describe('CheckIn Test', () => {
               expect(result.payAmount).toBeGreaterThan(0);
             });
     });
+
     afterAll (() => {
 
     });
