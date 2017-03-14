@@ -14,9 +14,10 @@ describe('CheckIn Test', () => {
     test.skip('Test Get Pricing', () => {
         return Promise.resolve()
             .then(function() {
-                return Parse.Cloud.run('getPricingDetail',{BookingId: "7Qheagi7pq"});
+                return Parse.Cloud.run('getPricingDetail',{BookingId: "kkEHuQEYjp"});
             })
             .then(function(result) {
+              console.log(result)
               expect(result.servicePricing.total).toBeGreaterThanOrEqual(0);
               expect(result.packagePricing.total).toBeGreaterThan(0);
               expect(result.payAmount).toBeGreaterThan(0);

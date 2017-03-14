@@ -26,17 +26,12 @@ function getPackagePricingDetail (_package, _packageCount, _numberOfUsers) {
     var chargeRate = _package.get('chargeRate');
     var name       = _package.get('name');
     var currency   = _package.get('unit');
-    var total      = calculatePackagePrice(_packageCount, chargeRate, _numberOfUsers);
+    var total      = 0;
     result.package = { currency: currency, name: name, chargeRate: chargeRate};
     result.total   = total;
   }
 
   return result;
-}
-
-function calculatePackagePrice (_packageCount, _chargeRate, _numberOfUsers) {
-  var res = _chargeRate * _packageCount * _numberOfUsers;
-  return res;
 }
 
 function getServicePricingDetail (_services) {

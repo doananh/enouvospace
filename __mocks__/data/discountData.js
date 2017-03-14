@@ -1,7 +1,7 @@
 
 
 module.exports = {
-  1: {
+  USER_HOURS_DISCOUNT: {
     objectId: 'B2ByIlIs7k',
     percent: 20,
     amount: 0,

@@ -9,18 +9,23 @@ require('dotenv').config({path: "./.env"});
 
 // jest.mock('request');
 jest.mock('models/bookingModel');
-
+jest.mock('models/priceCalculatingModel');
 var MockData = require('models/bookingModel');
+var myMock = require('models/priceCalculatingModel');
 
 // UNIT test begin
 describe('Main Test', () => {
     beforeAll (() => {
+      
+    });
+
+    test.only('test', () => {
 
     });
 
     test('getUserBooking Mocks Request', () => {
       // return request.getUserBooking() => for unmock, test real data
-        return MockData.getBookingByPackage('USER_HOURS')
+        return MockData.getServicePriceByType('USER_HOURS')
         .then((data) => {
           console.log(data);
           expect(data.code).toBeNull();

@@ -1,29 +1,24 @@
-var Tool = require('./../../cloud/utils/tools');
-var moments = require('moment');
+var Tool      = require('./../../cloud/utils/tools');
+var moments   = require('moment');
+var MockData  = require('../data');
 
-function getDiscountDetailPricing (_discount, _packageAmount) {
-  var result = {total: 0, percent: 0, amount: 0};
-  return result;
+function getDiscountPriceByType (_type) {
+  return MockData.DISCOUNT_PRICE_RESULT[_type];
 }
 
-function getPackagePricingDetail (_package, _packageCount, _numberOfUsers) {
-  var result = {total: 0, package: {}, count: _packageCount, numOfUsers: _numberOfUsers};
-  return result;
+function getPackagePriceByType (_type) {
+  return MockData.PACKAGE_PRICE_RESULT[_type];;
 }
 
-function calculatePackagePrice (_packageCount, _chargeRate, _numberOfUsers) {
-  var res = _chargeRate * _packageCount * _numberOfUsers;
-  return res;
-}
-
-function getServicePricingDetail (_services) {
-  var result = {total: 0, items: []};
-  return result;
+function getServicePriceByType (_type) {
+  return MockData.SERVICE_PRICE_RESULT[_type];
 }
 
 function getBookingPricingDetail (_booking) {
-  return new Promise((resolve, reject) => {
-    resolve({});
+  return new Promise((resolve, reject) =>  {
+    resolve({
+
+    });
   }, function (error) {
     reject(error);
   });
@@ -31,9 +26,9 @@ function getBookingPricingDetail (_booking) {
 
 var mocks = jest.genMockFromModule('./priceCalculatingModel');
 
-mocks.getBookingPricingDetail   = getBookingPricingDetail;
-mocks.getPackagePricingDetail   = getPackagePricingDetail;
-mocks.getServicePricingDetail   = getServicePricingDetail;
-mocks.getDiscountDetailPricing  = getDiscountDetailPricing;
+mocks.getDiscountPriceByType   = getDiscountPriceByType;
+mocks.getPackagePriceByType    = getPackagePriceByType;
+mocks.getServicePriceByType    = getServicePriceByType;
+mocks.getBookingPricingDetail  = getBookingPricingDetail;
 
 module.exports = mocks;
