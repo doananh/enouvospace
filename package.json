@@ -33,7 +33,7 @@
   },
   "betterScripts": {
     "start:dev": {
-      "command": "nodemon --watch ./cloud index.js & npm run test -- --watch",
+      "command": "nodemon --watch ./cloud index.js",
       "env": {
         "NODE_ENV": "development"
       }
