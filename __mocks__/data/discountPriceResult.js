@@ -1,3 +1,4 @@
+
 const BOOKINGS          = require('./bookingData');
 const BUSINESSES        = require('./businessData');
 const DISCOUNTS         = require('./discountData');
@@ -6,19 +7,20 @@ const SERVICES          = require('./serviceData');
 const SERVICE_PACKAGES  = require('./servicePackageData');
 const USERS             = require('./userData');
 
-const SERVICE_PRICE_RESULT  = require('./servicePriceResult');
-const PACKAGE_PRICE_RESULT  = require('./packagePriceResult');
-const DISCOUNT_PRICE_RESULT = require('./discountPriceResult');
-
 module.exports = {
-  BOOKINGS,
-  BUSINESSES,
-  DISCOUNTS,
-  PACKAGES,
-  SERVICES,
-  SERVICE_PACKAGES,
-  USERS,
-  SERVICE_PRICE_RESULT,
-  PACKAGE_PRICE_RESULT,
-  DISCOUNT_PRICE_RESULT
-};
+  ANONYMOUS: {
+    total: 0,
+    percent: 0,
+    amount: 0
+  },
+  USER_HOURS: {
+    total: 0,
+    percent: 0,
+    amount: 0
+  },
+  USER_HOURS_DISCOUNT: {
+    total: 0,
+    percent: DISCOUNTS['USER_HOURS_DISCOUNT'].percent,
+    amount: 0
+  }
+}

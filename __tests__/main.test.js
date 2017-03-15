@@ -3,14 +3,14 @@ const http = require('http');
 require('dotenv').config({path: "./.env"});
 
 //======== this is a function for preventing __mock =======
-//var request = require('./../cloud/request');
-// jest.unmock('request');
+// jest.unmock('mockData');
 //======== END UNMOCK =====================================
 
-// jest.mock('request');
-jest.mock('mockData');
+jest.mock('models/bookingModel');
+jest.mock('models/priceCalculatingModel');
 
-var MockData = require('mockData');
+var BookingMock = require('models/bookingModel');
+var PricingMock = require('models/priceCalculatingModel');
 
 // UNIT test begin
 describe('Main Test', () => {
@@ -18,18 +18,16 @@ describe('Main Test', () => {
 
     });
 
-    test.skip('getUserBooking Mocks Request', () => {
-      // return request.getUserBooking() => for unmock, test real data
-        return MockData.getBookingByPackage('USER_HOURS')
+    test('getUserBooking Mocks Request', () => {
+      return PricingMock.getBookingPricingDetail("ANONYMOUS")
         .then((data) => {
           console.log(data);
-          expect(data.code).toBeNull();
+          expect(data.code).toBeUndefined();
         });
     });
 
     test.skip('getMultiValueReturnBooking Mocks Request 1', () => {
-      // return request.multiReturnValueBooking()
-      return MockData.getMultiValueReturnBooking()
+      return BookingMock.getMultiValueReturnBooking()
       .then((data) => {
         console.log(data);
       });
@@ -37,8 +35,7 @@ describe('Main Test', () => {
     });
 
     test.skip('getMultiValueReturnBooking Mocks Request 2', () => {
-      // return request.multiReturnValueBooking()
-      return MockData.getMultiValueReturnBooking()
+      return BookingMock.getMultiValueReturnBooking()
         .then((data) => {
           console.log(data);
         });

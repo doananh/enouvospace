@@ -38,20 +38,6 @@ describe('Price Calculating Util Test', () => {
       });
     });
 
-    test.skip('Package Price', () => {
-      var testPackage = new Parse.Object("Package");
-      testPackage.id = "JzZjUF7lU1";
-      return testPackage.fetch().then(function(data) {
-        var jsonObject = data.toJSON();
-        expect(jsonObject.objectId).toMatch(testPackage.id);
-        expect(jsonObject.type).not.toBeNull();
-        expect(jsonObject.chargeRate).not.toBeUndefined();
-        expect(jsonObject.name).not.toBeNull();
-      }, function(error) {
-        expect(error).toThrow();
-      });
-    });
-
     afterAll (() => {
 
     });
