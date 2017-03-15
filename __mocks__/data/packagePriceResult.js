@@ -10,7 +10,6 @@ module.exports = {
   ANONYMOUS: {
     total: PACKAGES['HOUR'].chargeRate * BOOKINGS['ANONYMOUS'].packageCount * BOOKINGS['ANONYMOUS'].numOfUsers,
     package:{
-      currency: PACKAGES['HOUR'].currency,
       name: PACKAGES['HOUR'].name,
       chargeRate: PACKAGES['HOUR'].chargeRate
     },
@@ -20,7 +19,6 @@ module.exports = {
   USER_HOURS: {
     total: PACKAGES['HOUR'].chargeRate * BOOKINGS['USER_HOURS'].packageCount * BOOKINGS['USER_HOURS'].numOfUsers,
     package:{
-      currency: PACKAGES['HOUR'].currency,
       name: PACKAGES['HOUR'].name,
       chargeRate: PACKAGES['HOUR'].chargeRate
     },

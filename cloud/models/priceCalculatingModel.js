@@ -25,13 +25,17 @@ function getPackagePricingDetail (_package, _packageCount, _numberOfUsers) {
   if (_package)  {
     var chargeRate = _package.get('chargeRate');
     var name       = _package.get('name');
-    var currency   = _package.get('unit');
-    var total      = 0;
-    result.package = { currency: currency, name: name, chargeRate: chargeRate};
+    var total      = calculatePackagePrice(_packageCount, chargeRate, _numberOfUsers);
+    result.package = {name: name, chargeRate: chargeRate};
     result.total   = total;
   }
 
   return result;
+}
+
+function calculatePackagePrice (_packageCount, _chargeRate, _numberOfUsers) {
+  var res = _chargeRate * _packageCount * _numberOfUsers;
+  return res;
 }
 
 function getServicePricingDetail (_services) {
@@ -42,7 +46,7 @@ function getServicePricingDetail (_services) {
       var service        = _service.toJSON();
       var servicePackage = service.servicePackage;
       var count          = service.count;
-      var item           = { unit: servicePackage.unit, count: count, chargeRate: servicePackage.chargeRate };
+      var item           = {unit: servicePackage.unit, count: count, chargeRate: servicePackage.chargeRate, type: servicePackage.type};
       totalPrice        += count * servicePackage.chargeRate;
       result.items.push(item);
     });
@@ -100,6 +104,7 @@ function getBookingPricingDetail (_booking) {
           endTime: endTime,
         },
         packageCount: packageCount,
+        numOfUsers: numOfUsers,
         payAmount: payAmount
       });
     }, function (error) {

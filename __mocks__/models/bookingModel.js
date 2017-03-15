@@ -1,5 +1,5 @@
 var TestData = require('../data');
-var bookingMock = jest.fn();
+var testMock = jest.fn();
 
 function getBookingByPackage (_package) {
   return new Promise((resolve, reject) => {
@@ -14,7 +14,7 @@ function getBookingByPackage (_package) {
 
 function getMultiValueReturnBooking () {
   return new Promise((resolve, reject) => {
-    bookingMock.mockImplementationOnce(() => TestData.BOOKINGS['ANONYMOUS'])
+    testMock.mockImplementationOnce(() => TestData.BOOKINGS['ANONYMOUS'])
                .mockImplementationOnce(() => TestData.BOOKINGS['USER_HOURS'])
                .mockImplementationOnce(() => TestData.BOOKINGS['USER_HOURS_DISCOUNT'])
                .mockImplementationOnce(() => TestData.BOOKINGS['USER_DAYS'])
@@ -23,12 +23,12 @@ function getMultiValueReturnBooking () {
                .mockImplementationOnce(() => TestData.BOOKINGS['USER_WEEKS_DISCOUNT'])
                .mockImplementationOnce(() => TestData.BOOKINGS['USER_MONTHS'])
                .mockImplementationOnce(() => TestData.BOOKINGS['USER_MONTHS_DISCOUNT']);
-    resolve(bookingMock());
+    resolve(testMock());
   });
 }
 
-const mockData = jest.genMockFromModule('./bookingModel');
-mockData.getBookingByPackage         = getBookingByPackage;
-mockData.getMultiValueReturnBooking  = getMultiValueReturnBooking;
+const bookingMock = jest.genMockFromModule('./bookingModel');
+bookingMock.getBookingByPackage         = getBookingByPackage;
+bookingMock.getMultiValueReturnBooking  = getMultiValueReturnBooking;
 
-module.exports = mockData;
+module.exports = bookingMock;
