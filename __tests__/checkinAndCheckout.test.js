@@ -27,20 +27,21 @@ describe('CheckIn Test', () => {
 	              	var code = result.code;
 	              	Parse.Cloud.run('checkout', { "code": code })
 	              	.then(function(data) {
-	  		 			expect(data.checkinTimeToDate).not.toBeUndefined();
-				    	var checkinTime = data.checkinTimeToDate;
-				    	var checkoutTime = moments(checkinTime).add(3, 'hours').toDate();
-				    	// calculate duration time --------------
-				        var subtractTime = moments(checkoutTime).diff(moments(checkinTime));
-				        var durationTimeDetails = moments.duration(subtractTime);
-				        var getHour = parseInt(durationTimeDetails.hours());
-		    			expect(getHour).toBe(3);
-		    			var servicePricing = 7000;
-		    			var packagePricing = 10000;
-		    			var discountPricing = 0;
-		    			var packagePricingFollowTime = packagePricing * (parseInt(durationTimeDetails.hours()) + parseInt(durationTimeDetails.minutes())/60);
-		    			var payment = packagePricingFollowTime + servicePricing - discountPricing;
-				    	expect(payment).toBe(51000);
+      	  		 			expect(data.checkinTimeToDate).not.toBeUndefined();
+      				    	var checkinTime = data.checkinTimeToDate;
+      				    	var checkoutTime = moments(checkinTime).add(3, 'hours').toDate();
+      				    	// calculate duration time --------------
+    				        var subtractTime = moments(checkoutTime).diff(moments(checkinTime));
+    				        var durationTimeDetails = moments.duration(subtractTime);
+    				        var getHour = parseInt(durationTimeDetails.hours());
+      		    			expect(getHour).toBe(3);
+
+      		    			var servicePricing = 7000;
+      		    			var packagePricing = 10000;
+      		    			var discountPricing = 0;
+      		    			var packagePricingFollowTime = packagePricing * (parseInt(durationTimeDetails.hours()) + parseInt(durationTimeDetails.minutes())/60);
+      		    			var payment = packagePricingFollowTime + servicePricing - discountPricing;
+      				    	expect(payment).toBe(51000);
 	              	});
 	            }
             });
@@ -50,4 +51,3 @@ describe('CheckIn Test', () => {
 
     });
 });
-
