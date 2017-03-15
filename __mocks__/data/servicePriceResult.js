@@ -45,5 +45,25 @@ module.exports = {
         chargeRate: SERVICE_PACKAGES['PRINT'].chargeRate,
       }
     ]
+  },
+
+  USER_HOURS_DISCOUNT: {
+    total: 1 * SERVICE_PACKAGES['COFFEE'].chargeRate + 1 * SERVICE_PACKAGES['PRINT'].chargeRate,
+    items: [
+      {
+        count: 1,
+        unit: SERVICE_PACKAGES['COFFEE'].unit,
+        type: SERVICE_PACKAGES['COFFEE'].type,
+        name: SERVICE_PACKAGES['COFFEE'].name,
+        chargeRate: SERVICE_PACKAGES['COFFEE'].chargeRate,
+      },
+      {
+        count: 1,
+        unit: SERVICE_PACKAGES['PRINT'].unit,
+        type: SERVICE_PACKAGES['PRINT'].type,
+        name: SERVICE_PACKAGES['PRINT'].name,
+        chargeRate: SERVICE_PACKAGES['PRINT'].chargeRate,
+      }
+    ]
   }
 }

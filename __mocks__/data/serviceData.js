@@ -1,5 +1,4 @@
 
-
 module.exports = {
   ANONYMOUS: [
     {
@@ -23,14 +22,14 @@ module.exports = {
       endTime: ''
     }
   ],
-  USER: [
+  USER_HOURS: [
     {
       objectId: 'yt9WERhBQ7',
       servicePackage: { "__type":"Pointer","className":"ServicePackage","objectId":"BqXd7UcCnJ" },
       count: 1,
       isPaid: false,
       amount: 0,
-      booking: { "__type":"Pointer","className":"Booking","objectId":"kkEHuQEYjp" },
+      booking: { "__type":"Pointer","className":"Booking","objectId":"dGCa3dD2Tr" },
       startTime: '',
       endTime: ''
     },
@@ -40,7 +39,7 @@ module.exports = {
       count: 1,
       isPaid: false,
       amount: 0,
-      booking: { "__type":"Pointer","className":"Booking","objectId":"kkEHuQEYjp" },
+      booking: { "__type":"Pointer","className":"Booking","objectId":"dGCa3dD2Tr" },
       startTime: '',
       endTime: ''
     }
