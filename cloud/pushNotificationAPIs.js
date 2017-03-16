@@ -135,7 +135,7 @@ function subscribeTopic(topic, registration_token, locale) {
 
 }
 
-Parse.Cloud.afterSave("Reviews", function(request, response) {
+Parse.Cloud.afterSave("Review", function(request, response) {
 
   var review = request.object.toJSON();
   request.object.get('business').fetch().then(function(business) {
@@ -153,7 +153,7 @@ function sendEmergencyPushMessage(userQuery, review, business) {
 
   return Parse.Promise.when(localeArr.map(function(locale) {
     var pushQuery = new Parse.Query(Parse.Installation);
-    var message = createPushMessage(locale, review.points, business);
+    var message = createPushMessage(locale, review.point, business);
     var oneHourTime = 60 * 1000;
     pushQuery.matchesQuery('user', userQuery);
     pushQuery.equalTo('localeIdentifier', locale);

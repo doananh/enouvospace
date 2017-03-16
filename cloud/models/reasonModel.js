@@ -1,5 +1,5 @@
 function getReasonsIntoCategoriesClass(_reasonData) {
-  var categoryQuery = new Parse.Query("Categories");
+  var categoryQuery = new Parse.Query("Category");
   categoryQuery.equalTo("objectId", _reasonData.category_id);
   return categoryQuery.first();
 }
@@ -18,7 +18,7 @@ function removeReasonsIntoCategoriesClass(_reasonData, _result) {
 
 function getReasonsIntoBusinessClass(_reasonData) {
   var businessQuery = new Parse.Query("Business");
-  businessQuery.equalTo("availableReasons", { "__type": "Pointer", "className": "Reasons", "objectId": _reasonData.reason_id });
+  businessQuery.equalTo("availableReasons", { "__type": "Pointer", "className": "Reason", "objectId": _reasonData.reason_id });
   return businessQuery.find();
 }
 
@@ -27,7 +27,7 @@ function removeReasonInBusinessClass(_businessDocument, _reasonData) {
   var reasons = [];
   _.each(availableReasons, function(availableReason) {
     if (availableReason.id !== _reasonData.reason_id) {
-      reasons.push({ "__type": "Pointer", "className": "Reasons", "objectId": availableReason.id });
+      reasons.push({ "__type": "Pointer", "className": "Reason", "objectId": availableReason.id });
     }
   });
   _businessDocument.set("availableReasons", reasons);

@@ -3,7 +3,7 @@ var ReasonUtil = require('./models/reasonModel');
 
 Parse.Cloud.define('deleteReason', function(request, response) {
   var reasonData = request.params;
-  var reasonQuery = new Parse.Query('Reasons');
+  var reasonQuery = new Parse.Query('Reason');
 
   reasonQuery.get(reasonData.reason_id).then(function(data) {
     if (data) {

@@ -50,12 +50,12 @@ function getReviews(review, periodOfTime) {
 
   var businessQuery = new Parse.Query('Business');
   var pointsQuery = new Parse.Query('PointSetting');
-  var reviewsQuery = new Parse.Query("Reviews");
+  var reviewsQuery = new Parse.Query("Review");
   var promise = new Parse.Promise();
 
   businessQuery.equalTo('objectId', review.businessId);
   businessQuery.include('availableReasons');
-  pointsQuery.descending("points");
+  pointsQuery.descending("point");
   Parse.Promise.when(pointsQuery.find(), businessQuery.first()).then(function (pointSettingsData, businessData) {
     reviewsQuery.equalTo("business", { "__type": "Pointer", "className": "Business", "objectId": review.businessId });
     reviewsQuery.greaterThanOrEqualTo("createdAt", periodOfTime.startDateTime);
@@ -84,7 +84,7 @@ function getReviews(review, periodOfTime) {
 
 function getReviewCounts(reviewsData) {
     var reviewPoints = _.map(reviewsData, function(value) {
-        return value.get('points');
+        return value.get('point');
     })
     var reviewCounts = _.countBy(reviewPoints, function(value) {
         return value;
@@ -129,7 +129,7 @@ function getReviewSummarys(pointSettingsData, reviewCounts) {
     var reviewItems = [];
     _.each(pointSettingsData, function(value) {
         var objectId = value.id;
-        var point = value.get('points');
+        var point = value.get('point');
         var name = value.get('name');
         reviewItems.push({
             "objectId": objectId,
@@ -157,8 +157,8 @@ function getReviewsForEachPeriod (timeRange, period, reviewsData, pointSettingsD
       timeRangePerPeriod = getTimeRangePerPeriod(timeRangePerPeriod, period);
     }
       reviewsPerPeriod.total++;
-      reviewsPerPeriod.items[review.get('points')] = reviewsPerPeriod.items[review.get('points')];
-      reviewsPerPeriod.items[review.get('points')].count++;
+      reviewsPerPeriod.items[review.get('point')] = reviewsPerPeriod.items[review.get('point')];
+      reviewsPerPeriod.items[review.get('point')].count++;
   });
   dateArray.push(_.clone(getResultDataForEachPeriod(reviewsPerPeriod, timeRangePerPeriod, timeRange)));
   reviewsPerPeriod = getDefaultDataForEachPeriod(pointSettingsData);
@@ -205,7 +205,7 @@ function getDefaultDataForEachPeriod(pointSettingsData) {
         items: {}
       };
   pointSettingsData.forEach(function(data, index) {
-    reviewsPerPeriod.items[data.get('points')] = {points: data.get('points'), count: 0, name: data.get('name'), objectId: data.id};
+    reviewsPerPeriod.items[data.get('point')] = {points: data.get('point'), count: 0, name: data.get('name'), objectId: data.id};
   });
   return reviewsPerPeriod;
 }
