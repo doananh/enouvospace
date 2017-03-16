@@ -26,7 +26,6 @@ describe('Price Calculating Util Test', () => {
           expect(jsonObject.servicePackage).not.toBeNull();
         });
         // check pricing
-
         var pricing = PriceCalculatingUtil.getServicePricingDetail(result);
         expect(pricing.items).not.toBeNull();
         expect(pricing.items.length).toBe(2)

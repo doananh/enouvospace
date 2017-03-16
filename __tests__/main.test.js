@@ -18,7 +18,7 @@ describe('Main Test', () => {
 
     });
 
-    test('getUserBooking Mocks Request', () => {
+    test.skip('getUserBooking Mocks Request', () => {
       return PricingMock.getBookingPricingDetail("ANONYMOUS")
         .then((data) => {
           console.log(data);

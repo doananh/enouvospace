@@ -6,25 +6,28 @@ Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MA
 Parse.serverURL = process.env.SERVER_URL
 
 
-function createBookingForLoginUser(_params, res) {
+function createBookingForLoginUser(_params) {
   return createNewBooking({ __type: "Pointer", className: "_User", objectId: _params.UserId }, _params, null);
 }
 
-function createBookingForAnonymousUser(_params, _res) {
-  var code;
-  getBooking().then(function (data) {
-    if (data) {
+function createBookingForAnonymousUser(_params) {
+  return new Promise((resolve, reject) => {
+    getBooking().then(function (data) {
+      var code;
       var lastCode = data.get("code");
-      code = Tool.getCode(lastCode);
-    } else {
-      code = Tool.getCode();
-    }
-    createNewBooking(null, _params, code).then(function (data) {
-      _res.success({ code: code});
+      if (lastCode) {
+        code = Tool.getCode(lastCode);
+      } else {
+        code = Tool.getCode();
+      }
+      createNewBooking(null, _params, code).then(function (data) {
+        resolve({ code: code});
+      }, function (error) {
+        reject(error);
+      });
     }, function (error) {
-      _res.error(error);
+      reject(error);
     });
-  }, function (error) {
   });
 }
 

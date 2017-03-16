@@ -31,7 +31,7 @@ Parse.Cloud.define("getReviewHistories", function(req, res) {
     // Parse.Cloud.useMasterKey();
     var business = req.params;
     var businessQuery = new Parse.Query('Business');
-    var reviewsQuery = new Parse.Query("Reviews");
+    var reviewsQuery = new Parse.Query("Review");
 
     businessQuery.equalTo('objectId', business.businessId);
     businessQuery.first().then(function (businessData) {

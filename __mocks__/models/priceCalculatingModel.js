@@ -24,7 +24,7 @@ function getBookingPricingDetail (_type) {
     var servicePricing = getServicePriceByType(_type);
     var discountPricing = getDiscountPriceByType(_type);
     var booking = getBookingByType(_type);
-    var payAmount = packagePricing.total + discountPricing.total + servicePricing.total;
+    var payAmount = packagePricing.total - discountPricing.total + servicePricing.total;
     resolve({
       packagePricing: packagePricing,
       servicePricing: servicePricing,

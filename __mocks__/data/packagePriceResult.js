@@ -24,5 +24,14 @@ module.exports = {
     },
     count: BOOKINGS['USER_HOURS'].packageCount,
     numOfUsers: BOOKINGS['USER_HOURS'].numOfUsers
-  }
+  },
+  USER_HOURS_DISCOUNT: {
+    total: PACKAGES['HOUR'].chargeRate * BOOKINGS['USER_HOURS'].packageCount * BOOKINGS['USER_HOURS'].numOfUsers,
+    package:{
+      name: PACKAGES['HOUR'].name,
+      chargeRate: PACKAGES['HOUR'].chargeRate
+    },
+    count: BOOKINGS['USER_HOURS'].packageCount,
+    numOfUsers: BOOKINGS['USER_HOURS'].numOfUsers
+  },
 }
