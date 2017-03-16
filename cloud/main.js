@@ -8,3 +8,4 @@ require('./reason.js');
 require('./checkIn.js');
 require('./checkOut.js');
 require('./priceCalculating.js');
+require('./booking.js');
