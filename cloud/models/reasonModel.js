@@ -1,3 +1,4 @@
+
 function getReasonsIntoCategoriesClass(_reasonData) {
   var categoryQuery = new Parse.Query("Category");
   categoryQuery.equalTo("objectId", _reasonData.category_id);

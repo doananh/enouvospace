@@ -18,16 +18,22 @@ Parse.Cloud.define('checkLogin', function(request, response) {
 });
 
 Parse.Cloud.define('deleteUser', function(request, response) {
-  var query = new Parse.Query(Parse.User);
-  query.get(request.params.objectId).then(function (user) {
-    user.destroy({ useMasterKey: true }).then(function (data) {
-      response.success(data);
+  var userId = request.params.objectId;
+  if (userId) {
+    var query = new Parse.Query(Parse.User);
+    query.get(userId).then(function (user) {
+      user.destroy({ useMasterKey: true }).then(function (data) {
+        response.success(data);
+      }, function (error) {
+        response.error(error);
+      });
     }, function (error) {
       response.error(error);
     });
-  }, function (error) {
-    response.error(error);
-  });
+  }
+  else {
+    response.error('Require user id params for deleting user')
+  }
 });
 
 Parse.Cloud.define("updateUser", function(req, res) {
@@ -78,7 +84,7 @@ Parse.Cloud.beforeDelete(Parse.User, function(request, response) {
   UserUtil.getOwnerUserWithStaff(staffData).then(function(result) {
     if (result) {
       var staffs = result.get("staffs");
-      if (staffs.length > 0) {
+      if (staffs && staffs.length) {
         var staffArray = [];
         _.each(staffs, function(staff) {
           if (staff.id !== staffData.objectId) {

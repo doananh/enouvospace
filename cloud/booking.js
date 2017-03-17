@@ -8,9 +8,15 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
   var numOfUsers    = req.object.get('numOfUsers');
   var startTime     = req.object.get('startTime');
   if ((_.isUndefined(user) || _.isEmpty(user))
-    && (_.isUndefined(code) || _.isNull(code) || !code.length))
+    && (_.isUndefined(code) || _.isNull(code)))
   {
     res.error('Required user or code params');
+  }
+  else if (code && (!_.isString(code) || (code.length < 4))) {
+    res.error('Invalid code format');
+  }
+  else if (user && _.isObject(user) && !_.isString(user.id)) {
+    res.error('Invalid user');
   }
   else if (!_.isNumber(packageCount) || (packageCount <= 0)) {
     res.error('invalid number of package');
