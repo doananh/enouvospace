@@ -117,4 +117,85 @@ var updateSchema = function(schema, envData, callback) {
 var init = function(envData) {
 };
 
+var importSchemasFromFile = function (envData, filePath) {
+    getSchemas(envData, function(data) {
+        var currentSchemasData = data.results;
+        var savedSchemasData = readFile(filePath);
+
+        var savedSchemas = _.pluck(savedSchemasData, 'className');
+        var currentSchemas = _.pluck(currentSchemasData, 'className');
+
+
+        var deletedSchemas = _.difference(currentSchemas, savedSchemas);
+        var newSchemas = _.difference(savedSchemas, currentSchemas);
+        var intersectionSchemas = _.intersection(currentSchemas, savedSchemas);
+
+        // Delete schemas
+        _.each(deletedSchemas, function (className) {
+            deleteSchema(className, envData);
+        });
+
+        // Add new schemas
+        _.each(newSchemas, function (className) {
+            var classData = _.findWhere(savedSchemasData, {className: className});
+            // Field objectId, createdAt, updatedAt, ACL cannot be added
+            classData.fields = _.omit(classData.fields, 'objectId', 'createdAt', 'updatedAt', 'ACL');
+            addSchema(classData, envData);
+        });
+
+        // Check updated schemas
+        _.each(intersectionSchemas, function(className) {
+            var savedClassData = _.findWhere(savedSchemasData, { className: className });
+            var currentClassData = _.findWhere(currentSchemasData, { className: className });
+            var deletedFields = {};
+            var newFields = _.clone(savedClassData.fields);
+            var changedFields = {};
+
+            _.each(currentClassData.fields, function(value, key) {
+                if (!savedClassData.fields[key]) {
+                    // removed fields
+                    console.log('Removed field: ' + key + ' (' + value.type + ')');
+                    deletedFields[key] = {
+                        "__op": "Delete"
+                    };
+                } else if (savedClassData.fields[key].type !== value.type) {
+                    // changed fields
+                    console.log('Updated field: ' + key + ' (' + value.type + ' => ' + savedClassData.fields[key].type + ')');
+                    deletedFields[key] = {
+                        "__op": "Delete"
+                    };
+                    changedFields[key] = savedClassData.fields[key];
+                    delete newFields[key];
+                } else {
+                    // unchanged fields
+                    delete newFields[key];
+                }
+            });
+
+            var fields = _.extend(newFields, changedFields);
+
+            if (!_.isEmpty(deletedFields) && !_.isEmpty(fields)) {
+                updateSchema({
+                    "className": className,
+                    "fields": deletedFields
+                }, envData, function(data) {
+                    updateSchema({
+                        "className": className,
+                        "fields": fields,
+                        "classLevelPermissions": savedClassData.classLevelPermissions
+                    }, envData);
+                });
+            } else if (!_.isEmpty(fields)) {
+                updateSchema({
+                    "className": className,
+                    "fields": fields,
+                    "classLevelPermissions": savedClassData.classLevelPermissions
+                }, envData);
+            }
+
+
+        });
+    });
+};
+
 exports.init = init;
