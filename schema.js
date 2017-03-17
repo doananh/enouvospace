@@ -23,9 +23,9 @@ var sendRequest = function(options, onResult) {
         }
     }, function(err, res, data) {
         if (err) {
-            console.log('Error: ', err);
+            console.log('[Schema.js] Error: ', err);
         } else if (res.statusCode !== 200) {
-            console.log('Status: ', res.statusCode);
+            console.log('[Schema.js] Status: ', res.statusCode);
         } else {
             onResult(data);
         }
@@ -42,13 +42,19 @@ var saveFile = function(data) {
 
     var outputFilename = 'schemas/' + fileName + '.json';
 
+    data = data.results ? data.results : data;
+
     fs.writeFile(outputFilename, JSON.stringify(data, null, 4), function(err) {
         if (err) {
-            console.log(err);
+            console.log("[Schema.js] " + err);
         } else {
-            console.log("JSON saved to " + outputFilename);
+            console.log("[Schema.js] JSON saved to " + outputFilename);
         }
     });
+};
+
+var readFile = function(fileName) {
+    return JSON.parse(fs.readFileSync(fileName, 'utf8'));
 };
 
 var getSchemas = function(envData, callback) {
