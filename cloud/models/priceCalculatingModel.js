@@ -113,7 +113,23 @@ function getBookingPricingDetail (_booking) {
   });
 }
 
-exports.getBookingPricingDetail = getBookingPricingDetail;
-exports.getPackagePricingDetail = getPackagePricingDetail;
-exports.getServicePricingDetail = getServicePricingDetail;
-exports.getDiscountDetailPricing = getDiscountDetailPricing;
+function getBookingPricePreview (_bookingData) {
+  // this for previewing price from app
+  return new Promise((resolve, reject) => {
+    var packagePointer  = _bookingData.package;
+    var packageCount    = _bookingData.packageCount;
+    var numOfUsers      = _bookingData.numOfUsers;
+    var startTime       = _bookingData.startTime;
+    var endTime         = _bookingData.endTime;
+    resolve({});
+  }, function (error) {
+    reject(error);
+  });
+
+}
+
+exports.getBookingPricingDetail   = getBookingPricingDetail;
+exports.getPackagePricingDetail   = getPackagePricingDetail;
+exports.getServicePricingDetail   = getServicePricingDetail;
+exports.getDiscountDetailPricing  = getDiscountDetailPricing;
+exports.getBookingPricePreview    = getBookingPricePreview;

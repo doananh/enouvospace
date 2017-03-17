@@ -15,7 +15,6 @@ describe('CheckIn Test', () => {
     test.skip('Integration test for check in and check out api', () => {
     	 var checkinParams = {
     	 	"UserId": null,
-	    	"BusinessId": "vGtoDNyiyS",
 	    	"PackageId": "5VEub2n51G"
 	    };
 	    return Promise.resolve()
