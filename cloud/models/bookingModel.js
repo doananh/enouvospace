@@ -5,9 +5,10 @@ const Parse = require('parse/node');
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MASTER_KEY);
 Parse.serverURL = process.env.SERVER_URL
 
+const PACKAGE_DEFAULT = {__type: "Pointer", className: "Package", objectId: "5VEub2n51G"};
 
 function createBookingForLoginUser(_params) {
-  return createNewBooking({ __type: "Pointer", className: "_User", objectId: _params.UserId }, _params, null);
+  return createNewBooking(_params);
 }
 
 function createBookingForAnonymousUser(_params) {
@@ -20,8 +21,8 @@ function createBookingForAnonymousUser(_params) {
       } else {
         code = Tool.getCode();
       }
-      createNewBooking(null, _params, code).then(function (data) {
-        resolve({ code: code});
+      createNewBooking(_params, code).then(function (data) {
+        resolve({code: code});
       }, function (error) {
         reject(error);
       });
@@ -31,23 +32,40 @@ function createBookingForAnonymousUser(_params) {
   });
 }
 
-function createNewBooking(_userData, _params, _code) {
+function createNewBooking(_params, _code = null) {
   var Booking = Parse.Object.extend("Booking");
   var booking = new Booking();
-  booking.set("user", _userData);
-  booking.set("business", { __type: "Pointer", className: "Business", objectId: _params.BusinessId });
-  booking.set("package", { __type: "Pointer", className: "Package", objectId: _params.PackageId });
-  booking.set("packageCount", 1);
   booking.set("code", _code);
   booking.set("status", "Pending");
   booking.set("isPaid", false);
-  booking.set("numOfUsers", 1);
+  booking.set("payAmount", 0);
   booking.set("startTime", moments().toDate());
+  booking.set("packageCount", 1);
+  if (_params && _params.UserId) {
+    booking.set("user", {__type: "Pointer", className: "_User", objectId: _params.UserId});
+  }
+  if (_params && _params.BusinessId) {
+    booking.set("business", {__type: "Pointer", className: "Business", objectId: _params.BusinessId});
+  }
   if (_params && _params.DiscountId) {
-    booking.set("discount", { __type: "Pointer", className: "Discount", objectId: _params.DiscountId });
-  } else {
+    booking.set("discount", {__type: "Pointer", className: "Discount", objectId: _params.DiscountId});
+  }
+  else {
     booking.set("discount", null);
   }
+  if (_params && _params.PackageId) {
+    booking.set("package", {__type: "Pointer", className: "Package", objectId: _params.PackageId});
+  }
+  else {
+    booking.set("package", PACKAGE_DEFAULT);
+  }
+  if (_params && _params.numOfUsers) {
+    booking.set("numOfUsers", _params.numOfUsers);
+  }
+  else {
+    booking.set("numOfUsers", 1);
+  }
+
   return booking.save();
 }
 
@@ -63,7 +81,7 @@ function getAnonymousUserInBooking (_params) {
     bookingQuery.equalTo("code", _params.code);
     bookingQuery.include("package");
     bookingQuery.include('discount');
-  return  bookingQuery.first();
+  return bookingQuery.first();
 }
 
 exports.createBookingForLoginUser     = createBookingForLoginUser;

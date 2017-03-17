@@ -27,7 +27,7 @@ Parse.Cloud.define("checkout", function(req, res) {
             var subtractTime = moments(endTime).diff(moments(startTime))
             var durationTimeDetails = moments.duration(subtractTime);
             var durationTime = durationTimeDetails.hours() + ":" + durationTimeDetails.minutes();
-            // caculate total price--------------------------- 
+            // caculate total price---------------------------
             var payAmount = packagePricingFollowTime + servicePricing - discountPricing;
             var data = {
               checkinTimeString: StartTimeString,
@@ -52,10 +52,3 @@ Parse.Cloud.define("checkout", function(req, res) {
     res.success({});
   }
 });
-
-function getServices(_serviceArr) {
-  var servicesQuery = new Parse.Query('Service');
-    servicesQuery.include('servicePackage');
-    servicesQuery.containedIn('objectId', _serviceArr);
-    return servicesQuery.find();
-}
