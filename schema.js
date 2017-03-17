@@ -67,9 +67,7 @@ var getSchemas = function(envData, callback) {
 
     var schemas = sendRequest(options, function(data) {
         console.log('[Schema.js] Get schemas');
-        console.log(data);
         if (_.isFunction(callback)) callback(data);
-        saveFile(data);
     });
 };
 
@@ -160,13 +158,13 @@ var importSchemasFromFile = function (envData, filePath) {
             _.each(currentClassData.fields, function(value, key) {
                 if (!savedClassData.fields[key]) {
                     // removed fields
-                    console.log('Removed field: ' + key + ' (' + value.type + ')');
+                    console.log('[Schema.js] Removed field (' + className + '): ' + key + ' (' + value.type + ')');
                     deletedFields[key] = {
                         "__op": "Delete"
                     };
                 } else if (savedClassData.fields[key].type !== value.type) {
                     // changed fields
-                    console.log('Updated field: ' + key + ' (' + value.type + ' => ' + savedClassData.fields[key].type + ')');
+                    console.log('[Schema.js] Updated field (' + className + '): ' + key + ' (' + value.type + ' => ' + savedClassData.fields[key].type + ')');
                     deletedFields[key] = {
                         "__op": "Delete"
                     };
@@ -177,6 +175,11 @@ var importSchemasFromFile = function (envData, filePath) {
                     delete newFields[key];
                 }
             });
+
+            if (!_.isEmpty(newFields)) {
+                console.log('[Schema.js] Added fields (' + className + '):');
+                console.log('[Schema.js] ' + JSON.stringify(newFields));
+            }
 
             var fields = _.extend(newFields, changedFields);
 
