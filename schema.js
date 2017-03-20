@@ -57,6 +57,27 @@ var readFile = function(fileName) {
     return JSON.parse(fs.readFileSync(fileName, 'utf8'));
 };
 
+var updateChangelog = function(text, envData) {
+
+    var append = '\n\n' + moment().format("dddd, MMMM Do YYYY, h:mm:ss a") + '\n' + text;
+
+    var filename = 'schemas/CHANGELOG_' + envData.NODE_ENV + '.md';
+    fs.stat(filename, function(err, stat) {
+        if (err == null) {
+            fs.appendFile(filename, append, function(err) {
+                // console.log(data);
+            });
+        } else if (err.code == 'ENOENT') {
+            fs.writeFile(filename, '#Changelog\n');
+            fs.appendFile(filename, append, function(err) {
+                // console.log(data);
+            });
+        } else {
+            console.log('Some other error: ', err.code);
+        }
+    });
+};
+
 var getSchemas = function(envData, callback) {
     var options = {
         method: 'get',
@@ -72,6 +93,10 @@ var getSchemas = function(envData, callback) {
 };
 
 var addSchema = function(schema, envData, callback) {
+
+    // Field objectId, createdAt, updatedAt, ACL cannot be added
+    schema.fields = _.omit(schema.fields, 'objectId', 'createdAt', 'updatedAt', 'ACL');
+
     var options = {
         method: 'post',
         appId: envData.APP_ID,
@@ -82,8 +107,8 @@ var addSchema = function(schema, envData, callback) {
 
     var schemas = sendRequest(options, function(data) {
         console.log('[Schema.js] Added schema: ' + schema.className);
+        updateChangelog('[Schema.js] Added schema: ' + schema.className, envData);
         if (_.isFunction(callback)) callback(data);
-        // console.log(data);
     });
 };
 
@@ -97,8 +122,8 @@ var deleteSchema = function(className, envData, callback) {
 
     var schemas = sendRequest(options, function(data) {
         console.log('[Schema.js] Deleted schema: ' + className);
+        updateChangelog('[Schema.js] Deleted schema: ' + className, envData);
         if (_.isFunction(callback)) callback(data);
-        // console.log(data);
     });
 };
 
@@ -112,13 +137,16 @@ var updateSchema = function(schema, envData, callback) {
     };
 
     var schemas = sendRequest(options, function(data) {
-        console.log('[Schema.js] Updated schema: ' + schema.className);
         if (_.isFunction(callback)) callback(data);
-        // console.log(data);
     });
 };
 
 var init = function(envData) {
+    getSchemas(envData, function(data) {
+        saveFile(data);
+    });
+
+    importSchemasFromFile(envData, 'schemas/_2Schemas.json');
 };
 
 var importSchemasFromFile = function (envData, filePath) {
@@ -128,7 +156,6 @@ var importSchemasFromFile = function (envData, filePath) {
 
         var savedSchemas = _.pluck(savedSchemasData, 'className');
         var currentSchemas = _.pluck(currentSchemasData, 'className');
-
 
         var deletedSchemas = _.difference(currentSchemas, savedSchemas);
         var newSchemas = _.difference(savedSchemas, currentSchemas);
@@ -152,17 +179,20 @@ var importSchemasFromFile = function (envData, filePath) {
             var deletedFields = {};
             var newFields = _.clone(savedClassData.fields);
             var changedFields = {};
+            var logs = ['[Schema.js] Updated schema: ' + className];
 
             _.each(currentClassData.fields, function(value, key) {
                 if (!savedClassData.fields[key]) {
                     // removed fields
-                    console.log('[Schema.js] Removed field (' + className + '): ' + key + ' (' + value.type + ')');
+                    var log = '[Schema.js] Removed field (' + className + '): ' + key + ' (' + value.type + ')';
+                    logs.push(log);
                     deletedFields[key] = {
                         "__op": "Delete"
                     };
                 } else if (savedClassData.fields[key].type !== value.type) {
                     // changed fields
-                    console.log('[Schema.js] Updated field (' + className + '): ' + key + ' (' + value.type + ' => ' + savedClassData.fields[key].type + ')');
+                    var log = '[Schema.js] Updated field (' + className + '): ' + key + ' (' + value.type + ' => ' + savedClassData.fields[key].type + ')';
+                    logs.push(log);
                     deletedFields[key] = {
                         "__op": "Delete"
                     };
@@ -175,8 +205,8 @@ var importSchemasFromFile = function (envData, filePath) {
             });
 
             if (!_.isEmpty(newFields)) {
-                console.log('[Schema.js] Added fields (' + className + '):');
-                console.log('[Schema.js] ' + JSON.stringify(newFields));
+                logs.push('[Schema.js] Added fields (' + className + '):');
+                logs.push('[Schema.js] ' + JSON.stringify(newFields));
             }
 
             var fields = _.extend(newFields, changedFields);
@@ -190,14 +220,20 @@ var importSchemasFromFile = function (envData, filePath) {
                         "className": className,
                         "fields": fields,
                         "classLevelPermissions": savedClassData.classLevelPermissions
-                    }, envData);
+                    }, envData, function () {
+                        updateChangelog(logs.join('\n'), envData);
+                        console.log(logs.join('\n'));
+                    });
                 });
             } else if (!_.isEmpty(fields)) {
                 updateSchema({
                     "className": className,
                     "fields": fields,
                     "classLevelPermissions": savedClassData.classLevelPermissions
-                }, envData);
+                }, envData, function () {
+                    updateChangelog(logs.join('\n'), envData);
+                    console.log(logs.join('\n'));
+                });
             }
 
 
