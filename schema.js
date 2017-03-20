@@ -1,14 +1,7 @@
-var http = require("http");
-var https = require("https");
 var request = require('request');
 var fs = require('fs');
 var moment = require('moment');
 var _ = require('underscore');
-/**
- * sendRequest:  REST get request returning JSON object(s)
- * @param options: http options object
- * @param onResult: callback to pass the results JSON object(s) back
- */
 
 var sendRequest = function(options, onResult) {
     request({
@@ -149,7 +142,7 @@ var init = function(envData) {
     importSchemasFromFile(envData, 'schemas/_2Schemas.json');
 };
 
-var importSchemasFromFile = function (envData, filePath) {
+var importSchemasFromFile = function(envData, filePath) {
     getSchemas(envData, function(data) {
         var currentSchemasData = data.results;
         var savedSchemasData = readFile(filePath);
@@ -162,13 +155,13 @@ var importSchemasFromFile = function (envData, filePath) {
         var intersectionSchemas = _.intersection(currentSchemas, savedSchemas);
 
         // Delete schemas
-        _.each(deletedSchemas, function (className) {
+        _.each(deletedSchemas, function(className) {
             deleteSchema(className, envData);
         });
 
         // Add new schemas
-        _.each(newSchemas, function (className) {
-            var classData = _.findWhere(savedSchemasData, {className: className});
+        _.each(newSchemas, function(className) {
+            var classData = _.findWhere(savedSchemasData, { className: className });
             addSchema(classData, envData);
         });
 
@@ -220,7 +213,7 @@ var importSchemasFromFile = function (envData, filePath) {
                         "className": className,
                         "fields": fields,
                         "classLevelPermissions": savedClassData.classLevelPermissions
-                    }, envData, function () {
+                    }, envData, function() {
                         updateChangelog(logs.join('\n'), envData);
                         console.log(logs.join('\n'));
                     });
@@ -230,7 +223,7 @@ var importSchemasFromFile = function (envData, filePath) {
                     "className": className,
                     "fields": fields,
                     "classLevelPermissions": savedClassData.classLevelPermissions
-                }, envData, function () {
+                }, envData, function() {
                     updateChangelog(logs.join('\n'), envData);
                     console.log(logs.join('\n'));
                 });
