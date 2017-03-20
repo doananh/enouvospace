@@ -22,12 +22,15 @@
     "parse": "~1.8.0",
     "parse-server": "^2.3.1",
     "parse-server-azure-storage": "^1.1.0",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "request": "*"
   },
   "scripts": {
     "start": "better-npm-run start:dev",
     "start:test": "better-npm-run start:test",
     "start:prod": "better-npm-run start:prod",
+    "schema:import": "better-npm-run schema:import",
+    "schema:export": "better-npm-run schema:export",
     "test": "jest --coverage"
   },
   "betterScripts": {
@@ -48,6 +51,12 @@
       "env": {
         "NODE_ENV": "production"
       }
+    },
+    "schema:import": {
+      "command": "node schema.js import"
+    },
+    "schema:export": {
+      "command": "node schema.js export"
     }
   },
   "engines": {
