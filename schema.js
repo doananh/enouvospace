@@ -204,19 +204,25 @@ var importSchemasFromFile = function(envData, filePath) {
 
             var fields = _.extend(newFields, changedFields);
 
-            if (!_.isEmpty(deletedFields) && !_.isEmpty(fields)) {
+            if (!_.isEmpty(deletedFields)) {
                 updateSchema({
                     "className": className,
                     "fields": deletedFields
                 }, envData, function(data) {
-                    updateSchema({
-                        "className": className,
-                        "fields": fields,
-                        "classLevelPermissions": savedClassData.classLevelPermissions
-                    }, envData, function() {
+                    if (!_.isEmpty(fields)) {
+                        updateSchema({
+                            "className": className,
+                            "fields": fields,
+                            "classLevelPermissions": savedClassData.classLevelPermissions
+                        }, envData, function() {
+                            updateChangelog(logs.join('\n'), envData);
+                            console.log(logs.join('\n'));
+                        });
+                    } else {
                         updateChangelog(logs.join('\n'), envData);
                         console.log(logs.join('\n'));
-                    });
+                    }
+
                 });
             } else if (!_.isEmpty(fields)) {
                 updateSchema({
