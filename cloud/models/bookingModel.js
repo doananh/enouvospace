@@ -1,29 +1,44 @@
-var moments = require('moment');
-var Tool = require('./../utils/tools');
+
+var _        = require('underscore');
+var moments  = require('moment');
+
+var Tool          = require('./../utils/tools');
 var DiscountModel = require('./discountModel');
+var PackageModel  = require('./packageModel');
 
 const Parse = require('parse/node');
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MASTER_KEY);
 Parse.serverURL = process.env.SERVER_URL;
 
-const PACKAGE_DEFAULT = {__type: "Pointer", className: "Package", objectId: "5VEub2n51G"};
+var currentAnonymousCode = null;
 
 function createBookingForLoginUser(_params) {
-  return createNewBooking(_params);
+  return new Promise((resolve, reject) => {
+    PackageModel.getPackageByType().then(function (result) {
+      var bookingParams = _.extend({}, _params, {"package": result});
+      return createNewBooking(bookingParams).then(function (data) {
+        resolve(data);
+      }, function (error) {
+        reject(error);
+      });
+    }, function (error) {
+      reject(error);
+    });
+  });
 }
 
 function createBookingForAnonymousUser(_params) {
   return new Promise((resolve, reject) => {
-    getLastAnonymousBooking().then(function (data) {
-      var code;
-      var lastCode = data.get("code");
-      if (lastCode) {
-        code = Tool.getCode(lastCode);
+    PackageModel.getDefaultPackage().then(function (defaultPackage) {
+      console.log(defaultPackage)
+      if (currentAnonymousCode) {
+        currentAnonymousCode = Tool.getCode(currentAnonymousCode);
       } else {
-        code = Tool.getCode();
+        currentAnonymousCode = Tool.getCode();
       }
-      createNewBooking(_params, code).then(function (data) {
-        resolve({code: code});
+      var bookingParams = _.extend({}, _params, {"package": defaultPackage});
+      createNewBooking(bookingParams, currentAnonymousCode).then(function (data) {
+        resolve({code: currentAnonymousCode});
       }, function (error) {
         reject(error);
       });
@@ -34,16 +49,19 @@ function createBookingForAnonymousUser(_params) {
 }
 
 function createNewBooking(_params, _code = null) {
+  console.log(_params)
   var Booking = Parse.Object.extend("Booking");
   var booking = new Booking();
-  booking.set("code", _code);
-  booking.set("status", "Pending");
+  booking.set("status", "OPEN");
   booking.set("isPaid", false);
   booking.set("payAmount", 0);
   booking.set("startTime", moments().toDate());
   booking.set("packageCount", 1);
-  if (_params && _params.UserId) {
-    booking.set("user", {__type: "Pointer", className: "_User", objectId: _params.UserId});
+  if (_code) {
+    booking.set("user", {"code": _code, "username": "anonymous" + _code});
+  }
+  else {
+    booking.set("user", {"id": _params.UserId, "username": _params.user.sername});
   }
   if (_params && _params.DiscountId) {
     booking.set("discount", {__type: "Pointer", className: "Discount", objectId: _params.DiscountId});
@@ -51,11 +69,8 @@ function createNewBooking(_params, _code = null) {
   else {
     booking.set("discount", null);
   }
-  if (_params && _params.PackageId) {
-    booking.set("package", {__type: "Pointer", className: "Package", objectId: _params.PackageId});
-  }
-  else {
-    booking.set("package", PACKAGE_DEFAULT);
+  if (_params && _params.package) {
+    booking.set("package", _params.package);
   }
   if (_params && _params.numOfUsers) {
     booking.set("numOfUsers", _params.numOfUsers);
@@ -65,13 +80,6 @@ function createNewBooking(_params, _code = null) {
   }
 
   return booking.save();
-}
-
-function getLastAnonymousBooking () {
-  var bookingQuery = new Parse.Query("Booking");
-      bookingQuery.select("code");
-      bookingQuery.descending("code");
-  return bookingQuery.first();
 }
 
 function getAnonymousUserInBooking (_params) {
@@ -84,6 +92,5 @@ function getAnonymousUserInBooking (_params) {
 
 exports.createBookingForLoginUser     = createBookingForLoginUser;
 exports.createBookingForAnonymousUser = createBookingForAnonymousUser;
-exports.getLastAnonymousBooking       = getLastAnonymousBooking;
 exports.createNewBooking              = createNewBooking;
 exports.getAnonymousUserInBooking     = getAnonymousUserInBooking;
