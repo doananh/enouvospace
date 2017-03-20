@@ -25,15 +25,17 @@ var sendRequest = function(options, onResult) {
     });
 };
 
-var saveFile = function(data) {
+var saveFile = function(data, outputFilename) {
 
-    var fileName = data && data.className ? data.className : '_Schemas';
+    if (!outputFilename) {
+        var fileName = data && data.className ? data.className : '_Schemas';
 
-    if (!fs.existsSync('schemas')) {
-        fs.mkdirSync('schemas');
+        if (!fs.existsSync('schemas')) {
+            fs.mkdirSync('schemas');
+        }
+
+        var outputFilename = 'schemas/' + fileName + '.json';
     }
-
-    var outputFilename = 'schemas/' + fileName + '.json';
 
     data = data.results ? data.results : data;
 
@@ -134,14 +136,6 @@ var updateSchema = function(schema, envData, callback) {
     });
 };
 
-var init = function(envData) {
-    getSchemas(envData, function(data) {
-        saveFile(data);
-    });
-
-    importSchemasFromFile(envData, 'schemas/_2Schemas.json');
-};
-
 var importSchemasFromFile = function(envData, filePath) {
     getSchemas(envData, function(data) {
         var currentSchemasData = data.results;
@@ -240,4 +234,8 @@ var importSchemasFromFile = function(envData, filePath) {
     });
 };
 
-exports.init = init;
+var exportSchemasToFile = function (envData, filePath) {
+    getSchemas(envData, function(data) {
+        saveFile(data, filePath);
+    });
+};
