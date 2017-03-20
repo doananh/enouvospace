@@ -2,30 +2,34 @@ var _ = require('underscore');
 
 Parse.Cloud.beforeSave("Booking", function(req, res) {
   var user          = req.object.get('user');
-  var code          = req.object.get('code');
   var packageCount  = req.object.get('packageCount');
   var pPackage      = req.object.get('package');
   var numOfUsers    = req.object.get('numOfUsers');
   var startTime     = req.object.get('startTime');
-  if ((_.isUndefined(user) || _.isEmpty(user))
-    && (_.isUndefined(code) || _.isNull(code)))
+  if (_.isUndefined(user) || _.isEmpty(user))
   {
-    res.error('Required user or code params');
+    res.error('Require user params');
   }
-  else if (code && (!_.isString(code) || (code.length < 4))) {
+  else if (user && user.id && !user.username) {
+    res.error('Require username in user');
+  }
+  else if (user && user.code && (!_.isString(user.code) || (user.code.length < 4))) {
     res.error('Invalid code format');
+  }
+  else if (user && user.code && !user.username) {
+    res.error('Require username in user')
   }
   else if (!_.isNumber(packageCount) || (packageCount <= 0)) {
     res.error('invalid number of package');
   }
   else if (!pPackage) {
-    res.error('Required package params');
+    res.error('Require package params');
   }
   else if (!_.isDate(startTime)) {
-    res.error('Required start time params');
+    res.error('Require start time params');
   }
   else if (!_.isNumber(numOfUsers) || (numOfUsers <= 0)) {
-    res.error('Required number of users params');
+    res.error('Require number of users params');
   }
   else {
     res.success();
