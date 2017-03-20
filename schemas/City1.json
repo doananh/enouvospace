@@ -1,0 +1,47 @@
+{
+    "className": "City",
+    "fields": {
+        "objectId": {
+            "type": "String"
+        },
+        "createdAt": {
+            "type": "Date"
+        },
+        "updatedAt": {
+            "type": "Date"
+        },
+        "ACL": {
+            "type": "ACL"
+        },
+        "name": {
+            "type": "String"
+        },
+        "age": {
+            "type": "Number"
+        },
+        "population": {
+            "type": "String"
+        },
+        "images": {
+            "type": "Array"
+        }
+    },
+    "classLevelPermissions": {
+        "find": {
+            "*": true
+        },
+        "get": {
+            "*": true
+        },
+        "create": {},
+        "update": {
+            "*": true
+        },
+        "delete": {
+            "*": true
+        },
+        "addField": {
+            "*": true
+        }
+    }
+}

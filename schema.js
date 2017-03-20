@@ -73,12 +73,14 @@ var updateChangelog = function(text, envData) {
     });
 };
 
-var getSchemas = function(envData, callback) {
+var getSchemas = function(envData, className, callback) {
+    var url = className ? envData.SERVER_URL + "/schemas/" + className : envData.SERVER_URL + "/schemas";
+
     var options = {
         method: 'get',
         appId: envData.APP_ID,
         masterKey: envData.MASTER_KEY,
-        url: envData.SERVER_URL + "/schemas"
+        url: url
     };
 
     var schemas = sendRequest(options, function(data) {
@@ -137,7 +139,7 @@ var updateSchema = function(schema, envData, callback) {
 };
 
 var importSchemasFromFile = function(envData, filePath) {
-    getSchemas(envData, function(data) {
+    getSchemas(envData, null, function(data) {
         var currentSchemasData = data.results;
         var savedSchemasData = readFile(filePath);
 
@@ -234,8 +236,32 @@ var importSchemasFromFile = function(envData, filePath) {
     });
 };
 
-var exportSchemasToFile = function (envData, filePath) {
-    getSchemas(envData, function(data) {
+var exportSchemasToFile = function (envData, className, filePath) {
+    getSchemas(envData, className, function(data) {
         saveFile(data, filePath);
     });
 };
+
+var watch = function(envData) {
+    exportSchemasToFile(envData);
+};
+
+var initialize = function () {
+    var args = process.argv.slice(2);
+    var envData = process.env;
+
+    if (args[0] === 'import') {
+        var filePath = args[1] || 'schemas/_Schemas.json';
+        importSchemasFromFile(envData, filePath);
+    }
+
+    if (args[0] === 'export') {
+        var filePath = args[2];
+        var className = args[1];
+        exportSchemasToFile(envData, className, filePath);
+    }
+};
+
+initialize();
+
+exports.watch = watch;
