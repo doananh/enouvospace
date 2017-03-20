@@ -142,8 +142,6 @@ var importSchemasFromFile = function (envData, filePath) {
         // Add new schemas
         _.each(newSchemas, function (className) {
             var classData = _.findWhere(savedSchemasData, {className: className});
-            // Field objectId, createdAt, updatedAt, ACL cannot be added
-            classData.fields = _.omit(classData.fields, 'objectId', 'createdAt', 'updatedAt', 'ACL');
             addSchema(classData, envData);
         });
 
