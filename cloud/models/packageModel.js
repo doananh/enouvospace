@@ -8,7 +8,6 @@ function getDefaultPackage () {
 }
 
 function getPackageByType (_type = 'HOUR') {
-  console.log('TYPE' + _type)
   return new Promise((resolve, reject) => {
     if (_type) {
       var packageQuery = new Parse.Query("Package")

@@ -2,15 +2,14 @@
 var _        = require('underscore');
 var moments  = require('moment');
 
-var Tool          = require('./../utils/tools');
-var DiscountModel = require('./discountModel');
-var PackageModel  = require('./packageModel');
+var Tool            = require('./../utils/tools');
+var DiscountModel   = require('./discountModel');
+var PackageModel    = require('./packageModel');
+var GlobalVariable  = require('./globalVariable');
 
 const Parse = require('parse/node');
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MASTER_KEY);
 Parse.serverURL = process.env.SERVER_URL;
-
-var currentAnonymousCode = null;
 
 function createBookingForLoginUser(_params) {
   return new Promise((resolve, reject) => {
@@ -30,20 +29,18 @@ function createBookingForLoginUser(_params) {
 function createBookingForAnonymousUser(_params) {
   return new Promise((resolve, reject) => {
     PackageModel.getDefaultPackage().then(function (defaultPackage) {
-      console.log(defaultPackage)
-      if (currentAnonymousCode) {
-        currentAnonymousCode = Tool.getCode(currentAnonymousCode);
-      } else {
-        currentAnonymousCode = Tool.getCode();
-      }
-      var bookingParams = _.extend({}, _params, {"package": defaultPackage});
-      createNewBooking(bookingParams, currentAnonymousCode).then(function (data) {
-        resolve({code: currentAnonymousCode});
-      }, function (error) {
-        reject(error);
+      GlobalVariable.generateAnonymousCode().then(function (latestCode) {
+        var bookingParams = _.extend({}, _params, {"package": defaultPackage});
+        createNewBooking(bookingParams, latestCode).then(function (data) {
+          resolve({code: latestCode});
+        }, function (error) {
+          reject(error);
+        });
+      }, function (bookingError) {
+        reject(bookingError);
       });
-    }, function (error) {
-      reject(error);
+    }, function (packageError) {
+      reject(packageError);
     });
   });
 }
@@ -58,10 +55,10 @@ function createNewBooking(_params, _code = null) {
   booking.set("startTime", moments().toDate());
   booking.set("packageCount", 1);
   if (_code) {
-    booking.set("user", {"code": _code, "username": "anonymous" + _code});
+    booking.set("user", {"code": _code, "username": "anonymous" + _code, type: "anonymous"});
   }
   else {
-    booking.set("user", {"id": _params.UserId, "username": _params.user.sername});
+    booking.set("user", {"id": _params.user.id, "username": _params.user.username, type: "customer"});
   }
   if (_params && _params.DiscountId) {
     booking.set("discount", {__type: "Pointer", className: "Discount", objectId: _params.DiscountId});

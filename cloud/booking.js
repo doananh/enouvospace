@@ -10,6 +10,12 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
   {
     res.error('Require user params');
   }
+  else if (user && !user.code && !user.id) {
+    res.error('Require code or id in user params');
+  }
+  else if (user && user.code && user.id) {
+    res.error('only code or only id in user params');
+  }
   else if (user && user.id && !user.username) {
     res.error('Require username in user');
   }
