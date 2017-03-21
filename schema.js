@@ -3,7 +3,7 @@ var fs = require('fs');
 var moment = require('moment');
 var _ = require('underscore');
 
-var sendRequest = function(options, onResult) {
+var sendRequest = function(options, envData, onResult) {
     request({
         method: options.method,
         url: options.url,
@@ -18,7 +18,12 @@ var sendRequest = function(options, onResult) {
         if (err) {
             console.log('[Schema.js] Error: ', err);
         } else if (res.statusCode !== 200) {
-            console.log('[Schema.js] Status: ', res.statusCode);
+            if (res.body) {
+                console.log('[Schema.js] Error code ' + res.body.code + ': ' + res.body.error);
+                updateChangelog('[Schema.js] Error code ' + res.body.code + ': ' + res.body.error, envData);
+            } else {
+                console.log('[Schema.js] Status: ', res.statusCode);
+            }
         } else {
             onResult(data);
         }
@@ -81,7 +86,7 @@ var updateChangelog = function(text, envData) {
     });
 };
 
-var getSchemas = function(envData, className, callback) {
+var getSchemas = function(className, envData, callback) {
     var url = className ? envData.SERVER_URL + "/schemas/" + className : envData.SERVER_URL + "/schemas";
 
     var options = {
@@ -91,7 +96,7 @@ var getSchemas = function(envData, className, callback) {
         url: url
     };
 
-    var schemas = sendRequest(options, function(data) {
+    sendRequest(options, envData, function(data) {
         console.log('[Schema.js] Get schemas');
         if (_.isFunction(callback)) callback(data);
     });
@@ -110,7 +115,7 @@ var addSchema = function(schema, envData, callback) {
         url: envData.SERVER_URL + "/schemas/" + schema.className
     };
 
-    var schemas = sendRequest(options, function(data) {
+    sendRequest(options, envData, function(data) {
         console.log('[Schema.js] Added schema: ' + schema.className);
         updateChangelog('[Schema.js] Added schema: ' + schema.className, envData);
         if (_.isFunction(callback)) callback(data);
@@ -125,7 +130,7 @@ var deleteSchema = function(className, envData, callback) {
         url: envData.SERVER_URL + "/schemas/" + className
     };
 
-    var schemas = sendRequest(options, function(data) {
+    sendRequest(options, envData, function(data) {
         console.log('[Schema.js] Deleted schema: ' + className);
         updateChangelog('[Schema.js] Deleted schema: ' + className, envData);
         if (_.isFunction(callback)) callback(data);
@@ -141,7 +146,21 @@ var updateSchema = function(schema, envData, callback) {
         url: envData.SERVER_URL + "/schemas/" + schema.className
     };
 
-    var schemas = sendRequest(options, function(data) {
+    sendRequest(options, envData, function(data) {
+        if (_.isFunction(callback)) callback(data);
+    });
+};
+
+var clearAllData = function(className, envData, callback) {
+    var options = {
+        method: 'delete',
+        appId: envData.APP_ID,
+        masterKey: envData.MASTER_KEY,
+        url: envData.SERVER_URL + "/purge/" + className
+    };
+
+    sendRequest(options, envData, function(data) {
+        console.log('[Schema.js] Cleared all data in schema: ' + className);
         if (_.isFunction(callback)) callback(data);
     });
 };
@@ -215,7 +234,7 @@ var compareSchemas = function (envData, className, savedClassData, currentClassD
 };
 
 var importSchemasFromFile = function(envData, filePath) {
-    getSchemas(envData, null, function(data) {
+    getSchemas(null, envData, function(data) {
         var currentSchemasData = data.results;
         var savedSchemasData = readFile(filePath);
         var currentSchemas = _.pluck(currentSchemasData, 'className');
@@ -228,7 +247,13 @@ var importSchemasFromFile = function(envData, filePath) {
 
             // Delete schemas
             _.each(deletedSchemas, function(className) {
-                deleteSchema(className, envData);
+                if (envData.forceDelete) {
+                    clearAllData(className, envData, function (data) {
+                        deleteSchema(className, envData);
+                    });
+                } else {
+                    deleteSchema(className, envData);
+                }
             });
 
             // Add new schemas
@@ -257,7 +282,7 @@ var importSchemasFromFile = function(envData, filePath) {
 };
 
 var exportSchemasToFile = function (envData, className, filePath) {
-    getSchemas(envData, className, function(data) {
+    getSchemas(className, envData, function(data) {
         saveFile(data, filePath);
     });
 };
@@ -272,6 +297,7 @@ var initialize = function () {
 
     if (args[0] === 'import') {
         var filePath = args[1] || 'schemas/_Schemas.json';
+        if (_.indexOf(args, 'forceDelete=1') > -1) envData.forceDelete = true;
         importSchemasFromFile(envData, filePath);
     }
 
