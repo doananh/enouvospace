@@ -14,12 +14,12 @@
             "type": "ACL"
         },
         "name": {
-            "type": "String"
+            "type": "Number"
         },
         "age": {
             "type": "Number"
         },
-        "population": {
+        "location": {
             "type": "String"
         },
         "images": {

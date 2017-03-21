@@ -138,89 +138,48 @@ var updateSchema = function(schema, envData, callback) {
     });
 };
 
-var importSchemasFromFile = function(envData, filePath) {
-    getSchemas(envData, null, function(data) {
-        var currentSchemasData = data.results;
-        var savedSchemasData = readFile(filePath);
+var compareSchemas = function (envData, className, savedClassData, currentClassData) {
+    var deletedFields = {};
+    var newFields = _.clone(savedClassData.fields);
+    var changedFields = {};
+    var logs = ['[Schema.js] Updated schema: ' + className];
 
-        var savedSchemas = _.pluck(savedSchemasData, 'className');
-        var currentSchemas = _.pluck(currentSchemasData, 'className');
+    _.each(currentClassData.fields, function(value, key) {
+        if (!savedClassData.fields[key]) {
+            // removed fields
+            var log = '[Schema.js] Removed field (' + className + '): ' + key + ' (' + value.type + ')';
+            logs.push(log);
+            deletedFields[key] = {
+                "__op": "Delete"
+            };
+        } else if (savedClassData.fields[key].type !== value.type) {
+            // changed fields
+            var log = '[Schema.js] Updated field (' + className + '): ' + key + ' (' + value.type + ' => ' + savedClassData.fields[key].type + ')';
+            logs.push(log);
+            deletedFields[key] = {
+                "__op": "Delete"
+            };
+            changedFields[key] = savedClassData.fields[key];
+            delete newFields[key];
+        } else {
+            // unchanged fields
+            delete newFields[key];
+        }
+    });
 
-        var deletedSchemas = _.difference(currentSchemas, savedSchemas);
-        var newSchemas = _.difference(savedSchemas, currentSchemas);
-        var intersectionSchemas = _.intersection(currentSchemas, savedSchemas);
+    if (!_.isEmpty(newFields)) {
+        logs.push('[Schema.js] Added fields (' + className + '):');
+        logs.push('[Schema.js] ' + JSON.stringify(newFields));
+    }
 
-        // Delete schemas
-        _.each(deletedSchemas, function(className) {
-            deleteSchema(className, envData);
-        });
+    var fields = _.extend(newFields, changedFields);
 
-        // Add new schemas
-        _.each(newSchemas, function(className) {
-            var classData = _.findWhere(savedSchemasData, { className: className });
-            addSchema(classData, envData);
-        });
-
-        // Check updated schemas
-        _.each(intersectionSchemas, function(className) {
-            var savedClassData = _.findWhere(savedSchemasData, { className: className });
-            var currentClassData = _.findWhere(currentSchemasData, { className: className });
-            var deletedFields = {};
-            var newFields = _.clone(savedClassData.fields);
-            var changedFields = {};
-            var logs = ['[Schema.js] Updated schema: ' + className];
-
-            _.each(currentClassData.fields, function(value, key) {
-                if (!savedClassData.fields[key]) {
-                    // removed fields
-                    var log = '[Schema.js] Removed field (' + className + '): ' + key + ' (' + value.type + ')';
-                    logs.push(log);
-                    deletedFields[key] = {
-                        "__op": "Delete"
-                    };
-                } else if (savedClassData.fields[key].type !== value.type) {
-                    // changed fields
-                    var log = '[Schema.js] Updated field (' + className + '): ' + key + ' (' + value.type + ' => ' + savedClassData.fields[key].type + ')';
-                    logs.push(log);
-                    deletedFields[key] = {
-                        "__op": "Delete"
-                    };
-                    changedFields[key] = savedClassData.fields[key];
-                    delete newFields[key];
-                } else {
-                    // unchanged fields
-                    delete newFields[key];
-                }
-            });
-
-            if (!_.isEmpty(newFields)) {
-                logs.push('[Schema.js] Added fields (' + className + '):');
-                logs.push('[Schema.js] ' + JSON.stringify(newFields));
-            }
-
-            var fields = _.extend(newFields, changedFields);
-
-            if (!_.isEmpty(deletedFields)) {
-                updateSchema({
-                    "className": className,
-                    "fields": deletedFields
-                }, envData, function(data) {
-                    if (!_.isEmpty(fields)) {
-                        updateSchema({
-                            "className": className,
-                            "fields": fields,
-                            "classLevelPermissions": savedClassData.classLevelPermissions
-                        }, envData, function() {
-                            updateChangelog(logs.join('\n'), envData);
-                            console.log(logs.join('\n'));
-                        });
-                    } else {
-                        updateChangelog(logs.join('\n'), envData);
-                        console.log(logs.join('\n'));
-                    }
-
-                });
-            } else if (!_.isEmpty(fields)) {
+    if (!_.isEmpty(deletedFields)) {
+        updateSchema({
+            "className": className,
+            "fields": deletedFields
+        }, envData, function(data) {
+            if (!_.isEmpty(fields)) {
                 updateSchema({
                     "className": className,
                     "fields": fields,
@@ -229,10 +188,63 @@ var importSchemasFromFile = function(envData, filePath) {
                     updateChangelog(logs.join('\n'), envData);
                     console.log(logs.join('\n'));
                 });
+            } else {
+                updateChangelog(logs.join('\n'), envData);
+                console.log(logs.join('\n'));
             }
 
-
         });
+    } else if (!_.isEmpty(fields)) {
+        updateSchema({
+            "className": className,
+            "fields": fields,
+            "classLevelPermissions": savedClassData.classLevelPermissions
+        }, envData, function() {
+            updateChangelog(logs.join('\n'), envData);
+            console.log(logs.join('\n'));
+        });
+    }
+};
+
+var importSchemasFromFile = function(envData, filePath) {
+    getSchemas(envData, null, function(data) {
+        var currentSchemasData = data.results;
+        var savedSchemasData = readFile(filePath);
+        var currentSchemas = _.pluck(currentSchemasData, 'className');
+
+        if (_.isArray(savedSchemasData)) {
+            var savedSchemas = _.pluck(savedSchemasData, 'className');
+            var deletedSchemas = _.difference(currentSchemas, savedSchemas);
+            var newSchemas = _.difference(savedSchemas, currentSchemas);
+            var intersectionSchemas = _.intersection(currentSchemas, savedSchemas);
+
+            // Delete schemas
+            _.each(deletedSchemas, function(className) {
+                deleteSchema(className, envData);
+            });
+
+            // Add new schemas
+            _.each(newSchemas, function(className) {
+                var classData = _.findWhere(savedSchemasData, { className: className });
+                addSchema(classData, envData);
+            });
+
+            // Check updated schemas
+            _.each(intersectionSchemas, function(className) {
+                var savedClassData = _.findWhere(savedSchemasData, { className: className });
+                var currentClassData = _.findWhere(currentSchemasData, { className: className });
+                compareSchemas(envData, className, savedClassData, currentClassData);
+            });
+        } else {
+            if (savedSchemasData && savedSchemasData.className) {
+                if (_.indexOf(currentSchemas, savedSchemasData.className) > -1) {
+                    var currentClassData = _.findWhere(currentSchemasData, { className: savedSchemasData.className });
+                    compareSchemas(envData, savedSchemasData.className, savedSchemasData, currentClassData);
+                } else {
+                    addSchema(savedSchemasData, envData);
+                }
+            }
+        }
     });
 };
 
