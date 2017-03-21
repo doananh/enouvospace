@@ -56,6 +56,10 @@ var updateChangelog = function(text, envData) {
 
     var append = '\n\n' + moment().format("dddd, MMMM Do YYYY, h:mm:ss a") + '\n' + text;
 
+    if (!fs.existsSync('schemas')) {
+        fs.mkdirSync('schemas');
+    }
+
     var dbname = envData.DATABASE_NAME || envData.NODE_ENV;
     dbname = dbname ? '_' + dbname : '';
 
