@@ -20,8 +20,10 @@ Read the full Parse Server guide here: https://github.com/ParsePlatform/parse-se
 
 #### Import
 
+* Note: Importing schemas could delete your current data
 * Import from default schemas path (schemas/_Schemas.json): `npm run schema:import`
 * Import from your custom path: `npm run schema:import <path_to_json_file>`
+* Schemas which contain objects cannot be deleted by default, use `forceDelete=true` option to force delete all data before removing schema: `npm run schema:import forceDelete=true`
 * Read schemas/CHANGELOG.md to see the changes
 
 #### Export
