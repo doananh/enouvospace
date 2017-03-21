@@ -22,7 +22,7 @@ Read the full Parse Server guide here: https://github.com/ParsePlatform/parse-se
 
 * Import from default schemas path (schemas/_Schemas.json): `npm run schema:import`
 * Import from your custom path: `npm run schema:import <path_to_json_file>`
-* Read CHANGELOG.md to see the changes
+* Read schemas/CHANGELOG.md to see the changes
 
 #### Export
 
