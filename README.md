@@ -16,6 +16,21 @@ Read the full Parse Server guide here: https://github.com/ParsePlatform/parse-se
 * You now have a database named "dev" that contains your Parse data
 * Install ngrok and you can test with devices
 
+### For Syncing Schemas
+
+#### Import
+
+* Import from default schemas path (schemas/_Schemas.json): `npm run schema:import`
+* Import from your custom path: `npm run schema:import <path_to_json_file>`
+* Read CHANGELOG.md to see the changes
+
+#### Export
+
+* Export all schemas: `npm run schema:export`
+* Export all schemas to your directory: `npm run schema:export <path_to_json_file>`
+* Export single schema: `npm run schema:export <class_name>`
+* Export single schema to your directory: `npm run schema:export <class_name> <path_to_json_file>`
+
 ### Getting Started With Heroku + mLab Development
 
 #### With the Heroku Button
