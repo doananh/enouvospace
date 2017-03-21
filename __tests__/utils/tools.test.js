@@ -10,9 +10,17 @@ describe('Tool Test', () => {
 
     });
 
-    test('Get Code Test',() => {
-      var testCode = Tool.getCode();
-      expect(testCode).toBe('A001');
+    test.skip('Get Code Test',() => {
+      var testCode = Tool.getCode('A999');
+      expect(testCode).toBe('B000');
+      var testCode1 = Tool.getCode('Z999');
+      expect(testCode1).toBe('A000');
+      var testCode2 = Tool.getCode('A123');
+      expect(testCode2).toBe('A124');
+      var testCode3 = Tool.getCode("undefined");
+      expect(testCode3).toBe("A001")
+      var testCode4 = Tool.getCode(null);
+      expect(testCode4).toBe("A001")
     });
 
     test.skip('Mock Test Expect GetCode FAILED',() => {

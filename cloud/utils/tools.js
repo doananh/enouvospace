@@ -1,34 +1,31 @@
+
 var _ = require('underscore');
 var moment = require('moment');
 
-function getCode(_lastCode = 'A000') {
-  var chars = "ABCDEFGHIJKLMNOPQRSTUVWXTZ";
-  var firstChar, number = parseInt(_lastCode.substring(1)), secondChar, findIndex, code, zero = "0", zeros = "00";
-  _.each(chars, function(char, index) {
-    if (char === _lastCode.substring(0, 1)) {
-      findIndex = index;
+const DEFAULT_CODE = "A000";
+
+function getCode(_code = DEFAULT_CODE) {
+  var charLoop     = "ABCDEFGHIJKLMNOPQRSTUVWXTZ";
+  var validCode = _code;
+  if ((!_.isString(_code)) || (_code === null) || (_code.length !== 4)) {
+    validCode = DEFAULT_CODE;
+  }
+  var number    = parseInt((validCode).substring(1, 4)) + 1;
+  var firstChar = validCode.charAt(0);
+  if (number > 999) {
+    number = 0;
+    var firstCharIndex = charLoop.indexOf(firstChar);
+    if (firstCharIndex >= (charLoop.length - 1)) {
+      firstChar = charLoop.charAt(0);
     }
-  });
-  for (var i=findIndex; i < chars.length-1; i++) {
-    firstChar = chars[findIndex];
-    if (number < 9) {
-      for (var j=number; j < 9; j++) {
-        secondChar =  zeros + (j+1).toString();
-        break;
-      }
-    } else if (number < 99) {
-      for (var j=number; j < 99; j++) {
-        secondChar =  zero + (j+1).toString();
-        break;
-      }
-    } else {
-      for (var j=number; j < 999; j++) {
-        secondChar = (j+1).toString();
-        break;
-      }
+    else {
+      firstChar = charLoop.charAt(firstCharIndex + 1);
     }
   }
-  return code = firstChar.concat(secondChar)
+  var strSecond   = number.toString();
+  var pad         = "000";
+  var paddingNum  = pad.substring(0, pad.length - strSecond.length) + strSecond;
+  return firstChar + paddingNum;
 }
 
 function getRandomString() {
