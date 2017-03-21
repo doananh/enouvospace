@@ -56,16 +56,20 @@ var updateChangelog = function(text, envData) {
 
     var append = '\n\n' + moment().format("dddd, MMMM Do YYYY, h:mm:ss a") + '\n' + text;
 
-    var filename = 'schemas/CHANGELOG_' + envData.NODE_ENV + '.md';
+    var dbname = envData.DATABASE_NAME || envData.NODE_ENV;
+    dbname = dbname ? '_' + dbname : '';
+
+    var filename = 'schemas/CHANGELOG' + dbname + '.md';
+
     fs.stat(filename, function(err, stat) {
         if (err == null) {
             fs.appendFile(filename, append, function(err) {
-                // console.log(data);
+
             });
         } else if (err.code == 'ENOENT') {
-            fs.writeFile(filename, '#Changelog\n');
+            fs.writeFile(filename, '#Changelog:\nDATABASE: '+ envData.DATABASE_URI + '\nSERVER: '+ envData.SERVER_URL + '\n');
             fs.appendFile(filename, append, function(err) {
-                // console.log(data);
+
             });
         } else {
             console.log('Some other error: ', err.code);
@@ -270,6 +274,10 @@ var initialize = function () {
     if (args[0] === 'export') {
         var filePath = args[2];
         var className = args[1];
+        if (!filePath && className && className.indexOf('.json') > -1) {
+            filePath = args[1];
+            className = null;
+        }
         exportSchemasToFile(envData, className, filePath);
     }
 };

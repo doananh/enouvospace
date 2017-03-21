@@ -1,0 +1,155 @@
+[
+    {
+        "className": "_User",
+        "fields": {
+            "objectId": {
+                "type": "String"
+            },
+            "createdAt": {
+                "type": "Date"
+            },
+            "updatedAt": {
+                "type": "Date"
+            },
+            "ACL": {
+                "type": "ACL"
+            },
+            "username": {
+                "type": "String"
+            },
+            "password": {
+                "type": "String"
+            },
+            "email": {
+                "type": "String"
+            },
+            "emailVerified": {
+                "type": "Boolean"
+            },
+            "authData": {
+                "type": "Object"
+            },
+            "newcol": {
+                "type": "String"
+            },
+            "newcol2": {
+                "type": "String"
+            },
+            "newcol3": {
+                "type": "String"
+            },
+            "newcol4": {
+                "type": "String"
+            },
+            "newcol5": {
+                "type": "String"
+            },
+            "newcol6": {
+                "type": "String"
+            }
+        },
+        "classLevelPermissions": {
+            "find": {
+                "*": true
+            },
+            "get": {
+                "*": true
+            },
+            "create": {
+                "*": true
+            },
+            "update": {
+                "*": true
+            },
+            "delete": {},
+            "addField": {
+                "*": true
+            }
+        }
+    },
+    {
+        "className": "newclass",
+        "fields": {
+            "objectId": {
+                "type": "String"
+            },
+            "createdAt": {
+                "type": "Date"
+            },
+            "updatedAt": {
+                "type": "Date"
+            },
+            "ACL": {
+                "type": "ACL"
+            },
+            "ok": {
+                "type": "String"
+            }
+        },
+        "classLevelPermissions": {
+            "find": {
+                "*": true
+            },
+            "get": {
+                "*": true
+            },
+            "create": {},
+            "update": {
+                "*": true
+            },
+            "delete": {
+                "*": true
+            },
+            "addField": {
+                "*": true
+            }
+        }
+    },
+    {
+        "className": "City",
+        "fields": {
+            "objectId": {
+                "type": "String"
+            },
+            "createdAt": {
+                "type": "Date"
+            },
+            "updatedAt": {
+                "type": "Date"
+            },
+            "ACL": {
+                "type": "ACL"
+            },
+            "age": {
+                "type": "Number"
+            },
+            "images": {
+                "type": "Array"
+            },
+            "location": {
+                "type": "String"
+            },
+            "name": {
+                "type": "Number"
+            }
+        },
+        "classLevelPermissions": {
+            "find": {
+                "*": true
+            },
+            "get": {
+                "*": true
+            },
+            "create": {},
+            "update": {
+                "*": true
+            },
+            "delete": {
+                "*": true
+            },
+            "addField": {
+                "*": true
+            }
+        }
+    }
+]
