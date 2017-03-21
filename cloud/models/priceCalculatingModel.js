@@ -1,5 +1,6 @@
 var Tool = require('./../utils/tools');
 var moments = require('moment');
+var DiscountModel = require('./discountModel');
 
 function getDiscountDetailPricing (_discount, _packageAmount) {
   var result = {total: 0, percent: 0, amount: 0};
@@ -23,8 +24,8 @@ function getDiscountDetailPricing (_discount, _packageAmount) {
 function getPackagePricingDetail (_package, _packageCount, _numberOfUsers) {
   var result = {total: 0, package: {}, count: _packageCount, numOfUsers: _numberOfUsers};
   if (_package)  {
-    var chargeRate = _package.get('chargeRate');
-    var name       = _package.get('name');
+    var chargeRate = _package.chargeRate;
+    var name       = _package.name;
     var total      = calculatePackagePrice(_packageCount, chargeRate, _numberOfUsers);
     result.package = {name: name, chargeRate: chargeRate};
     result.total   = total;
@@ -72,43 +73,49 @@ function getBookingPricingDetail (_booking) {
       var servicePricing = getServicePricingDetail(services);
       return servicePricing;
     }).then(function (serviceResult) {
-      // calculate package price -------------------
-      var packagePointer  = _booking.get('package');
+      var packageObject   = _booking.get('package');
       var packageCount    = _booking.get('packageCount');
       var numOfUsers      = _booking.get('numOfUsers');
       var startTime       = _booking.get('startTime');
       var endTime         = _booking.get('endTime');
-      var code            = _booking.get('code');
-      if (code) {
-        endTime       = moments().toDate();
-        packageCount  = moments().diff(moments(startTime), 'hours', true);
-      }
-
-      var packagePricing  = getPackagePricingDetail(packagePointer, packageCount, numOfUsers);
-
-      // calculate discount price ------------------
-      var discountPointer = _booking.get('discount');
-      packageAmount       = packagePricing.total;
-      var discountPricing = getDiscountDetailPricing(discountPointer, packageAmount);
-      var payAmount       = serviceResult.total + packagePricing.total - discountPricing.total;
-
-      // Pricing details
-      resolve({
-        servicePricing: serviceResult,
-        packagePricing: packagePricing,
-        discountPricing: discountPricing,
-        validTime: {
-          StartTimeString: Tool.formatStringTime(startTime),
-          strEndTimeString: Tool.formatStringTime(endTime),
-          startTime: startTime,
-          endTime: endTime,
-        },
-        packageCount: packageCount,
-        numOfUsers: numOfUsers,
-        payAmount: payAmount
+      var user            = _booking.get('user');
+      // Get available discount
+      DiscountModel.getDiscountByTimeAndPackage(startTime, packageObject.type)
+      .then(function (discount) {
+        if (user.type === "anonymous") {
+          endTime       = moments().toDate();
+          packageCount  = moments().diff(moments(startTime), 'hours', true);
+          var packagePricing  = getPackagePricingDetail(packageObject, packageCount, numOfUsers);
+          var packageAmount       = packagePricing.total;
+          var discountPricing = getDiscountDetailPricing(discount, packageAmount);
+          var payAmount       = serviceResult.total + packagePricing.total - discountPricing.total;
+          // // Pricing details
+          resolve({
+            servicePricing: serviceResult,
+            packagePricing: packagePricing,
+            discountPricing: discountPricing,
+            validTime: {
+              StartTimeString: Tool.formatStringTime(startTime),
+              strEndTimeString: Tool.formatStringTime(endTime),
+              startTime: startTime,
+              endTime: endTime,
+            },
+            packageCount: packageCount,
+            numOfUsers: numOfUsers,
+            payAmount: payAmount
+          });
+        }
+        else if (type === "customer") {
+          resolve({});
+        }
+        else {
+          resolve({});
+        }
+      }, function (discountError) {
+        reject(discountError);
       });
-    }, function (error) {
-      reject(error);
+    }, function (serviceQueryError) {
+      reject(serviceQueryError);
     });
   });
 }

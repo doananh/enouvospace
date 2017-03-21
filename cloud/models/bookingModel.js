@@ -59,12 +59,6 @@ function createNewBooking(_params, _code = null) {
   else {
     booking.set("user", {"id": _params.user.id, "username": _params.user.username, type: "customer"});
   }
-  if (_params && _params.DiscountId) {
-    booking.set("discount", {__type: "Pointer", className: "Discount", objectId: _params.DiscountId});
-  }
-  else {
-    booking.set("discount", null);
-  }
   if (_params && _params.package) {
     booking.set("package", _params.package);
   }
@@ -81,8 +75,6 @@ function createNewBooking(_params, _code = null) {
 function getAnonymousUserInBooking (_params) {
   var bookingQuery = new Parse.Query("Booking");
     bookingQuery.equalTo("code", _params.code);
-    bookingQuery.include("package");
-    bookingQuery.include('discount');
   return bookingQuery.first();
 }
 

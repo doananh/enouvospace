@@ -14,7 +14,7 @@ describe('CheckIn Test', () => {
     test.skip('Test Get Pricing', () => {
         return Promise.resolve()
               .then(function() {
-                  return Parse.Cloud.run('getPricingDetail',{BookingId: "kkEHuQEYjp"});
+                  return Parse.Cloud.run('getPricingDetail',{BookingId: "rug2pLEU17"});
               })
               .then(function(result) {
                 console.log(result)

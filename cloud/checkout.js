@@ -6,6 +6,7 @@ var BookingUtil        = require('./models/bookingModel');
 Parse.Cloud.define("checkout", function(req, res) {
   var params = req.params;
   if (params && params.code) {
+    // ANONYMOUS CHECKOUT
     BookingUtil.getAnonymousUserInBooking(params)
     .then(function (bookingData) {
       PriceCalculatingUtil.getBookingPricingDetail(bookingData)
@@ -49,6 +50,7 @@ Parse.Cloud.define("checkout", function(req, res) {
       res.error(error);
     });
   } else {
+    //user checkout
     res.success({});
   }
 });
