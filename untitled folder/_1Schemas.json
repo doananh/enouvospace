@@ -120,17 +120,17 @@
             "ACL": {
                 "type": "ACL"
             },
+            "name": {
+                "type": "String"
+            },
+            "population": {
+                "type": "String"
+            },
             "age": {
                 "type": "Number"
             },
             "images": {
                 "type": "Array"
-            },
-            "location": {
-                "type": "String"
-            },
-            "name": {
-                "type": "Number"
             }
         },
         "classLevelPermissions": {

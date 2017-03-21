@@ -1,5 +1,5 @@
 {
-    "className": "City",
+    "className": "_User",
     "fields": {
         "objectId": {
             "type": "String"
@@ -13,17 +13,38 @@
         "ACL": {
             "type": "ACL"
         },
-        "name": {
+        "username": {
             "type": "String"
         },
-        "age": {
-            "type": "Number"
-        },
-        "population": {
+        "password": {
             "type": "String"
         },
-        "images": {
-            "type": "Array"
+        "email": {
+            "type": "String"
+        },
+        "emailVerified": {
+            "type": "Boolean"
+        },
+        "authData": {
+            "type": "Object"
+        },
+        "newcol": {
+            "type": "String"
+        },
+        "newcol2": {
+            "type": "String"
+        },
+        "newcol3": {
+            "type": "String"
+        },
+        "newcol4": {
+            "type": "String"
+        },
+        "newcol5": {
+            "type": "String"
+        },
+        "newcol6": {
+            "type": "String"
         }
     },
     "classLevelPermissions": {
@@ -33,7 +54,9 @@
         "get": {
             "*": true
         },
-        "create": {},
+        "create": {
+            "*": true
+        },
         "update": {
             "*": true
         },
