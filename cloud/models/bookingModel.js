@@ -46,7 +46,6 @@ function createBookingForAnonymousUser(_params) {
 }
 
 function createNewBooking(_params, _code = null) {
-  console.log(_params)
   var Booking = Parse.Object.extend("Booking");
   var booking = new Booking();
   booking.set("status", "OPEN");
@@ -55,7 +54,7 @@ function createNewBooking(_params, _code = null) {
   booking.set("startTime", moments().toDate());
   booking.set("packageCount", 1);
   if (_code) {
-    booking.set("user", {"code": _code, "username": "anonymous" + _code, type: "anonymous"});
+    booking.set("user", {"code": _code, "username": "anonymous " + _code, type: "anonymous"});
   }
   else {
     booking.set("user", {"id": _params.user.id, "username": _params.user.username, type: "customer"});
