@@ -11,7 +11,7 @@ describe('Service Test', () => {
 
     });
 
-    tests.skip('Test add service', () => {
+    test.skip('Test add service', () => {
         return Promise.resolve()
               .then(function() {
                   return Parse.Cloud.run('addService',{ServicePackageId: '8BZ6TbLnEz', count: 2});

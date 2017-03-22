@@ -14,10 +14,10 @@ describe('CheckIn Test', () => {
 
     test.skip('Integration test for check in and check out api', () => {
     	 var checkinParams = {
-    	 	user: {
-          id: 'MS2ACErugM',
-          username: 'user'
-        }
+        // ser: {
+        //   id: 'MS2ACErugM',
+        //   username: 'user'
+        // }
 	    };
 	    return Promise.resolve()
             .then(function() {
