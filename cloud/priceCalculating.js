@@ -5,7 +5,7 @@ var PriceCalculatingUtil = require('./models/priceCalculatingModel');
 Parse.Cloud.define('getPricingDetail', function(req, res) {
   var params    = req.params;
   var UserId    = params.UserId;
-  var BookingId = params.BookingId; //"exxTso1mFU"
+  var BookingId = params.BookingId;
   /* 2 cases
     1. for anonymous - standard package hour
     2. *** for users - by package HOUR - DAY - WEEK - MONTH
@@ -14,9 +14,7 @@ Parse.Cloud.define('getPricingDetail', function(req, res) {
   */
   if (BookingId) {
     var bookingQuery = new Parse.Query('Booking');
-    bookingQuery.equalTo('objectId', BookingId); //BookingId
-    bookingQuery.include('package');
-    bookingQuery.include('discount');
+    bookingQuery.equalTo('objectId', BookingId);
     bookingQuery.first().then(function(booking) {
       PriceCalculatingUtil.getBookingPricingDetail(booking)
         .then(function(result) {
