@@ -261,11 +261,21 @@ if (trustProxy) {
     app.enable('trust proxy');
 }
 
+// if (process.env.NODE_ENV === 'development') {
+//     app.use(mountPath, function(req, res, next) {
+//         if (req.path.indexOf('schemas') > -1 && !req.headers['parse-schema-sync-module']) {
+//             require('./schema').watch(process.env);
+//         }
+//         next();
+//     });
+// }
+
 app.use(mountPath, api);
+
 
 // Parse Server plays nicely with the rest of your web routes
 app.get('/', function(req, res) {
-    res.status(200).send('I dream of being a web site. Environment: ' + process.env.NODE_ENV + '. App name: ' + process.env.APP_NAME);
+    res.status(200).send('I dream of being a web site. Environment: ' + process.env.NODE_ENV + '. App name: ' + process.env.APP_NAME + '. DB: ' + process.env.DATABASE_NAME);
 });
 
 app.get('/changes', function(req, res) {
