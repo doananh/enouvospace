@@ -1,6 +1,7 @@
 
 var _        = require('underscore');
 var moments  = require('moment');
+var Constants = require('./../constant');
 
 var Tool            = require('./../utils/tools');
 var DiscountModel   = require('./discountModel');
@@ -11,12 +12,10 @@ const Parse = require('parse/node');
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MASTER_KEY);
 Parse.serverURL = process.env.SERVER_URL;
 
-const PACKAGE_TYPES = ['HOUR', 'DAY', 'WEEK', 'MONTH'];
-
 function createBookingForLoginUser(_params) {
   return new Promise((resolve, reject) => {
     var packageType = _params.packageType;
-    if (PACKAGE_TYPES.indexOf(packageType) < 0) {
+    if (Constants.PACKAGE_TYPES.indexOf(packageType) < 0) {
       reject('Require params packageType for createBookingForLoginUser');
     }
     else {
