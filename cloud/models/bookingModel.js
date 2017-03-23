@@ -90,13 +90,41 @@ function createNewBooking(_params, _code = null) {
   return booking.save();
 }
 
-function getAnonymousUserInBooking (_params) {
-  var bookingQuery = new Parse.Query("Booking");
-    bookingQuery.equalTo("code", _params.code);
-  return bookingQuery.first();
+function getBookingByCode (_code) {
+  return new Promise((resolve, reject) => {
+    var bookingQuery = new Parse.Query("Booking");
+    bookingQuery.equalTo("user.code", _code);
+    bookingQuery.first().then(function(bookingData) {
+      if (bookingData) {
+        resolve(bookingData);
+      }
+      else {
+        reject('no booking found with ' + _id);
+      }
+    }, function(error) {
+      reject(error);
+    });
+  });
+}
+
+function getBookingById (_id) {
+  return new Promise((resolve, reject) => {
+    var bookingQuery = new Parse.Query("Booking");
+    bookingQuery.get(_id).then(function(bookingData) {
+      if (bookingData) {
+        resolve(bookingData);
+      }
+      else {
+        reject('no booking found with ' + _id);
+      }
+    }, function(error) {
+      reject(error);
+    });
+  });
 }
 
 exports.createBookingForLoginUser     = createBookingForLoginUser;
 exports.createBookingForAnonymousUser = createBookingForAnonymousUser;
 exports.createNewBooking              = createNewBooking;
-exports.getAnonymousUserInBooking     = getAnonymousUserInBooking;
+exports.getBookingByCode              = getBookingByCode;
+exports.getBookingById                = getBookingById;

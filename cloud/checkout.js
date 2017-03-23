@@ -1,56 +1,52 @@
 var _ = require('underscore');
 var moments = require('moment');
-var PriceCalculatingUtil = require('./models/priceCalculatingModel');
-var BookingUtil        = require('./models/bookingModel');
 
-Parse.Cloud.define("checkout", function(req, res) {
+var PriceCalculatingModel = require('./models/priceCalculatingModel');
+var BookingModel          = require('./models/bookingModel');
+var CheckoutModel         = require('./models/checkoutModel');
+
+Parse.Cloud.define("checkoutByCode", function(req, res) {
   var params = req.params;
   if (params && params.code) {
-    // ANONYMOUS CHECKOUT
-    BookingUtil.getAnonymousUserInBooking(params)
+    BookingModel.getBookingByCode(params.code)
     .then(function (bookingData) {
-      PriceCalculatingUtil.getBookingPricingDetail(bookingData)
-        .then(function(result) {
-          if (result) {
-            var startTime = result.validTime.startTime;
-            var endTime = result.validTime.endTime;
-            var StartTimeString = result.validTime.StartTimeString;
-            var strEndTimeString = result.validTime.strEndTimeString;
-            var packagePricing = result.packagePricing.total;
-            var packageType = result.packagePricing.package.name;
-            var packageRate = result.packagePricing.package.chargeRate;
-            var packageCount = result.packageCount;
-            var servicePricing = result.servicePricing.total;
-            var discountPricing = result.discountPricing.total;
-            // caculate package pricing follow time-----------
-            var packagePricingFollowTime = packagePricing * packageCount;
-            // caculate time----------------------------------
-            var subtractTime = moments(endTime).diff(moments(startTime))
-            var durationTimeDetails = moments.duration(subtractTime);
-            var durationTime = durationTimeDetails.hours() + ":" + durationTimeDetails.minutes();
-            // caculate total price---------------------------
-            var payAmount = packagePricingFollowTime + servicePricing - discountPricing;
-            var data = {
-              checkinTimeString: StartTimeString,
-              checkoutTimeString: strEndTimeString,
-              checkinTimeToDate: startTime,
-              checkoutTimeToDate: endTime,
-              packageType: packageType,
-              packageRate: packageRate,
-              durationTime: durationTime,
-              packagePricing: packagePricingFollowTime,
-              servicePricing: servicePricing,
-              discountAmount: discountPricing,
-              totalPrice: payAmount
-            };
-            res.success(data);
-          }
+        PriceCalculatingModel.getBookingPricingDetail(bookingData)
+        .then(function(priceDetail) {
+            CheckoutModel.formatResponseData(priceDetail)
+            .then( function (formatData) {
+                res.success(formatData);
+            }, function (formatDataError) {
+                res.error(formatDataError);
+            });
         });
-    }, function (error) {
-      res.error(error);
+    }, function (getBookingError) {
+      res.error(getBookingError);
     });
-  } else {
-    //user checkout
-    res.success({});
+  }
+  else {
+    res.error('Require code params for checking out');
+  }
+});
+
+Parse.Cloud.define("checkoutByBookingId", function(req, res) {
+  var params = req.params;
+  if (params && params.bookingId) {
+    BookingModel.getBookingById(params.bookingId)
+    .then(function (bookingData) {
+        PriceCalculatingModel.getBookingPricingDetail(bookingData)
+        .then(function(priceDetail) {
+            CheckoutModel.formatResponseData(priceDetail)
+            .then( function (formatData) {
+                res.success(formatData);
+            }, function (formatDataError) {
+                res.error(formatDataError);
+            });
+        });
+    }, function (getBookingError) {
+      res.error(getBookingError);
+    });
+  }
+  else {
+    res.error('Require bookingId params for checking out');
   }
 });
