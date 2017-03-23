@@ -1,7 +1,6 @@
 
 // require cloud function here
 require('./user.js');
-require('./business.js');
 require('./booking.js');
 require('./package.js');
 require('./service.js');
