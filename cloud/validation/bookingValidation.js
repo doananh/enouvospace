@@ -1,7 +1,6 @@
 
 var _ = require('underscore');
-
-const STATUSES = ["OPEN", "CLOSE", "PENDING"];
+var Constants = require('./../constant');
 
 Parse.Cloud.beforeSave("Booking", function(req, res) {
   var user          = req.object.get('user');
@@ -51,8 +50,8 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
     return res.error('Require number of users params');
   }
 
-  if (STATUSES.indexOf(status) < 0) {
-    return res.error('Invalid status - please change it to OPEN or PENDING or CLOSE');
+  if (Constants.BOOKING_STATUSES.indexOf(status) < 0) {
+    return res.error('Invalid status - please change it to OPEN or PENDING or CLOSED');
   }
 
   return res.success();
