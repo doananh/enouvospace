@@ -9,7 +9,7 @@ Parse.Cloud.beforeSave("Service", function(req, res) {
   var isPaid          = req.object.get('isPaid');
 
   if (isPaid && ((amount <= 0) || _.isUndefined(amount) || _.isNull(amount))) {
-    return res.error('Should update amount after updating paid field');
+    return res.error('Should update amount after updating "isPaid" field');
   }
 
   if (amount && (amount < 0)) {

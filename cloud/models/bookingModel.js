@@ -11,18 +11,26 @@ const Parse = require('parse/node');
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MASTER_KEY);
 Parse.serverURL = process.env.SERVER_URL;
 
+const PACKAGE_TYPES = ['HOUR', 'DAY', 'WEEK', 'MONTH'];
+
 function createBookingForLoginUser(_params) {
   return new Promise((resolve, reject) => {
-    PackageModel.getPackageByType().then(function (result) {
-      var bookingParams = _.extend({}, _params, {"package": result});
-      return createNewBooking(bookingParams).then(function (data) {
-        resolve(data);
+    var packageType = _params.packageType;
+    if (PACKAGE_TYPES.indexOf(packageType) < 0) {
+      reject('Require params packageType for createBookingForLoginUser');
+    }
+    else {
+      PackageModel.getPackageByType(packageType).then(function (result) {
+        var bookingParams = _.extend({}, _params, {"package": result});
+        return createNewBooking(bookingParams).then(function (data) {
+          resolve(data);
+        }, function (error) {
+          reject(error);
+        });
       }, function (error) {
         reject(error);
       });
-    }, function (error) {
-      reject(error);
-    });
+    }
   });
 }
 
@@ -51,22 +59,32 @@ function createNewBooking(_params, _code = null) {
   booking.set("status", "OPEN");
   booking.set("isPaid", false);
   booking.set("payAmount", 0);
+  booking.set("discountAmount", 0);
+
   booking.set("startTime", moments().toDate());
-  booking.set("packageCount", 1);
   if (_code) {
     booking.set("user", {"code": _code, "username": "anonymous " + _code, type: "anonymous"});
   }
   else {
     booking.set("user", {"id": _params.user.id, "username": _params.user.username, type: "customer"});
   }
+
   if (_params && _params.package) {
     booking.set("package", _params.package);
   }
+
   if (_params && _params.numOfUsers) {
     booking.set("numOfUsers", _params.numOfUsers);
   }
   else {
     booking.set("numOfUsers", 1);
+  }
+
+  if (_params.packageCount) {
+    booking.set("packageCount", _params.packageCount);
+  }
+  else {
+    booking.set("packageCount", 1);
   }
 
   return booking.save();
