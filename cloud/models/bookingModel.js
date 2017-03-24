@@ -39,7 +39,9 @@ function createBookingForAnonymousUser(_params) {
       GlobalVariable.generateAnonymousCode().then(function (latestCode) {
         var bookingParams = _.extend({}, _params, {"package": defaultPackage});
         createNewBooking(bookingParams, latestCode).then(function (data) {
-          resolve({code: latestCode});
+          var startTime = data.get('startTime');
+          var checkInTimeString = Tool.formatStringTime(startTime);
+          resolve({code: latestCode, checkinTime: checkInTimeString});
         }, function (error) {
           reject(error);
         });
