@@ -1,5 +1,6 @@
 var _ = require('underscore');
 var moments = require('moment');
+var Constants = require('../constant');
 
 function formatResponseData (_priceDetail) {
   return new Promise((resolve, reject) => {
@@ -10,10 +11,15 @@ function formatResponseData (_priceDetail) {
 
       var startTime = _priceDetail.validTime.startTime;
       var endTime   = _priceDetail.validTime.endTime;
-      var subtractTime        = moments(endTime).diff(moments(startTime))
-      var durationTimeDetails = moments.duration(subtractTime);
-      var durationTime        = durationTimeDetails.hours() + ":" + durationTimeDetails.minutes();
-
+      var subtractTime          = moments(endTime).diff(moments(startTime))
+      var durationTimeDetails   = moments.duration(subtractTime);
+      var hourString            = (durationTimeDetails.hours() > 1) ? " hours" : " hour ";
+      var minuteString          = (durationTimeDetails.minutes() > 1) ? " minutes" : " minute";
+      var durationTime          = durationTimeDetails.hours() + hourString + durationTimeDetails.minutes() + minuteString;
+      var packageAmountString   = _priceDetail.packagePricing.total.toFixed(4) + " " + Constants.CURRENCY_UNIT;
+      var discountAmountString  = _priceDetail.discountPricing.total.toFixed(4) + " " + Constants.CURRENCY_UNIT;
+      var serviceAmountString   = _priceDetail.servicePricing.total.toFixed(4) + " " + Constants.CURRENCY_UNIT;
+      var totalPriceString      = _priceDetail.payAmount.toFixed(4) + " " + Constants.CURRENCY_UNIT;
       resolve({
         checkinTimeToDate: startTime,
         checkoutTimeToDate: endTime,
@@ -22,10 +28,11 @@ function formatResponseData (_priceDetail) {
         checkoutTimeString: _priceDetail.validTime.strEndTimeString,
         packageName: _priceDetail.packagePricing.package.name,
         packageChargeRate: _priceDetail.packagePricing.package.chargeRate,
-        packageAmount: _priceDetail.packagePricing.total,
-        serviceAmount: _priceDetail.servicePricing.total,
-        discountAmount: _priceDetail.discountPricing.total,
-        totalPrice: _priceDetail.payAmount
+        packageAmount:packageAmountString,
+        serviceAmount: serviceAmountString,
+        discountAmount: discountAmountString,
+        numOfUsers: _priceDetail.numOfUsers,
+        totalPrice: totalPriceString,
       });
     }
     else {
