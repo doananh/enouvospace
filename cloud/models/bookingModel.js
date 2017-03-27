@@ -100,7 +100,7 @@ function getBookingByCode (_code) {
         resolve(bookingData);
       }
       else {
-        reject('no booking found with ' + _id);
+        reject('no booking found with ' + _code);
       }
     }, function(error) {
       reject(error);
