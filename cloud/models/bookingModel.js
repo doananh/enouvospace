@@ -21,7 +21,7 @@ function createBookingForLoginUser(_params) {
     else {
       PackageModel.getPackageByType(packageType).then(function (result) {
         var bookingParams = _.extend({}, _params, {"package": result});
-        return createNewBooking(bookingParams).then(function (data) {
+        return createNewBooking(bookingParams, null).then(function (data) {
           resolve(data);
         }, function (error) {
           reject(error);
@@ -54,7 +54,7 @@ function createBookingForAnonymousUser(_params) {
   });
 }
 
-function createNewBooking(_params, _code = null) {
+function createNewBooking(_params, _code) {
   var Booking = Parse.Object.extend("Booking");
   var booking = new Booking();
   booking.set("status", "OPEN");

@@ -4,9 +4,9 @@ var moment = require('moment');
 
 const DEFAULT_CODE = "A000";
 
-function getCode(_code = DEFAULT_CODE) {
+function getCode(_code) {
   var charLoop     = "ABCDEFGHIJKLMNOPQRSTUVWXTZ";
-  var validCode = _code;
+  var validCode = _code || DEFAULT_CODE;
   if ((!_.isString(_code)) || (_code === null) || (_code.length !== 4)) {
     validCode = DEFAULT_CODE;
   }

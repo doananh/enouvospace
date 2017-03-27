@@ -1,13 +1,14 @@
+var Constants = require('../constant');
 
 const Parse = require('parse/node');
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MASTER_KEY);
 Parse.serverURL = process.env.SERVER_URL;
 
 function getDefaultPackage () {
-  return getPackageByType();
+  return getPackageByType(Constants.DEFAULT_PACKAGE_TYPE);
 }
 
-function getPackageByType (_type = 'HOUR') {
+function getPackageByType (_type) {
   return new Promise((resolve, reject) => {
     if (_type) {
       var packageQuery = new Parse.Query("Package")
