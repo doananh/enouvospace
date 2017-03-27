@@ -42,6 +42,14 @@ function formatStringTime (dateTime) {
   return strFormatDate;
 }
 
+function isValidCode (_code) {
+  if (_code && _.isString(_code) && (code.length === 4)) {
+    return true;
+  }
+  return false;
+}
+
 exports.getCode           = getCode;
 exports.formatStringTime  = formatStringTime;
 exports.getRandomString   = getRandomString;
+exports.isValidCode       = isValidCode;
