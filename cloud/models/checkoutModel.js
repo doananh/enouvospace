@@ -22,6 +22,7 @@ function formatResponseData (_priceDetail) {
       var serviceAmountString   = _priceDetail.servicePricing.total.toFixed(4) + " " + Constants.CURRENCY_UNIT;
       var totalPriceString      = _priceDetail.payAmount.toFixed(4) + " " + Constants.CURRENCY_UNIT;
       return resolve({
+        customerName: _priceDetail.user.username,
         checkinTime: startTime,
         checkoutTime: endTime,
         duration: {
@@ -36,17 +37,13 @@ function formatResponseData (_priceDetail) {
             value: _priceDetail.packagePricing.total
           }
         },
-        service: {
-          amount: {
-            text: serviceAmountString,
-            value: _priceDetail.servicePricing.total
-          }
+        serviceAmount: {
+          text: serviceAmountString,
+          value: _priceDetail.servicePricing.total
         },
         discountAmount: {
-          amount: {
-            text: discountAmountString,
-            value: _priceDetail.discountPricing.total
-          }
+          text: discountAmountString,
+          value: _priceDetail.discountPricing.total
         },
         numOfUsers: _priceDetail.numOfUsers,
         totalPrice: {

@@ -90,6 +90,7 @@ function getBookingPricingDetail (_booking) {
           var payAmount       = serviceResult.total + packagePricing.total - discountPricing.total;
           // // Pricing details
           resolve({
+            user: user,
             servicePricing: serviceResult,
             packagePricing: packagePricing,
             discountPricing: discountPricing,
