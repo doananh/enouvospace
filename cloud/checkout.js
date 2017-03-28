@@ -8,7 +8,7 @@ var CheckoutModel         = require('./models/checkoutModel');
 Parse.Cloud.define("checkoutByCode", function(req, res) {
   var params = req.params;
   if (params && params.code) {
-      BookingModel.getBookingByCode(params.code)
+      BookingModel.closeBookingWithParams({code: params.code})
       .then(function (bookingData) {
           return PriceCalculatingModel.getBookingPricingDetail(bookingData)
       })
@@ -30,7 +30,7 @@ Parse.Cloud.define("checkoutByCode", function(req, res) {
 Parse.Cloud.define("checkoutByBookingId", function(req, res) {
   var params = req.params;
   if (params && params.bookingId) {
-    BookingModel.getBookingById(params.bookingId)
+    BookingModel.closeBookingWithParams({bookingId: params.bookingId})
     .then(function (bookingData) {
         return PriceCalculatingModel.getBookingPricingDetail(bookingData)
     })
