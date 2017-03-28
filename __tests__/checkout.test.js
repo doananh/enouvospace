@@ -14,10 +14,10 @@ describe('Checkout Test', () => {
     test.skip('Test checkout by booking id', () => {
         return Promise.resolve()
               .then(function() {
-                  return Parse.Cloud.run('checkoutByBookingId',{bookingId: 'fDpwlVJtJ8'});
+                  return Parse.Cloud.run('checkoutByBookingId',{bookingId: '0C8CBmn9Vx'});
               })
               .then(function(result) {
-                console.log(result.toJSON())
+                console.log(result)
               });
     });
 
@@ -27,7 +27,7 @@ describe('Checkout Test', () => {
                   return Parse.Cloud.run('checkoutByCode',{code: 'A003'});
               })
               .then(function(result) {
-                console.log(result.toJSON())
+                console.log(result);
               });
     });
 
