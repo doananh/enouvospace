@@ -15,7 +15,8 @@ function formatResponseData (_priceDetail) {
       var durationTimeDetails   = moments.duration(subtractTime);
       var hourString            = (durationTimeDetails.hours() > 1) ? " hours " : " hour ";
       var minuteString          = (durationTimeDetails.minutes() > 1) ? " minutes " : " minute";
-      var durationTime          = durationTimeDetails.hours() + hourString + durationTimeDetails.minutes() + minuteString;
+      var durationInString      = durationTimeDetails.hours() + hourString + durationTimeDetails.minutes() + minuteString;
+      var durationInMinutes     = durationTimeDetails.hours() * 60 + durationTimeDetails.minutes();
       var packageAmountString   = _priceDetail.packagePricing.total.toFixed(4) + " " + Constants.CURRENCY_UNIT;
       var discountAmountString  = _priceDetail.discountPricing.total.toFixed(4) + " " + Constants.CURRENCY_UNIT;
       var serviceAmountString   = _priceDetail.servicePricing.total.toFixed(4) + " " + Constants.CURRENCY_UNIT;
@@ -23,7 +24,10 @@ function formatResponseData (_priceDetail) {
       return resolve({
         checkinTimeToDate: startTime,
         checkoutTimeToDate: endTime,
-        durationTime: durationTime,
+        duration: {
+          text: durationInString,
+          value: durationInMinutes
+        },
         checkinTimeString: _priceDetail.validTime.StartTimeString,
         checkoutTimeString: _priceDetail.validTime.strEndTimeString,
         packageName: _priceDetail.packagePricing.package.name,
