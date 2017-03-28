@@ -22,21 +22,37 @@ function formatResponseData (_priceDetail) {
       var serviceAmountString   = _priceDetail.servicePricing.total.toFixed(4) + " " + Constants.CURRENCY_UNIT;
       var totalPriceString      = _priceDetail.payAmount.toFixed(4) + " " + Constants.CURRENCY_UNIT;
       return resolve({
-        checkinTimeToDate: startTime,
-        checkoutTimeToDate: endTime,
+        checkinTime: startTime,
+        checkoutTime: endTime,
         duration: {
           text: durationInString,
           value: durationInMinutes
         },
-        checkinTimeString: _priceDetail.validTime.StartTimeString,
-        checkoutTimeString: _priceDetail.validTime.strEndTimeString,
-        packageName: _priceDetail.packagePricing.package.name,
-        packageChargeRate: _priceDetail.packagePricing.package.chargeRate,
-        packageAmount:packageAmountString,
-        serviceAmount: serviceAmountString,
-        discountAmount: discountAmountString,
+        package: {
+          name: _priceDetail.packagePricing.package.name,
+          chargeRate: _priceDetail.packagePricing.package.chargeRate,
+          amount: {
+            text: packageAmountString,
+            value: _priceDetail.packagePricing.total
+          }
+        },
+        service: {
+          amount: {
+            text: serviceAmountString,
+            value: _priceDetail.servicePricing.total
+          }
+        },
+        discountAmount: {
+          amount: {
+            text: discountAmountString,
+            value: _priceDetail.discountPricing.total
+          }
+        },
         numOfUsers: _priceDetail.numOfUsers,
-        totalPrice: totalPriceString,
+        totalPrice: {
+          text: totalPriceString,
+          value: _priceDetail.payAmount
+        }
       });
     }
     else {
