@@ -65,29 +65,28 @@ function getBookingPricingDetail (_booking) {
       className: 'Booking',
       objectId: _booking.id
     }
+    var packageObject   = _booking.get('package');
+    var packageCount    = _booking.get('packageCount');
+    var numOfUsers      = _booking.get('numOfUsers');
+    var startTime       = _booking.get('startTime');
+    var endTime         = _booking.get('endTime');
+    var user            = _booking.get('user');
+
     var servicesQuery     = new Parse.Query('Service');
     servicesQuery.include('servicePackage');
     servicesQuery.equalTo('booking', bookingPointer);
     /// --------------------------------------------
-    servicesQuery.find().then(function(services) {
+    servicesQuery.find().then( function (services) {
       var servicePricing = getServicePricingDetail(services);
       return servicePricing;
-    }).then(function (serviceResult) {
-      var packageObject   = _booking.get('package');
-      var packageCount    = _booking.get('packageCount');
-      var numOfUsers      = _booking.get('numOfUsers');
-      var startTime       = _booking.get('startTime');
-      var endTime         = _booking.get('endTime');
-      var user            = _booking.get('user');
-      // Get available discount
-      DiscountModel.getDiscountByTimeAndPackage(startTime, packageObject.type)
-      .then(function (discount) {
+    })
+    .then( function (serviceResult) {
         if (user.type === "anonymous") {
           endTime       = moments().toDate();
           packageCount  = moments().diff(moments(startTime), 'hours', true);
           var packagePricing  = getPackagePricingDetail(packageObject, packageCount, numOfUsers);
-          var packageAmount       = packagePricing.total;
-          var discountPricing = getDiscountDetailPricing(discount, packageAmount);
+          var packageAmount   = packagePricing.total;
+          var discountPricing = getDiscountDetailPricing(null, packageAmount); // temp remove discount
           var payAmount       = serviceResult.total + packagePricing.total - discountPricing.total;
           // // Pricing details
           resolve({
@@ -106,37 +105,19 @@ function getBookingPricingDetail (_booking) {
           });
         }
         else if (type === "customer") {
-          resolve({});
+          return resolve({});
         }
         else {
-          resolve({});
+          return resolve({});
         }
-      }, function (discountError) {
-        reject(discountError);
-      });
-    }, function (serviceQueryError) {
-      reject(serviceQueryError);
+    })
+    .catch( function (error) {
+      return reject(error);
     });
   });
-}
-
-function getBookingPricePreview (_bookingData) {
-  // this for previewing price from app
-  return new Promise((resolve, reject) => {
-    var packagePointer  = _bookingData.package;
-    var packageCount    = _bookingData.packageCount;
-    var numOfUsers      = _bookingData.numOfUsers;
-    var startTime       = _bookingData.startTime;
-    var endTime         = _bookingData.endTime;
-    resolve({});
-  }, function (error) {
-    reject(error);
-  });
-
 }
 
 exports.getBookingPricingDetail   = getBookingPricingDetail;
 exports.getPackagePricingDetail   = getPackagePricingDetail;
 exports.getServicePricingDetail   = getServicePricingDetail;
 exports.getDiscountDetailPricing  = getDiscountDetailPricing;
-exports.getBookingPricePreview    = getBookingPricePreview;

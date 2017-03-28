@@ -13,14 +13,14 @@ function formatResponseData (_priceDetail) {
       var endTime   = _priceDetail.validTime.endTime;
       var subtractTime          = moments(endTime).diff(moments(startTime))
       var durationTimeDetails   = moments.duration(subtractTime);
-      var hourString            = (durationTimeDetails.hours() > 1) ? " hours" : " hour ";
-      var minuteString          = (durationTimeDetails.minutes() > 1) ? " minutes" : " minute";
+      var hourString            = (durationTimeDetails.hours() > 1) ? " hours " : " hour ";
+      var minuteString          = (durationTimeDetails.minutes() > 1) ? " minutes " : " minute";
       var durationTime          = durationTimeDetails.hours() + hourString + durationTimeDetails.minutes() + minuteString;
       var packageAmountString   = _priceDetail.packagePricing.total.toFixed(4) + " " + Constants.CURRENCY_UNIT;
       var discountAmountString  = _priceDetail.discountPricing.total.toFixed(4) + " " + Constants.CURRENCY_UNIT;
       var serviceAmountString   = _priceDetail.servicePricing.total.toFixed(4) + " " + Constants.CURRENCY_UNIT;
       var totalPriceString      = _priceDetail.payAmount.toFixed(4) + " " + Constants.CURRENCY_UNIT;
-      resolve({
+      return resolve({
         checkinTimeToDate: startTime,
         checkoutTimeToDate: endTime,
         durationTime: durationTime,
@@ -36,7 +36,7 @@ function formatResponseData (_priceDetail) {
       });
     }
     else {
-      reject('data is undefined|null');
+      return reject('data is undefined|null');
     }
   });
 }

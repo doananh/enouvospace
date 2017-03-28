@@ -13,7 +13,8 @@ Parse.Cloud.define("addService", function(req, res) {
     var serviceQuery = new Parse.Query("Service");
     serviceQuery.include("servicePackage");
     serviceQuery.equalTo("servicePackage", {"__type": "Pointer","className": "ServicePackage","objectId": servicePackageId});
-    serviceQuery.first().then(function (service) {
+    serviceQuery.first()
+    .then(function (service) {
       if (service && service.get('servicePackage')) {
         var servicePackage = service.get('servicePackage');
         var amount         = servicePackage.get('chargeRate') * count;
@@ -25,10 +26,11 @@ Parse.Cloud.define("addService", function(req, res) {
         });
       }
       else {
-        return res.error('No service package data found');
+        throw('No service package data found');
       }
-    }, function(serviceQueryError) {
-      return res.error(serviceQueryError);
+    })
+    .catch ( function (error) {
+      return res.error(error);
     });
   }
   else {

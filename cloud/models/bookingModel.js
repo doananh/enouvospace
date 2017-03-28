@@ -16,18 +16,18 @@ function createBookingForLoginUser(_params) {
   return new Promise((resolve, reject) => {
     var packageType = _params.packageType;
     if (Constants.PACKAGE_TYPES.indexOf(packageType) < 0) {
-      reject('Require params packageType for createBookingForLoginUser');
+      return reject('Require params packageType for createBookingForLoginUser');
     }
     else {
       PackageModel.getPackageByType(packageType).then(function (result) {
         var bookingParams = _.extend({}, _params, {"package": result});
-        return createNewBooking(bookingParams, null).then(function (data) {
-          resolve(data);
-        }, function (error) {
-          reject(error);
-        });
-      }, function (error) {
-        reject(error);
+        return createNewBooking(bookingParams, null);
+      })
+      .then(function (data) {
+        return resolve(data);
+      })
+      .catch( function (error) {
+        return reject(error);
       });
     }
   });
@@ -35,60 +35,82 @@ function createBookingForLoginUser(_params) {
 
 function createBookingForAnonymousUser(_params) {
   return new Promise((resolve, reject) => {
-    PackageModel.getDefaultPackage().then(function (defaultPackage) {
-      GlobalVariable.generateAnonymousCode().then(function (latestCode) {
-        var bookingParams = _.extend({}, _params, {"package": defaultPackage});
-        createNewBooking(bookingParams, latestCode).then(function (data) {
-          var startTime = data.get('startTime');
-          var checkInTimeString = Tool.formatStringTime(startTime);
-          resolve({code: latestCode, checkinTime: checkInTimeString});
-        }, function (error) {
-          reject(error);
-        });
-      }, function (bookingError) {
-        reject(bookingError);
-      });
-    }, function (packageError) {
-      reject(packageError);
+    GlobalVariable.generateAnonymousCode()
+    .then( function (latestCode){
+      return createNewBooking(_params, latestCode);
+    })
+    .then( function (data) {
+      if (data) {
+        var startTime = data.get('startTime');
+        var user = data.get('user');
+        var code = user.code;
+        var checkInTimeString = Tool.formatStringTime(startTime);
+        return resolve({code: code, checkinTime: checkInTimeString});
+      }
+      else {
+        throw('No booking data');
+      }
+    })
+    .catch ( function (error) {
+      return reject(error);
     });
   });
 }
 
 function createNewBooking(_params, _code) {
-  var Booking = Parse.Object.extend("Booking");
-  var booking = new Booking();
-  booking.set("status", "OPEN");
-  booking.set("isPaid", false);
-  booking.set("payAmount", 0);
-  booking.set("discountAmount", 0);
+  return new Promise((resolve, reject) => {
+    var Booking = Parse.Object.extend("Booking");
+    var booking = new Booking();
+    booking.set("status", "OPEN");
+    booking.set("isPaid", false);
+    booking.set("payAmount", 0);
+    booking.set("discountAmount", 0);
 
-  booking.set("startTime", moments().toDate());
-  if (_code) {
-    booking.set("user", {"code": _code, "username": "anonymous " + _code, type: "anonymous"});
-  }
-  else {
-    booking.set("user", {"id": _params.user.id, "username": _params.user.username, type: "customer"});
-  }
+    booking.set("startTime", moments().toDate());
+    if (_code) {
+      booking.set("user", {"code": _code, "username": "anonymous " + _code, type: "anonymous"});
+    }
+    else {
+      booking.set("user", {"id": _params.user.id, "username": _params.user.username, type: "customer"});
+    }
 
-  if (_params && _params.package) {
-    booking.set("package", _params.package);
-  }
+    if (_params && _params.numOfUsers) {
+      booking.set("numOfUsers", _params.numOfUsers);
+    }
+    else {
+      booking.set("numOfUsers", 1);
+    }
 
-  if (_params && _params.numOfUsers) {
-    booking.set("numOfUsers", _params.numOfUsers);
-  }
-  else {
-    booking.set("numOfUsers", 1);
-  }
+    if (_params.packageCount) {
+      booking.set("packageCount", _params.packageCount);
+    }
+    else {
+      booking.set("packageCount", 1);
+    }
 
-  if (_params.packageCount) {
-    booking.set("packageCount", _params.packageCount);
-  }
-  else {
-    booking.set("packageCount", 1);
-  }
-
-  return booking.save();
+    if (_params && _params.package) {
+      booking.set("package", _params.package);
+      booking.save().then( function (bookingData) {
+        return resolve(bookingData);
+      })
+      .catch( function (error) {
+        return reject(error);
+      });
+    }
+    else {
+      PackageModel.getDefaultPackage()
+      .then( function (defaultPackage) {
+        booking.set("package", defaultPackage);
+        return booking.save();
+      })
+      .then( function (bookingData) {
+        return resolve(bookingData);
+      })
+      .catch( function (error) {
+        return reject(error);
+      });
+    }
+  });
 }
 
 function getBookingByCode (_code) {
@@ -97,10 +119,10 @@ function getBookingByCode (_code) {
     bookingQuery.equalTo("user.code", _code);
     bookingQuery.first().then(function(bookingData) {
       if (bookingData) {
-        resolve(bookingData);
+        return resolve(bookingData);
       }
       else {
-        reject('no booking found with ' + _code);
+        return reject('no booking found with ' + _code);
       }
     }, function(error) {
       reject(error);
@@ -111,15 +133,17 @@ function getBookingByCode (_code) {
 function getBookingById (_id) {
   return new Promise((resolve, reject) => {
     var bookingQuery = new Parse.Query("Booking");
-    bookingQuery.get(_id).then(function(bookingData) {
+    bookingQuery.get(_id)
+    .then(function(bookingData) {
       if (bookingData) {
-        resolve(bookingData);
+        return resolve(bookingData);
       }
       else {
-        reject('no booking found with ' + _id);
+        throw('no booking found with ' + _id);
       }
-    }, function(error) {
-      reject(error);
+    })
+    .catch ( function (error) {
+      return reject(error);
     });
   });
 }

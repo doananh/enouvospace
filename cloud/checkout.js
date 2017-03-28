@@ -8,20 +8,19 @@ var CheckoutModel         = require('./models/checkoutModel');
 Parse.Cloud.define("checkoutByCode", function(req, res) {
   var params = req.params;
   if (params && params.code) {
-    BookingModel.getBookingByCode(params.code)
-    .then(function (bookingData) {
-        PriceCalculatingModel.getBookingPricingDetail(bookingData)
-        .then(function(priceDetail) {
-            CheckoutModel.formatResponseData(priceDetail)
-            .then( function (formatData) {
-                res.success(formatData);
-            }, function (formatDataError) {
-                res.error(formatDataError);
-            });
-        });
-    }, function (getBookingError) {
-      res.error(getBookingError);
-    });
+      BookingModel.getBookingByCode(params.code)
+      .then(function (bookingData) {
+          return PriceCalculatingModel.getBookingPricingDetail(bookingData)
+      })
+      .then(function(priceDetail) {
+          return CheckoutModel.formatResponseData(priceDetail)
+      })
+      .then( function (formatData) {
+          return res.success(formatData);
+      })
+      .catch( function (error) {
+          return res.error(error);
+      });
   }
   else {
     res.error('Require code params for checking out');
@@ -33,20 +32,19 @@ Parse.Cloud.define("checkoutByBookingId", function(req, res) {
   if (params && params.bookingId) {
     BookingModel.getBookingById(params.bookingId)
     .then(function (bookingData) {
-        PriceCalculatingModel.getBookingPricingDetail(bookingData)
-        .then(function(priceDetail) {
-            CheckoutModel.formatResponseData(priceDetail)
-            .then( function (formatData) {
-                res.success(formatData);
-            }, function (formatDataError) {
-                res.error(formatDataError);
-            });
-        });
-    }, function (getBookingError) {
-      res.error(getBookingError);
+        return PriceCalculatingModel.getBookingPricingDetail(bookingData)
+    })
+    .then(function(priceDetail) {
+        return CheckoutModel.formatResponseData(priceDetail)
+    })
+    .then( function (formatData) {
+        return res.success(formatData);
+    })
+    .catch( function (error) {
+        return res.error(error);
     });
   }
   else {
-    res.error('Require bookingId params for checking out');
+    return res.error('Require bookingId params for checking out');
   }
 });

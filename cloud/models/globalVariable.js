@@ -28,7 +28,6 @@ function generateAnonymousCode() {
     query.first().then(function (globalVar) {
       if (globalVar) {
         var latestAnonymousCode = globalVar.get('latestAnonymousCode');
-        console.log('latestAnonymousCode: ' +latestAnonymousCode);
         var newCode = Tool.getCode(latestAnonymousCode);
         globalVar.set("latestAnonymousCode", newCode);
         globalVar.save()
