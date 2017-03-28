@@ -7,7 +7,6 @@ require('./service.js');
 
 require('./checkIn.js');
 require('./checkOut.js');
-require('./priceCalculating.js');
 
 // require before save _ after save for validating here
 require('./validation/bookingValidation.js');
