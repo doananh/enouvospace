@@ -113,6 +113,37 @@ function createNewBooking(_params, _code) {
   });
 }
 
+function closeBookingWithParams (_params) {
+  return new Promise((resolve, reject) => {
+    var bookingQuery = new Parse.Query("Booking");
+    if (_params.code) {
+      bookingQuery.equalTo("user.code", _params.code);
+    }
+    else if (_params.bookingId) {
+      bookingQuery.equalTo("objectId", _params.bookingId);
+    }
+    else {
+      return reject('Require code or bookingId params for closing Booking');
+    }
+
+    bookingQuery.first().then( function (booking) {
+      if (booking) {
+        booking.set("status", "CLOSED");
+        return booking.save();
+      }
+      else {
+        throw('No booking found closing');
+      }
+    })
+    .then( function (bookingData) {
+      return resolve(bookingData);
+    })
+    .catch( function (error) {
+      return reject(error);
+    });
+  });
+}
+
 function getBookingByCode (_code) {
   return new Promise((resolve, reject) => {
     var bookingQuery = new Parse.Query("Booking");
@@ -153,3 +184,4 @@ exports.createBookingForAnonymousUser = createBookingForAnonymousUser;
 exports.createNewBooking              = createNewBooking;
 exports.getBookingByCode              = getBookingByCode;
 exports.getBookingById                = getBookingById;
+exports.closeBookingWithParams        = closeBookingWithParams;
