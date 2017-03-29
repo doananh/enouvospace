@@ -44,8 +44,7 @@ function createBookingForAnonymousUser(_params) {
         var startTime = data.get('startTime');
         var user = data.get('user');
         var code = user.code;
-        var checkInTimeString = Tool.formatStringTime(startTime);
-        return resolve({code: code, checkinTime: checkInTimeString});
+        return resolve({code: code, checkinTime: startTime});
       }
       else {
         throw('No booking data');
