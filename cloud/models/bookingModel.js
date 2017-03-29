@@ -162,6 +162,10 @@ function getBookingByParams (_params) {
     }
     bookingQuery.first().then( function (booking) {
       if (booking) {
+        var status = booking.get('status');
+        if (status === "CLOSED") {
+          throw('This booking has been previously closed');
+        }
         return resolve(booking);
       }
       else {
