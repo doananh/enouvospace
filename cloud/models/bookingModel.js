@@ -144,36 +144,27 @@ function closeBookingWithParams (_params) {
   });
 }
 
-function getBookingByCode (_code) {
+function getBookingByParams (_params) {
   return new Promise((resolve, reject) => {
     var bookingQuery = new Parse.Query("Booking");
-    bookingQuery.equalTo("user.code", _code);
-    bookingQuery.first().then(function(bookingData) {
-      if (bookingData) {
-        return resolve(bookingData);
+    if (_params.code) {
+      bookingQuery.equalTo("user.code", _params.code);
+    }
+    else if (_params.bookingId) {
+      bookingQuery.equalTo("objectId", _params.bookingId);
+    }
+    else {
+      return reject('Require code or bookingId params for closing Booking');
+    }
+    bookingQuery.first().then( function (booking) {
+      if (booking) {
+        return resolve(booking);
       }
       else {
-        return reject('no booking found with ' + _code);
-      }
-    }, function(error) {
-      reject(error);
-    });
-  });
-}
-
-function getBookingById (_id) {
-  return new Promise((resolve, reject) => {
-    var bookingQuery = new Parse.Query("Booking");
-    bookingQuery.get(_id)
-    .then(function(bookingData) {
-      if (bookingData) {
-        return resolve(bookingData);
-      }
-      else {
-        throw('no booking found with ' + _id);
+        throw('No booking found closing');
       }
     })
-    .catch ( function (error) {
+    .catch( function (error) {
       return reject(error);
     });
   });
@@ -182,6 +173,5 @@ function getBookingById (_id) {
 exports.createBookingForLoginUser     = createBookingForLoginUser;
 exports.createBookingForAnonymousUser = createBookingForAnonymousUser;
 exports.createNewBooking              = createNewBooking;
-exports.getBookingByCode              = getBookingByCode;
-exports.getBookingById                = getBookingById;
+exports.getBookingByParams            = getBookingByParams;
 exports.closeBookingWithParams        = closeBookingWithParams;
