@@ -44,7 +44,8 @@ function createBookingForAnonymousUser(_params) {
         var startTime = data.get('startTime');
         var user = data.get('user');
         var code = user.code;
-        return resolve({code: code, checkinTime: startTime});
+        console.log(startTime);
+        return resolve({code: code, checkinTime: startTime.toString()});
       }
       else {
         throw('No booking data');
@@ -127,6 +128,10 @@ function closeBookingWithParams (_params) {
 
     bookingQuery.first().then( function (booking) {
       if (booking) {
+        var status = booking.get('status');
+        if (status === "CLOSED") {
+          throw('This booking has been previously closed');
+        }
         booking.set("status", "CLOSED");
         return booking.save();
       }
