@@ -1,6 +1,6 @@
 
 var _ = require('underscore');
-var moment = require('moment');
+var moment    = require('moment');
 
 const DEFAULT_CODE = "A000";
 
@@ -42,6 +42,15 @@ function formatStringTime (dateTime) {
   return strFormatDate;
 }
 
+function formatToVNDString (_value) {
+  if (_value && _.isNumber(_value)) {
+    var roundToThoundsand = Math.round(_value / 1000) * 1000;
+    return roundToThoundsand.toFixed(0) + " VND";
+  }
+
+  return "0 VND";
+}
+
 function isValidCode (_code) {
   if (_code && _.isString(_code) && (code.length === 4)) {
     return true;
@@ -53,3 +62,4 @@ exports.getCode           = getCode;
 exports.formatStringTime  = formatStringTime;
 exports.getRandomString   = getRandomString;
 exports.isValidCode       = isValidCode;
+exports.formatToVNDString = formatToVNDString;

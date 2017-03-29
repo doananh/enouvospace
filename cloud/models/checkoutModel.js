@@ -1,6 +1,7 @@
 var _ = require('underscore');
-var moments = require('moment');
+var moments   = require('moment');
 var Constants = require('../constant');
+var Tool      = require('../utils/tools');
 
 function formatResponseData (_priceDetail) {
   return new Promise((resolve, reject) => {
@@ -17,10 +18,10 @@ function formatResponseData (_priceDetail) {
       var minuteString          = (durationTimeDetails.minutes() > 1) ? " minutes " : " minute";
       var durationInString      = durationTimeDetails.hours() + hourString + durationTimeDetails.minutes() + minuteString;
       var durationInMinutes     = durationTimeDetails.hours() * 60 + durationTimeDetails.minutes();
-      var packageAmountString   = _priceDetail.packagePricing.total.toFixed(4) + " " + Constants.CURRENCY_UNIT;
-      var discountAmountString  = _priceDetail.discountPricing.total.toFixed(4) + " " + Constants.CURRENCY_UNIT;
-      var serviceAmountString   = _priceDetail.servicePricing.total.toFixed(4) + " " + Constants.CURRENCY_UNIT;
-      var totalPriceString      = _priceDetail.payAmount.toFixed(4) + " " + Constants.CURRENCY_UNIT;
+      var packageAmountString   = Tool.formatToVNDString(_priceDetail.packagePricing.total);
+      var discountAmountString  = Tool.formatToVNDString(_priceDetail.discountPricing.total);
+      var serviceAmountString   = Tool.formatToVNDString(_priceDetail.servicePricing.total);
+      var totalPriceString      = Tool.formatToVNDString(_priceDetail.payAmount);
       return resolve({
         customerName: _priceDetail.user.username,
         checkinTime: startTime,
