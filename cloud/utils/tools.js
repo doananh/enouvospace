@@ -42,10 +42,24 @@ function formatStringTime (dateTime) {
   return strFormatDate;
 }
 
+function formatCurrencyWithDot(nStr) {
+    nStr += '';
+    x = nStr.split('.');
+    x1 = x[0];
+    x2 = x.length > 1 ? '.' + x[1] : '';
+    var rgx = /(\d+)(\d{3})/;
+    while (rgx.test(x1)) {
+            x1 = x1.replace(rgx, '$1' + '.' + '$2');
+    }
+    return x1 + x2;
+}
+
 function formatToVNDString (_value) {
   if (_value && _.isNumber(_value)) {
     var roundToThoundsand = Math.round(_value / 1000) * 1000;
-    return roundToThoundsand.toFixed(0) + " VND";
+    var res = roundToThoundsand.toFixed(0);
+    res = formatCurrencyWithDot(res) + " VND";
+    return res;
   }
 
   return "0 VND";
