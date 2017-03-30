@@ -24,6 +24,7 @@ function formatResponseData (_priceDetail) {
       var totalPriceString      = Tool.formatToVNDString(_priceDetail.payAmount);
       return resolve({
         customerName: _priceDetail.user.username,
+        customerCode: _priceDetail.user.code,
         checkinTime: startTime,
         checkoutTime: endTime,
         duration: {
@@ -50,7 +51,7 @@ function formatResponseData (_priceDetail) {
         totalPrice: {
           text: totalPriceString,
           value: _priceDetail.payAmount
-        }
+        },
       });
     }
     else {
