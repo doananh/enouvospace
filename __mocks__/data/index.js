@@ -1,14 +1,14 @@
-const BOOKINGS          = require('./bookingData');
-const BUSINESSES        = require('./businessData');
-const DISCOUNTS         = require('./discountData');
-const PACKAGES          = require('./packageData');
-const SERVICES          = require('./serviceData');
-const SERVICE_PACKAGES  = require('./servicePackageData');
-const USERS             = require('./userData');
+const BOOKINGS          = require('./bookingData.js');
+const BUSINESSES        = require('./businessData.js');
+const DISCOUNTS         = require('./discountData.js');
+const PACKAGES          = require('./packageData.js');
+const SERVICES          = require('./serviceData.js');
+const SERVICE_PACKAGES  = require('./servicePackageData.js');
+const USERS             = require('./userData.js');
 
-const SERVICE_PRICE_RESULT  = require('./servicePriceResult');
-const PACKAGE_PRICE_RESULT  = require('./packagePriceResult');
-const DISCOUNT_PRICE_RESULT = require('./discountPriceResult');
+const SERVICE_PRICE_RESULT  = require('./servicePriceResult.js');
+const PACKAGE_PRICE_RESULT  = require('./packagePriceResult.js');
+const DISCOUNT_PRICE_RESULT = require('./discountPriceResult.js');
 
 module.exports = {
   BOOKINGS,

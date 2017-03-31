@@ -1,6 +1,6 @@
-var Tool = require('./../utils/tools');
 var moments = require('moment');
-var DiscountModel = require('./discountModel');
+var Tool = require('./../utils/tools.js');
+var DiscountModel = require('./discountModel.js');
 
 function getDiscountDetailPricing (_discount, _packageAmount) {
   var result = {total: 0, percent: 0, amount: 0};

@@ -6,7 +6,7 @@ const Parse = require('parse/node');
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MASTER_KEY);
 Parse.serverURL = process.env.SERVER_URL;
 
-var DiscountModel = require('../../cloud/models/discountModel');
+var DiscountModel = require('../../cloud/models/discountModel.js');
 
 describe('Discount Test', () => {
     beforeAll (() => {

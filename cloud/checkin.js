@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var moments = require('moment');
-var Tool = require('./utils/tools');
-var BookingUtil = require('./models/bookingModel');
+var Tool = require('./utils/tools.js');
+var BookingUtil = require('./models/bookingModel.js');
 
 Parse.Cloud.define("checkin", function(req, res) {
   var params = req.params;

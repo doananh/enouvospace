@@ -1,4 +1,4 @@
-var Constants = require('../constant');
+var Constants = require('../constant.js');
 
 const Parse = require('parse/node');
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MASTER_KEY);

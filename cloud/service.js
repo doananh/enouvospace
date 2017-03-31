@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var moments = require('moment');
-var Tool = require('./utils/tools');
+var Tool = require('./utils/tools.js');
 
 Parse.Cloud.define("addService", function(req, res) {
   var params = req.params;

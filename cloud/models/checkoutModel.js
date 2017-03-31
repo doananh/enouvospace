@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var moments   = require('moment');
-var Constants = require('../constant');
-var Tool      = require('../utils/tools');
+var Constants = require('../constant.js');
+var Tool      = require('../utils/tools.js');
 
 function formatResponseData (_priceDetail) {
   return new Promise((resolve, reject) => {

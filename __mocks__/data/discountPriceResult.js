@@ -1,12 +1,12 @@
 
-const BOOKINGS          = require('./bookingData');
-const BUSINESSES        = require('./businessData');
-const DISCOUNTS         = require('./discountData');
-const PACKAGES          = require('./packageData');
-const SERVICES          = require('./serviceData');
-const SERVICE_PACKAGES  = require('./servicePackageData');
-const USERS             = require('./userData');
-const PACKAGE_PRICE_RESULT = require('./packagePriceResult');
+const BOOKINGS          = require('./bookingData.js');
+const BUSINESSES        = require('./businessData.js');
+const DISCOUNTS         = require('./discountData.js');
+const PACKAGES          = require('./packageData.js');
+const SERVICES          = require('./serviceData.js');
+const SERVICE_PACKAGES  = require('./servicePackageData.js');
+const USERS             = require('./userData.js');
+const PACKAGE_PRICE_RESULT = require('./packagePriceResult.js');
 
 module.exports = {
   ANONYMOUS: {

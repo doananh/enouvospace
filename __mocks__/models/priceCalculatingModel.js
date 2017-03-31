@@ -1,4 +1,4 @@
-var Tool      = require('./../../cloud/utils/tools');
+var Tool      = require('./../../cloud/utils/tools.js');
 var moments   = require('moment');
 var MockData  = require('../data');
 

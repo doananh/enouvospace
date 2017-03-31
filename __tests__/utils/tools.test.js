@@ -2,7 +2,7 @@ const express = require('express');
 const http = require('http');
 require('dotenv').config({path: "./.env"});
 
-var Tool = require('./../../cloud/utils/tools')
+var Tool = require('./../../cloud/utils/tools.js')
 
 // UNIT test begin
 describe('Tool Test', () => {

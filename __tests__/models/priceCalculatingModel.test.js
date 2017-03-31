@@ -6,7 +6,7 @@ const Parse = require('parse/node');
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MASTER_KEY);
 Parse.serverURL = process.env.SERVER_URL;
 
-var  PriceCalculatingUtil = require('../../cloud/models/priceCalculatingModel');
+var  PriceCalculatingUtil = require('../../cloud/models/priceCalculatingModel.js');
 
 describe('Price Calculating Util Test', () => {
     beforeAll (() => {

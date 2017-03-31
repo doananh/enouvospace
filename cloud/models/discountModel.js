@@ -1,4 +1,4 @@
-var Tool    = require('./../utils/tools');
+var Tool    = require('./../utils/tools.js');
 var moments = require('moment');
 var _       = require('underscore');
 

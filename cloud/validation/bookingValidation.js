@@ -1,6 +1,6 @@
 
 var _ = require('underscore');
-var Constants = require('./../constant');
+var Constants = require('./../constant.js');
 
 Parse.Cloud.beforeSave("Booking", function(req, res) {
   var user          = req.object.get('user');

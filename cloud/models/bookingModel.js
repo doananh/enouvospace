@@ -1,12 +1,12 @@
 
 var _        = require('underscore');
 var moments  = require('moment');
-var Constants = require('./../constant');
 
-var Tool            = require('./../utils/tools');
-var DiscountModel   = require('./discountModel');
-var PackageModel    = require('./packageModel');
-var GlobalVariable  = require('./globalVariable');
+var Constants = require('./../constant.js');
+var Tool            = require('./../utils/tools.js');
+var DiscountModel   = require('./discountModel.js');
+var PackageModel    = require('./packageModel.js');
+var GlobalVariable  = require('./globalVariable.js');
 
 const Parse = require('parse/node');
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MASTER_KEY);
