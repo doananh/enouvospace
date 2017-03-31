@@ -35,7 +35,8 @@ function getPackagePricingDetail (_package, _packageCount, _numberOfUsers) {
 }
 
 function calculatePackagePrice (_packageCount, _chargeRate, _numberOfUsers) {
-  var res = _chargeRate * _packageCount * _numberOfUsers;
+  const ceilValue = Math.ceil(_packageCount);
+  var res = _chargeRate * ceilValue * _numberOfUsers;
   return res;
 }
 

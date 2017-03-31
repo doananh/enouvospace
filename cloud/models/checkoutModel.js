@@ -22,6 +22,7 @@ function formatResponseData (_priceDetail) {
       var discountAmountString  = Tool.formatToVNDString(_priceDetail.discountPricing.total);
       var serviceAmountString   = Tool.formatToVNDString(_priceDetail.servicePricing.total);
       var totalPriceString      = Tool.formatToVNDString(_priceDetail.payAmount);
+      var chargeRateString      = Tool.formatToVNDString(_priceDetail.packagePricing.package.chargeRate);
       return resolve({
         customerName: _priceDetail.user.username,
         customerCode: _priceDetail.user.code,
@@ -33,7 +34,10 @@ function formatResponseData (_priceDetail) {
         },
         package: {
           name: _priceDetail.packagePricing.package.name,
-          chargeRate: _priceDetail.packagePricing.package.chargeRate,
+          chargeRate: {
+            text: chargeRateString,
+            value: _priceDetail.packagePricing.package.chargeRate
+          },
           amount: {
             text: packageAmountString,
             value: _priceDetail.packagePricing.total
