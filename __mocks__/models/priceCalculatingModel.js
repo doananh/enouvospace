@@ -30,8 +30,6 @@ function getBookingPricingDetail (_type) {
       servicePricing: servicePricing,
       discountPricing: discountPricing,
       validTime: {
-        StartTimeString: Tool.formatStringTime(booking.startTime),
-        strEndTimeString: Tool.formatStringTime(booking.endTime),
         startTime: booking.startTime,
         endTime: booking.endTime,
       },

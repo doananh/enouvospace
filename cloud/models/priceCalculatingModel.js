@@ -35,8 +35,8 @@ function getPackagePricingDetail (_package, _packageCount, _numberOfUsers) {
 }
 
 function calculatePackagePrice (_packageCount, _chargeRate, _numberOfUsers) {
-  const ceilValue = Math.ceil(_packageCount);
-  var res = _chargeRate * ceilValue * _numberOfUsers;
+  // const ceilValue = Math.ceil(_packageCount);
+  var res = _chargeRate * _packageCount * _numberOfUsers;
   return res;
 }
 
@@ -60,19 +60,18 @@ function getServicePricingDetail (_services) {
 
 function getBookingPricingDetail (_booking) {
   return new Promise((resolve, reject) => {
-    // calculate service price ---------------------
     var bookingPointer    = {
       __type: 'Pointer',
       className: 'Booking',
       objectId: _booking.id
     }
     var packageObject   = _booking.get('package');
-    var packageCount    = _booking.get('packageCount');
+
     var numOfUsers      = _booking.get('numOfUsers');
     var startTime       = _booking.get('startTime');
     var endTime         = _booking.get('endTime');
     var user            = _booking.get('user');
-
+    var packageCount    = moments().diff(moments(startTime), 'hours', true);
     var servicesQuery     = new Parse.Query('Service');
     servicesQuery.include('servicePackage');
     servicesQuery.equalTo('booking', bookingPointer);
@@ -84,7 +83,7 @@ function getBookingPricingDetail (_booking) {
     .then( function (serviceResult) {
         if (user.type === "anonymous") {
           endTime       = moments().toDate();
-          packageCount  = moments().diff(moments(startTime), 'hours', true);
+
           var packagePricing  = getPackagePricingDetail(packageObject, packageCount, numOfUsers);
           var packageAmount   = packagePricing.total;
           var discountPricing = getDiscountDetailPricing(null, packageAmount); // temp remove discount
@@ -96,8 +95,6 @@ function getBookingPricingDetail (_booking) {
             packagePricing: packagePricing,
             discountPricing: discountPricing,
             validTime: {
-              StartTimeString: Tool.formatStringTime(startTime),
-              strEndTimeString: Tool.formatStringTime(endTime),
               startTime: startTime,
               endTime: endTime,
             },
