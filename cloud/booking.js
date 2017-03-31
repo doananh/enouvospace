@@ -1,6 +1,5 @@
 var _ = require('underscore');
 var moments = require('moment');
-var Tool = require('./utils/tools');
 
 var PriceCalculatingModel = require('./models/priceCalculatingModel');
 var BookingModel          = require('./models/bookingModel');
