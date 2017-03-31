@@ -66,12 +66,11 @@ function getBookingPricingDetail (_booking) {
       objectId: _booking.id
     }
     var packageObject   = _booking.get('package');
-
+    var packageCount    = _booking.get('packageCount');
     var numOfUsers      = _booking.get('numOfUsers');
     var startTime       = _booking.get('startTime');
     var endTime         = _booking.get('endTime');
     var user            = _booking.get('user');
-    var packageCount    = moments().diff(moments(startTime), 'hours', true);
     var servicesQuery     = new Parse.Query('Service');
     servicesQuery.include('servicePackage');
     servicesQuery.equalTo('booking', bookingPointer);
@@ -82,8 +81,10 @@ function getBookingPricingDetail (_booking) {
     })
     .then( function (serviceResult) {
         if (user.type === "anonymous") {
-          endTime       = moments().toDate();
-
+          if (packageObject.type === 'HOUR') {
+            packageCount = moments().diff(moments(startTime), 'hours', true);  
+          }
+          endTime             = moments().toDate();
           var packagePricing  = getPackagePricingDetail(packageObject, packageCount, numOfUsers);
           var packageAmount   = packagePricing.total;
           var discountPricing = getDiscountDetailPricing(null, packageAmount); // temp remove discount
