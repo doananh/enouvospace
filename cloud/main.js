@@ -1,12 +1,11 @@
-
 // require cloud function here
 require('./user.js');
 require('./booking.js');
 require('./package.js');
 require('./service.js');
 
-require('./checkIn.js');
-require('./checkOut.js');
+require('./checkin.js');
+require('./checkout.js');
 
 // require before save _ after save for validating here
 require('./validation/bookingValidation.js');
