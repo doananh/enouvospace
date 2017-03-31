@@ -1,4 +1,4 @@
-FROM node:5
+FROM node:boron
 
 ENV PARSE_HOME /parse
 
@@ -17,7 +17,8 @@ ADD public ${PARSE_HOME}/public
 #ADD azuredeploy.json ${PARSE_HOME}/azuredeploy.json # azure
 
 ENV CLOUD_CODE_HOME ${PARSE_HOME}/cloud
-ADD cloud/*.js $CLOUD_CODE_HOME/
+
+ADD cloud ${CLOUD_CODE_HOME}
 
 WORKDIR $PARSE_HOME
 RUN npm install
