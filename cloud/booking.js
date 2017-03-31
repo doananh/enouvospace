@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var moments = require('moment');
 
-var PriceCalculatingModel = require('./models/priceCalculatingModel');
+var PriceCalculatingModel = require('./models/priceCalculatingModel.js');
 var BookingModel          = require('./models/bookingModel');
 var CheckoutModel         = require('./models/checkoutModel');
 
