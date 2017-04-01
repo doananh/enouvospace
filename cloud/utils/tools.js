@@ -72,8 +72,110 @@ function isValidCode (_code) {
   return false;
 }
 
+function getEndTimeFromPackage (_startTime, _type, _count) {
+  switch (_type) {
+    case 'HOUR': {
+      var endTime = moment(_startTime);
+      if (_count) {
+        endTime = endTime.add(_count, 'hours');
+      }
+      else {
+        endTime = moment();
+      }
+      return endTime.toDate();
+    }
+    case 'DAY': {
+      var endTime = moment(_startTime).add(_count - 1, 'days');
+      return endTime.toDate();
+    }
+    case 'WEEK': {
+      var endTime = moment(_startTime).add(_count, 'weeks');
+      return endTime.toDate();
+    }
+    case 'MONTH': {
+      var endTime = moment(_startTime).add(_count, 'months');
+      return endTime.toDate();
+    }
+    default: {
+      return null;
+    }
+  }
+}
+
+function getDurationDetail (_startTime, _endTime, _package) {
+  switch (_type) {
+    case 'HOUR': {
+      var diffTime              = moments(_endTime).diff(moments(_startTime));
+      var duration              = moment.duration(diffTime);
+      var hourString            = (durationTimeDetails.hours() > 1) ? " hours " : " hour ";
+      var minuteString          = (durationTimeDetails.minutes() > 1) ? " minutes " : " minute";
+      var durationString        = duration.hours() + hourString + duration.minutes() + minuteString;
+      return {
+        "text": durationString,
+        "value": duration.hours() * 60 + duration.minutes()
+      }
+    }
+    case 'DAY': {
+      var mStartTime      = moment(_startTime)
+      var mEndTime        = moment(_endTime);
+      var duration        = mStartTime.diff(mEndTime);
+      var durationString  = "";
+      if (duration.days() <= 1) {
+        durationString = "1 day";
+      }
+      else {
+        durationString = Math.round(duration.days) + "days";
+      }
+
+      return {
+        "text": durationString,
+        "value": duration
+      }
+    }
+    case 'WEEK': {
+      var mStartTime      = moment(_startTime)
+      var mEndTime        = moment(_endTime);
+      var duration        = mStartTime.diff(mEndTime);
+      var durationString  = "";
+      if (duration.days() <= 1) {
+        durationString = "1 week";
+      }
+      else {
+        durationString = Math.round(duration.days) + "weeks";
+      }
+
+      return {
+        "text": durationString,
+        "value": duration
+      }
+    }
+    case 'MONTH': {
+      var mStartTime      = moment(_startTime)
+      var mEndTime        = moment(_endTime);
+      var duration        = mStartTime.diff(mEndTime);
+      var durationString  = "";
+      if (duration.days() <= 1) {
+        durationString = "1 month";
+      }
+      else {
+        durationString = Math.round(duration.days) + "months";
+      }
+
+      return {
+        "text": durationString,
+        "value": duration
+      }
+    }
+    default: {
+      return null;
+    }
+  }
+}
+
 exports.getCode           = getCode;
 exports.formatStringTime  = formatStringTime;
 exports.getRandomString   = getRandomString;
 exports.isValidCode       = isValidCode;
 exports.formatToVNDString = formatToVNDString;
+exports.getEndTimeFromPackage = getEndTimeFromPackage;
+exports.getDurationDetail     = getDurationDetail;
