@@ -1,4 +1,6 @@
-var moments = require('moment');
+var moment = require('moment');
+var _ = require('underscore');
+
 var Tool = require('./../utils/tools.js');
 var DiscountModel = require('./discountModel.js');
 
@@ -74,6 +76,14 @@ function getBookingPricingDetail (_booking) {
     var servicesQuery     = new Parse.Query('Service');
     servicesQuery.include('servicePackage');
     servicesQuery.equalTo('booking', bookingPointer);
+
+    if (packageObject.type === 'HOUR') {
+      endTime = Tool.getEndTimeFromPackage(startTime, packageObject.type, null);
+      packageCount = moment(endTime).diff(moment(startTime), 'hours', true);
+    }
+    else {
+      endTime = Tool.getEndTimeFromPackage(startTime, packageObject.type, packageCount);
+    }
     /// --------------------------------------------
     servicesQuery.find().then( function (services) {
       var servicePricing = getServicePricingDetail(services);
@@ -81,16 +91,12 @@ function getBookingPricingDetail (_booking) {
     })
     .then( function (serviceResult) {
         if (user.type === "anonymous") {
-          if (packageObject.type === 'HOUR') {
-            packageCount = moments().diff(moments(startTime), 'hours', true);  
-          }
-          endTime             = moments().toDate();
           var packagePricing  = getPackagePricingDetail(packageObject, packageCount, numOfUsers);
           var packageAmount   = packagePricing.total;
           var discountPricing = getDiscountDetailPricing(null, packageAmount); // temp remove discount
           var payAmount       = serviceResult.total + packagePricing.total - discountPricing.total;
           // // Pricing details
-          resolve({
+          return resolve({
             user: user,
             servicePricing: serviceResult,
             packagePricing: packagePricing,

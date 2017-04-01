@@ -1,5 +1,5 @@
 var _ = require('underscore');
-var moments   = require('moment');
+var moment   = require('moment');
 var Constants = require('../constant.js');
 var Tool      = require('../utils/tools.js');
 
@@ -10,27 +10,24 @@ function formatResponseData (_priceDetail) {
         return reject('Cannot format checkout data');
       }
 
-      var startTime = _priceDetail.validTime.startTime;
-      var endTime   = _priceDetail.validTime.endTime;
-      var subtractTime          = moments(endTime).diff(moments(startTime))
-      var durationTimeDetails   = moments.duration(subtractTime);
-      var hourString            = (durationTimeDetails.hours() > 1) ? " hours " : " hour ";
-      var minuteString          = (durationTimeDetails.minutes() > 1) ? " minutes " : " minute";
-      var durationInString      = durationTimeDetails.hours() + hourString + durationTimeDetails.minutes() + minuteString;
-      var durationInMinutes     = durationTimeDetails.hours() * 60 + durationTimeDetails.minutes();
+      var startTime   = _priceDetail.validTime.startTime;
+      var endTime     = _priceDetail.validTime.endTime;
+      var packageType = _priceDetail.packagePricing.package.type;
+      var duration              = Tool.getDurationDetail(startTime, endTime, packageType);
       var packageAmountString   = Tool.formatToVNDString(_priceDetail.packagePricing.total);
       var discountAmountString  = Tool.formatToVNDString(_priceDetail.discountPricing.total);
       var serviceAmountString   = Tool.formatToVNDString(_priceDetail.servicePricing.total);
       var totalPriceString      = Tool.formatToVNDString(_priceDetail.payAmount);
       var chargeRateString      = Tool.formatToVNDString(_priceDetail.packagePricing.package.chargeRate);
+
       return resolve({
         customerName: _priceDetail.user.username,
         customerCode: _priceDetail.user.code,
         checkinTime: startTime,
         checkoutTime: endTime,
         duration: {
-          text: durationInString,
-          value: durationInMinutes
+          text: duration.text,
+          value: duration.value
         },
         package: {
           name: _priceDetail.packagePricing.package.name,
