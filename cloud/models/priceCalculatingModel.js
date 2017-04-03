@@ -28,8 +28,9 @@ function getPackagePricingDetail (_package, _packageCount, _numberOfUsers) {
   if (_package)  {
     var chargeRate = _package.chargeRate;
     var name       = _package.name;
+    var type       = _package.type;
     var total      = calculatePackagePrice(_packageCount, chargeRate, _numberOfUsers);
-    result.package = {name: name, chargeRate: chargeRate};
+    result.package = {name: name, chargeRate: chargeRate, type: type};
     result.total   = total;
   }
 

@@ -103,12 +103,12 @@ function getEndTimeFromPackage (_startTime, _type, _count) {
 }
 
 function getDurationDetail (_startTime, _endTime, _package) {
-  switch (_type) {
+  switch (_package) {
     case 'HOUR': {
-      var diffTime              = moments(_endTime).diff(moments(_startTime));
+      var diffTime              = moment(_endTime).diff(moment(_startTime));
       var duration              = moment.duration(diffTime);
-      var hourString            = (durationTimeDetails.hours() > 1) ? " hours " : " hour ";
-      var minuteString          = (durationTimeDetails.minutes() > 1) ? " minutes " : " minute";
+      var hourString            = (duration.hours() > 1) ? " hours " : " hour ";
+      var minuteString          = (duration.minutes() > 1) ? " minutes " : " minute";
       var durationString        = duration.hours() + hourString + duration.minutes() + minuteString;
       return {
         "text": durationString,
