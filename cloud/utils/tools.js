@@ -118,7 +118,8 @@ function getDurationDetail (_startTime, _endTime, _package) {
     case 'DAY': {
       var mStartTime      = moment(_startTime)
       var mEndTime        = moment(_endTime);
-      var duration        = mStartTime.diff(mEndTime);
+      var diffTime        = mStartTime.diff(mEndTime);
+      var duration        = moment.duration(diffTime);
       var durationString  = "";
       if (duration.days() <= 1) {
         durationString = "1 day";
@@ -135,9 +136,10 @@ function getDurationDetail (_startTime, _endTime, _package) {
     case 'WEEK': {
       var mStartTime      = moment(_startTime)
       var mEndTime        = moment(_endTime);
-      var duration        = mStartTime.diff(mEndTime);
+      var diffTime        = mStartTime.diff(mEndTime);
+      var duration        = moment.duration(diffTime);
       var durationString  = "";
-      if (duration.days() <= 1) {
+      if (duration.weeks() <= 1) {
         durationString = "1 week";
       }
       else {
@@ -152,7 +154,8 @@ function getDurationDetail (_startTime, _endTime, _package) {
     case 'MONTH': {
       var mStartTime      = moment(_startTime)
       var mEndTime        = moment(_endTime);
-      var duration        = mStartTime.diff(mEndTime);
+      var diffTime        = mStartTime.diff(mEndTime);
+      var duration        = moment.duration(diffTime);
       var durationString  = "";
       if (duration.days() <= 1) {
         durationString = "1 month";
