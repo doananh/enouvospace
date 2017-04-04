@@ -135,7 +135,7 @@ function closeBookingWithParams (_params) {
         return booking.save();
       }
       else {
-        throw('No booking found closing');
+        throw('Booking not found');
       }
     })
     .then( function (bookingData) {
@@ -168,7 +168,7 @@ function getBookingByParams (_params) {
         return resolve(booking);
       }
       else {
-        throw('No booking found closing');
+        throw('Booking not found');
       }
     })
     .catch( function (error) {
