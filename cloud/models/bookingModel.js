@@ -157,7 +157,7 @@ function getBookingByParams (_params) {
       bookingQuery.equalTo("objectId", _params.bookingId);
     }
     else {
-      return reject('Invalid code or booking id');
+      return reject('Require code | bookingId params');
     }
     bookingQuery.first().then( function (booking) {
       if (booking) {
