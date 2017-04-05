@@ -1,8 +1,10 @@
 var moment = require('moment');
 var _ = require('underscore');
 
-var Tool = require('./../utils/tools.js');
+var Tool          = require('./../utils/tools.js');
 var DiscountModel = require('./discountModel.js');
+var PackageModel  = require('./packageModel.js');
+var Constants     = require('../constant.js');
 
 function getDiscountDetailPricing (_discount, _packageAmount) {
   var result = {total: 0, percent: 0, amount: 0};
@@ -61,6 +63,50 @@ function getServicePricingDetail (_services) {
   return result;
 }
 
+function shouldChangeToDayPackage (_packageObject, _packageCount, _startTime) {
+  return new Promise((resolve, reject) => {
+    var packageType = _packageObject.type;
+    if (packageType === 'HOUR') {
+      var endTime = Tool.getEndTimeFromPackage(_startTime, packageType, null);
+      console.log('TEST')
+      console.log(_startTime);
+      console.log(endTime);
+      var packageCount = moment.duration(moment(endTime).diff(moment(_startTime), 'hours', true));
+      if (packageCount >= Constants.CHANGE_HOUR_TO_DAY_PACKAGE) {
+        PackageModel.getPackageByType('DAY')
+        .then( function (packageObject) {
+            return resolve({
+              packageObject: packageObject,
+              packageCount: 1,
+              startTime: _startTime,
+              endTime: endTime
+            });
+        })
+        .catch( function (error) {
+          return reject(error);
+        })
+      }
+      else {
+        return resolve({
+          packageObject: _packageObject,
+          packageCount: packageCount,
+          startTime: _startTime,
+          endTime: endTime
+        });
+      }
+    }
+    else {
+      endTime = Tool.getEndTimeFromPackage(_startTime, packageObject.type, _packageCount);
+      return resolve({
+        packageObject: _packageObject,
+        packageCount: _packageCount,
+        startTime: _startTime,
+        endTime: endTime
+      });
+    }
+  });
+}
+
 function getBookingPricingDetail (_booking) {
   return new Promise((resolve, reject) => {
     var bookingPointer    = {
@@ -74,19 +120,20 @@ function getBookingPricingDetail (_booking) {
     var startTime       = _booking.get('startTime');
     var endTime         = _booking.get('endTime');
     var user            = _booking.get('user');
-    var servicesQuery     = new Parse.Query('Service');
-    servicesQuery.include('servicePackage');
-    servicesQuery.equalTo('booking', bookingPointer);
 
-    if (packageObject.type === 'HOUR') {
-      endTime = Tool.getEndTimeFromPackage(startTime, packageObject.type, null);
-      packageCount = moment(endTime).diff(moment(startTime), 'hours', true);
-    }
-    else {
-      endTime = Tool.getEndTimeFromPackage(startTime, packageObject.type, packageCount);
-    }
-    /// --------------------------------------------
-    servicesQuery.find().then( function (services) {
+    shouldChangeToDayPackage(packageObject, packageCount, startTime)
+    .then( function (afterChangeData) {
+      packageCount  = afterChangeData.packageCount;
+      packageObject = afterChangeData.packageObject;
+      startTime     = afterChangeData.startTime;
+      endTime       = afterChangeData.endTime;
+      // ------------------------------------------------
+      var servicesQuery     = new Parse.Query('Service');
+      servicesQuery.include('servicePackage');
+      servicesQuery.equalTo('booking', bookingPointer);
+      return servicesQuery.find();
+    })
+    .then( function (services) {
       var servicePricing = getServicePricingDetail(services);
       return servicePricing;
     })
