@@ -112,6 +112,7 @@ function getDurationDetail (_startTime, _endTime, _package) {
       var durationString        = duration.hours() + hourString + duration.minutes() + minuteString;
       return {
         "text": durationString,
+        "count": duration.hours(),
         "value": duration.hours() * 60 + duration.minutes()
       }
     }
@@ -130,7 +131,8 @@ function getDurationDetail (_startTime, _endTime, _package) {
 
       return {
         "text": durationString,
-        "value": duration
+        "count": (duration.days() < 1) ? 1 : duration.days(),
+        "value": 0
       }
     }
     case 'WEEK': {
@@ -148,7 +150,8 @@ function getDurationDetail (_startTime, _endTime, _package) {
 
       return {
         "text": durationString,
-        "value": duration
+        "count": (duration.weeks() < 1) ? 1 : duration.weeks(),
+        "value": 0
       }
     }
     case 'MONTH': {
@@ -157,7 +160,7 @@ function getDurationDetail (_startTime, _endTime, _package) {
       var diffTime        = mStartTime.diff(mEndTime);
       var duration        = moment.duration(diffTime);
       var durationString  = "";
-      if (duration.days() <= 1) {
+      if (duration.months() <= 1) {
         durationString = "1 month";
       }
       else {
@@ -166,7 +169,8 @@ function getDurationDetail (_startTime, _endTime, _package) {
 
       return {
         "text": durationString,
-        "value": duration
+        "count": (duration.months() < 1) ? 1 : duration.months(),
+        "value": 0
       }
     }
     default: {

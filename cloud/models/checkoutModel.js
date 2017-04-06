@@ -19,7 +19,6 @@ function formatResponseData (_priceDetail) {
       var serviceAmountString   = Tool.formatToVNDString(_priceDetail.servicePricing.total);
       var totalPriceString      = Tool.formatToVNDString(_priceDetail.payAmount);
       var chargeRateString      = Tool.formatToVNDString(_priceDetail.packagePricing.package.chargeRate);
-
       return resolve({
         customerName: _priceDetail.user.username,
         customerCode: _priceDetail.user.code,
@@ -36,9 +35,11 @@ function formatResponseData (_priceDetail) {
             value: _priceDetail.packagePricing.package.chargeRate
           },
           amount: {
-            text: packageAmountString,
-            value: _priceDetail.packagePricing.total
-          }
+            value: _priceDetail.packagePricing.total,
+          },
+          count: _priceDetail.packageCount,
+          type: _priceDetail.packagePricing.package.type,
+          id: _priceDetail.packagePricing.package.objectId
         },
         serviceAmount: {
           text: serviceAmountString,
@@ -53,6 +54,12 @@ function formatResponseData (_priceDetail) {
           text: totalPriceString,
           value: _priceDetail.payAmount
         },
+        user: {
+          code: _priceDetail.user.code,
+          username: _priceDetail.user.username,
+          type: _priceDetail.user.type
+        },
+        bookingId: _priceDetail.bookingId
       });
     }
     else {

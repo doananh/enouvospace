@@ -31,8 +31,9 @@ function getPackagePricingDetail (_package, _packageCount, _numberOfUsers) {
     var chargeRate = _package.chargeRate;
     var name       = _package.name;
     var type       = _package.type;
+    var id         = _package.objectId;
     var total      = calculatePackagePrice(_packageCount, chargeRate, _numberOfUsers);
-    result.package = {name: name, chargeRate: chargeRate, type: type};
+    result.package = {name: name, chargeRate: chargeRate, type: type, id: id};
     result.total   = total;
   }
 
@@ -67,11 +68,9 @@ function shouldChangeToDayPackage (_packageObject, _packageCount, _startTime) {
   return new Promise((resolve, reject) => {
     var packageType = _packageObject.type;
     if (packageType === 'HOUR') {
-      var endTime = Tool.getEndTimeFromPackage(_startTime, packageType, null);
-      console.log('TEST')
-      console.log(_startTime);
-      console.log(endTime);
-      var packageCount = moment.duration(moment(endTime).diff(moment(_startTime), 'hours', true));
+      var endTime       = Tool.getEndTimeFromPackage(_startTime, packageType, null);
+      var duration      = moment.duration(moment(endTime).diff(moment(_startTime)));
+      var packageCount  = duration.asHours();
       if (packageCount >= Constants.CHANGE_HOUR_TO_DAY_PACKAGE) {
         PackageModel.getPackageByType('DAY')
         .then( function (packageObject) {
@@ -96,7 +95,7 @@ function shouldChangeToDayPackage (_packageObject, _packageCount, _startTime) {
       }
     }
     else {
-      endTime = Tool.getEndTimeFromPackage(_startTime, packageObject.type, _packageCount);
+      endTime = Tool.getEndTimeFromPackage(_startTime, _packageObject.type, _packageCount);
       return resolve({
         packageObject: _packageObject,
         packageCount: _packageCount,
@@ -137,16 +136,16 @@ function getBookingPricingDetail (_booking) {
       var servicePricing = getServicePricingDetail(services);
       return servicePricing;
     })
-    .then( function (serviceResult) {
+    .then( function (servicePricing) {
         if (user.type === "anonymous") {
           var packagePricing  = getPackagePricingDetail(packageObject, packageCount, numOfUsers);
           var packageAmount   = packagePricing.total;
           var discountPricing = getDiscountDetailPricing(null, packageAmount); // temp remove discount
-          var payAmount       = serviceResult.total + packagePricing.total - discountPricing.total;
+          var payAmount       = servicePricing.total + packagePricing.total - discountPricing.total;
           // // Pricing details
           return resolve({
             user: user,
-            servicePricing: serviceResult,
+            servicePricing: servicePricing,
             packagePricing: packagePricing,
             discountPricing: discountPricing,
             validTime: {
@@ -155,7 +154,8 @@ function getBookingPricingDetail (_booking) {
             },
             packageCount: packageCount,
             numOfUsers: numOfUsers,
-            payAmount: payAmount
+            payAmount: payAmount,
+            bookingId: _booking.id
           });
         }
         else if (type === "customer") {
