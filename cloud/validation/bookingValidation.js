@@ -54,5 +54,12 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
     return res.error('Invalid status - please change it to OPEN or PENDING or CLOSED');
   }
 
+  if (status === "OPEN" && req.object.id) {
+    var preStatus     = req.original.get('status');
+    if (preStatus === "CLOSED") {
+      return res.error('Cannot open the closed booking')
+    }
+  }
+
   return res.success();
 });
