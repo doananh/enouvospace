@@ -122,13 +122,14 @@ function getDurationDetail (_startTime, _endTime, _package) {
       var diffTime        = mEndTime.diff(mStartTime);
       var duration        = moment.duration(diffTime);
       var durationString  = "";
+      var hourString      = (duration.hours() > 1) ? " hours " : " hour ";
+      var minuteString    = (duration.minutes() > 1) ? " minutes " : " minute";
+      var dayString       = (duration.days() > 1) ? " days " : " day ";
       if (duration.days() < 1) {
-        var hourString            = (duration.hours() > 1) ? " hours " : " hour ";
-        var minuteString          = (duration.minutes() > 1) ? " minutes " : " minute";
-        var durationString        = duration.hours() + hourString + duration.minutes() + minuteString;
+        var durationString= duration.hours() + hourString + duration.minutes() + minuteString;
       }
       else {
-        durationString = Math.round(duration.days) + "days";
+        durationString    = Math.round(duration.days()) + dayString;
       }
 
       return {
@@ -143,11 +144,12 @@ function getDurationDetail (_startTime, _endTime, _package) {
       var diffTime        = mEndTime.diff(startTime);
       var duration        = moment.duration(diffTime);
       var durationString  = "";
+      var weekString      = (duration.weeks() > 1) ? " weeks " : " week ";
       if (duration.weeks() <= 1) {
         durationString = "1 week";
       }
       else {
-        durationString = Math.round(duration.days) + "weeks";
+        durationString = Math.round(duration.weeks()) + weekString;
       }
 
       return {
@@ -162,11 +164,12 @@ function getDurationDetail (_startTime, _endTime, _package) {
       var diffTime        = mEndTime.diff(mStartTime);
       var duration        = moment.duration(diffTime);
       var durationString  = "";
+      var monthString     = (duration.months() > 1) ? " months " : " month ";
       if (duration.months() <= 1) {
         durationString = "1 month";
       }
       else {
-        durationString = Math.round(duration.days) + "months";
+        durationString = Math.round(duration.months()) + monthString;
       }
 
       return {
