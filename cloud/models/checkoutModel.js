@@ -39,7 +39,7 @@ function formatResponseData (_priceDetail) {
           },
           count: _priceDetail.packageCount,
           type: _priceDetail.packagePricing.package.type,
-          id: _priceDetail.packagePricing.package.objectId
+          id: _priceDetail.packagePricing.package.id
         },
         serviceAmount: {
           text: serviceAmountString,
