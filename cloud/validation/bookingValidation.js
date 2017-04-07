@@ -1,5 +1,7 @@
 
-var _ = require('underscore');
+var _       = require('underscore');
+var moment = require('moment');
+
 var Constants = require('./../constant.js');
 
 Parse.Cloud.beforeSave("Booking", function(req, res) {
@@ -8,6 +10,7 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
   var pPackage      = req.object.get('package');
   var numOfUsers    = req.object.get('numOfUsers');
   var startTime     = req.object.get('startTime');
+  var endTime       = req.object.get('endTime');
   var status        = req.object.get('status');
 
   if (_.isUndefined(user) || _.isEmpty(user)) {
@@ -52,6 +55,12 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
 
   if (Constants.BOOKING_STATUSES.indexOf(status) < 0) {
     return res.error('Invalid status - please change it to OPEN or PENDING or CLOSED');
+  }
+
+  if (endTime) {
+    if (moment(endTime).isBefore(startTime)) {
+      return res.error('EndTime should be after StartTime');
+    }
   }
 
   if (status === "OPEN" && req.object.id) {
