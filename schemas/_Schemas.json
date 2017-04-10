@@ -123,6 +123,9 @@
             },
             "package": {
                 "type": "Object"
+            },
+            "serviceAmount": {
+                "type": "Number"
             }
         },
         "classLevelPermissions": {
@@ -173,6 +176,9 @@
             "venue": {
                 "type": "Pointer",
                 "targetClass": "Venue"
+            },
+            "order": {
+                "type": "Number"
             }
         },
         "classLevelPermissions": {
