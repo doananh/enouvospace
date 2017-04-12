@@ -46,32 +46,35 @@
             },
             "name": {
                 "type": "String"
-            },
-            "anonymous": {
-                "type": "Object"
-            },
-            "role": {
-                "type": "String"
             }
         },
         "classLevelPermissions": {
             "find": {
-                "*": true
+                "*": true,
+                "role:ADMIN": true,
+                "role:MODERATOR": true
             },
             "get": {
-                "*": true
+                "*": true,
+                "role:ADMIN": true,
+                "role:MODERATOR": true
             },
             "create": {
-                "*": true
+                "*": true,
+                "role:ADMIN": true,
+                "role:MODERATOR": true
             },
             "update": {
-                "*": true
+                "*": true,
+                "role:ADMIN": true,
+                "role:MODERATOR": true
             },
             "delete": {
-                "*": true
+                "role:ADMIN": true,
+                "role:MODERATOR": true
             },
             "addField": {
-                "*": true
+                "role:ADMIN": true
             }
         }
     },
@@ -130,22 +133,31 @@
         },
         "classLevelPermissions": {
             "find": {
-                "*": true
+                "*": true,
+                "role:ADMIN": true,
+                "role:MODERATOR": true
             },
             "get": {
-                "*": true
+                "*": true,
+                "role:ADMIN": true,
+                "role:MODERATOR": true
             },
             "create": {
-                "*": true
+                "*": true,
+                "role:ADMIN": true,
+                "role:MODERATOR": true
             },
             "update": {
+                "role:MODERATOR": true,
+                "role:ADMIN": true,
                 "*": true
             },
             "delete": {
-                "*": true
+                "role:MODERATOR": true,
+                "role:ADMIN": true
             },
             "addField": {
-                "*": true
+                "role:ADMIN": true
             }
         }
     },
@@ -183,22 +195,29 @@
         },
         "classLevelPermissions": {
             "find": {
-                "*": true
+                "*": true,
+                "role:MODERATOR": true,
+                "role:ADMIN": true
             },
             "get": {
-                "*": true
+                "*": true,
+                "role:MODERATOR": true,
+                "role:ADMIN": true
             },
             "create": {
-                "*": true
+                "role:MODERATOR": true,
+                "role:ADMIN": true
             },
             "update": {
-                "*": true
+                "role:MODERATOR": true,
+                "role:ADMIN": true
             },
             "delete": {
-                "*": true
+                "role:MODERATOR": true,
+                "role:ADMIN": true
             },
             "addField": {
-                "*": true
+                "role:ADMIN": true
             }
         }
     },
@@ -232,22 +251,30 @@
         },
         "classLevelPermissions": {
             "find": {
-                "*": true
+                "*": true,
+                "role:MODERATOR": true,
+                "role:ADMIN": true
             },
             "get": {
-                "*": true
+                "*": true,
+                "role:MODERATOR": true,
+                "role:ADMIN": true
             },
             "create": {
-                "*": true
+                "*": true,
+                "role:MODERATOR": true,
+                "role:ADMIN": true
             },
             "update": {
-                "*": true
+                "role:MODERATOR": true,
+                "role:ADMIN": true
             },
             "delete": {
-                "*": true
+                "role:MODERATOR": true,
+                "role:ADMIN": true
             },
             "addField": {
-                "*": true
+                "role:ADMIN": true
             }
         }
     },
@@ -292,22 +319,30 @@
         },
         "classLevelPermissions": {
             "find": {
-                "*": true
+                "*": true,
+                "role:MODERATOR": true,
+                "role:ADMIN": true
             },
             "get": {
-                "*": true
+                "*": true,
+                "role:MODERATOR": true,
+                "role:ADMIN": true
             },
             "create": {
-                "*": true
+                "*": true,
+                "role:MODERATOR": true,
+                "role:ADMIN": true
             },
             "update": {
-                "*": true
+                "role:MODERATOR": true,
+                "role:ADMIN": true
             },
             "delete": {
-                "*": true
+                "role:MODERATOR": true,
+                "role:ADMIN": true
             },
             "addField": {
-                "*": true
+                "role:ADMIN": true
             }
         }
     },
@@ -393,22 +428,29 @@
         },
         "classLevelPermissions": {
             "find": {
-                "*": true
+                "*": true,
+                "role:MODERATOR": true,
+                "role:ADMIN": true
             },
             "get": {
-                "*": true
+                "*": true,
+                "role:MODERATOR": true,
+                "role:ADMIN": true
             },
             "create": {
-                "*": true
+                "role:MODERATOR": true,
+                "role:ADMIN": true
             },
             "update": {
-                "*": true
+                "role:MODERATOR": true,
+                "role:ADMIN": true
             },
             "delete": {
-                "*": true
+                "role:MODERATOR": true,
+                "role:ADMIN": true
             },
             "addField": {
-                "*": true
+                "role:ADMIN": true
             }
         }
     },
@@ -501,22 +543,32 @@
         },
         "classLevelPermissions": {
             "find": {
-                "*": true
+                "*": true,
+                "role:ADMIN": true,
+                "role:MODERATOR": true
             },
             "get": {
-                "*": true
+                "*": true,
+                "role:ADMIN": true,
+                "role:MODERATOR": true
             },
             "create": {
-                "*": true
+                "*": true,
+                "role:ADMIN": true,
+                "role:MODERATOR": true
             },
             "update": {
-                "*": true
+                "*": true,
+                "role:ADMIN": true,
+                "role:MODERATOR": true
             },
             "delete": {
-                "*": true
+                "*": true,
+                "role:ADMIN": true,
+                "role:MODERATOR": true
             },
             "addField": {
-                "*": true
+                "role:ADMIN": true
             }
         }
     },
@@ -589,22 +641,30 @@
         },
         "classLevelPermissions": {
             "find": {
-                "*": true
+                "*": true,
+                "role:ADMIN": true,
+                "role:MODERATOR": true
             },
             "get": {
-                "*": true
+                "*": true,
+                "role:ADMIN": true,
+                "role:MODERATOR": true
             },
             "create": {
-                "*": true
+                "*": true,
+                "role:ADMIN": true,
+                "role:MODERATOR": true
             },
             "update": {
-                "*": true
+                "*": true,
+                "role:ADMIN": true,
+                "role:MODERATOR": true
             },
             "delete": {
-                "*": true
+                "role:ADMIN": true
             },
             "addField": {
-                "*": true
+                "role:ADMIN": true
             }
         }
     }
