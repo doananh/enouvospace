@@ -23,3 +23,16 @@ Parse.Cloud.define("updateUser", function(req, res) {
     res.error(err);
   });
 });
+
+Parse.Cloud.define('deleteUser', function(request, response) {
+  var query = new Parse.Query(Parse.User);
+  query.get(request.params.objectId).then(function (user) {
+    user.destroy({ useMasterKey: true }).then(function (data) {
+      response.success(data);
+    }, function (error) {
+      response.error(error);
+    });
+  }, function (error) {
+    response.error(error);
+  });
+});
