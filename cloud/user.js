@@ -1,5 +1,15 @@
 var _ = require('underscore');
 
+Parse.Cloud.define('getUsers', function(request, response) {
+  var userQuery = new Parse.Query(Parse.User);
+  userQuery.find({useMasterKey: true}).then(function(users) {
+    console.log(users);
+    response.success(users);
+  }, function(err) {
+    response.error(err);
+  });
+});
+
 Parse.Cloud.define("updateUser", function(req, res) {
   var params = req.params;
   console.log(params);
