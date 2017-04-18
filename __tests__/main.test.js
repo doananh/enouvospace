@@ -6,11 +6,11 @@ require('dotenv').config({path: "./.env"});
 // jest.unmock('mockData');
 //======== END UNMOCK =====================================
 
-jest.mock('models/bookingModel.js');
-jest.mock('models/priceCalculatingModel.js');
+// jest.mock('models/bookingModel.js');
+// jest.mock('models/priceCalculatingModel.js');
 
-var BookingMock = require('models/bookingModel.js');
-var PricingMock = require('models/priceCalculatingModel.js');
+// var BookingMock = require('models/bookingModel.js');
+// var PricingMock = require('models/priceCalculatingModel.js');
 
 // UNIT test begin
 describe('Main Test', () => {
