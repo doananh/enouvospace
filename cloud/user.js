@@ -12,7 +12,6 @@ Parse.Cloud.define('getUsers', function(request, response) {
 
 Parse.Cloud.define("updateUser", function(req, res) {
   var params = req.params;
-  console.log(params);
   var query = new Parse.Query(Parse.User);
   query.equalTo("objectId", params.objectId);
   query.first().then(function(currentUser) {
