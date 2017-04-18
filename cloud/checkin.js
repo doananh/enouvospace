@@ -8,7 +8,7 @@ Parse.Cloud.define("checkin", function(req, res) {
   if (params.user && params.user.id && params.user.username) {
     BookingUtil.createBookingForLoginUser(params)
     .then(function (data) {
-      return res.success({ status: 'checkin success'});
+      return res.success(data);
     }, function (error) {
       return res.error(error);
     });

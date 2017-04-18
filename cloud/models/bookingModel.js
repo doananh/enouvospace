@@ -1,6 +1,6 @@
 
 var _        = require('underscore');
-var moments  = require('moment');
+var moment   = require('moment');
 
 var Constants = require('./../constant.js');
 var Tool            = require('./../utils/tools.js');
@@ -24,7 +24,8 @@ function createBookingForLoginUser(_params) {
         return createNewBooking(bookingParams, null);
       })
       .then(function (data) {
-        return resolve(data);
+        var startTime = data.get('startTime');
+        return resolve({checkinTime: startTime.toISOString()});
       })
       .catch( function (error) {
         return reject(error);
@@ -44,7 +45,7 @@ function createBookingForAnonymousUser(_params) {
         var startTime = data.get('startTime');
         var user = data.get('user');
         var code = user.code;
-        return resolve({code: code, checkinTime: startTime.iso});
+        return resolve({code: code, checkinTime: startTime.toISOString()});
       }
       else {
         throw('No booking data');
@@ -65,7 +66,7 @@ function createNewBooking(_params, _code) {
     booking.set("payAmount", 0);
     booking.set("discountAmount", 0);
 
-    booking.set("startTime", moments().toDate());
+    booking.set("startTime", moment().toDate());
     if (_code) {
       booking.set("user", {"code": _code, "username": "anonymous " + _code, type: "anonymous"});
     }
