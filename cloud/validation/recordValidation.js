@@ -20,7 +20,7 @@ Parse.Cloud.beforeSave("Record", function(req, res) {
     return res.error('Require username param');
   }
 
-  if (_.isUndefined() || _.isNull(booking)) {
+  if (_.isUndefined(booking) || _.isNull(booking)) {
     return res.error('Require booking param');
   }
 
