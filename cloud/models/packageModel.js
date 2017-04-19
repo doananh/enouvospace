@@ -1,4 +1,5 @@
 var Constants = require('../constant.js');
+var _ = require('underscore');
 
 const Parse = require('parse/node');
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MASTER_KEY);
@@ -6,6 +7,26 @@ Parse.serverURL = process.env.SERVER_URL;
 
 function getDefaultPackage () {
   return getPackageByType(Constants.DEFAULT_PACKAGE_TYPE);
+}
+
+function getAllPackage () {
+  return new Promise((resolve, reject) => {
+      var packageQuery = new Parse.Query("Package");
+      packageQuery.ascending("order");
+      Parse.Promise.when(packageQuery.find())
+      .then( function (result) {
+        if (result && result.length) {
+          const packageData = _.map(result, function(element){ return element.toJSON()});
+          return resolve(packageData);
+        }
+        else {
+          throw('No package data found');
+        }
+      })
+      .catch( function (error) {
+        return reject(error);
+      });
+  });
 }
 
 function getPackageByType (_type) {
@@ -34,3 +55,4 @@ function getPackageByType (_type) {
 
 exports.getDefaultPackage = getDefaultPackage;
 exports.getPackageByType  = getPackageByType;
+exports.getAllPackage     = getAllPackage;
