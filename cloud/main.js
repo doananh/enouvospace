@@ -15,6 +15,7 @@ require('./validation/servicePackageValidation.js');
 require('./validation/discountValidation.js');
 require('./validation/globalVariableValidation.js');
 require('./validation/businessValidation.js');
+require('./validation/recordValidation.js');
 
 // other here
 require('./notification/pushAPI.js');
