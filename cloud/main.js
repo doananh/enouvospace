@@ -6,6 +6,7 @@ require('./service.js');
 
 require('./checkin.js');
 require('./checkout.js');
+require('./record.js');
 
 // require before save _ after save for validating here
 require('./validation/bookingValidation.js');

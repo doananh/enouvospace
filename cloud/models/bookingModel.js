@@ -113,41 +113,6 @@ function createNewBooking(_params, _code) {
   });
 }
 
-function closeBookingWithParams (_params) {
-  return new Promise((resolve, reject) => {
-    var bookingQuery = new Parse.Query("Booking");
-    if (_params.code) {
-      bookingQuery.equalTo("user.code", _params.code);
-    }
-    else if (_params.bookingId) {
-      bookingQuery.equalTo("objectId", _params.bookingId);
-    }
-    else {
-      return reject('Require code or bookingId params for closing Booking');
-    }
-
-    bookingQuery.first().then( function (booking) {
-      if (booking) {
-        var status = booking.get('status');
-        if (status === "CLOSED") {
-          throw('This booking has been previously closed');
-        }
-        booking.set("status", "CLOSED");
-        return booking.save();
-      }
-      else {
-        throw('Booking not found');
-      }
-    })
-    .then( function (bookingData) {
-      return resolve(bookingData);
-    })
-    .catch( function (error) {
-      return reject(error);
-    });
-  });
-}
-
 function getBookingByParams (_params) {
   return new Promise((resolve, reject) => {
     var bookingQuery = new Parse.Query("Booking");
@@ -157,8 +122,11 @@ function getBookingByParams (_params) {
     else if (_params.bookingId) {
       bookingQuery.equalTo("objectId", _params.bookingId);
     }
+    else if (_params.userId) {
+      bookingQuery.equalTo("user.id", _params.userId);
+    }
     else {
-      return reject('Require code | bookingId params');
+      return reject('Require code | bookingId params | userId');
     }
     bookingQuery.first().then( function (booking) {
       if (booking) {
@@ -182,4 +150,3 @@ exports.createBookingForLoginUser     = createBookingForLoginUser;
 exports.createBookingForAnonymousUser = createBookingForAnonymousUser;
 exports.createNewBooking              = createNewBooking;
 exports.getBookingByParams            = getBookingByParams;
-exports.closeBookingWithParams        = closeBookingWithParams;
