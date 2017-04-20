@@ -25,7 +25,7 @@ function recordCheckin (_params) {
     record.set("booking", { "__type":"Pointer","className":"Booking","objectId":bookingId });
     record.save().then( function (data) {
       var checkinTime = data.get('checkinTime');
-      return resolve(checkinTime.toISOString());
+      return resolve({checkinTime: checkinTime.toISOString()});
     })
     .catch ( function (error) {
       return reject(error);
@@ -55,7 +55,7 @@ function recordCheckout (_params) {
         }
     })
     .then( function (recordData) {
-      return resolve(recordData);
+      return resolve({checkoutTime: checkoutTime});
     })
     .catch( function (error) {
         return reject(error);
