@@ -33,24 +33,29 @@ function recordCheckin (_params) {
   });
 }
 
-function recordCheckout () {
+function recordCheckout (_params) {
   return new Promise( (resolve, reject) => {
     var checkoutTime  = moment().toDate();
     var username      = _params.username;
     var userId        = _params.userId;
 
-    var recordQuery   = Parse.Query("Record");
+    var recordQuery   = new Parse.Query("Record");
+    recordQuery.descending("createdAt");
     recordQuery.equalTo("username", username);
     recordQuery.equalTo("userId", userId);
 
-    recordQuery.find()
+    recordQuery.first()
     .then( function (recordData) {
         if (recordData) {
-          return resolve(recordData);
+          recordData.set("checkoutTime", checkoutTime);
+          return recordData.save();
         }
         else {
           throw('No record found to checkout');
         }
+    })
+    .then( function (recordData) {
+      return resolve(recordData);
     })
     .catch( function (error) {
         return reject(error);

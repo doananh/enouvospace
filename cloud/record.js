@@ -11,12 +11,15 @@ Parse.Cloud.define("recordCheckin", function(req, res) {
   BookingModel.getBookingByParams(params)
   .then(function (bookingData) {
       if (bookingData) {
-        var params = { userId: userId, username: username, bookingId: bookingData.id };
-        return RecordModel.recordCheckin(params);
+        var data = { userId: userId, username: username, bookingId: bookingData.id };
+        return RecordModel.recordCheckin(data)
       }
       else {
         throw('Please create booking first');
       }
+  })
+  .then( function (data) {
+      return res.success(data);
   })
   .catch( function (error) {
       return res.error(error);
@@ -24,16 +27,21 @@ Parse.Cloud.define("recordCheckin", function(req, res) {
 });
 
 Parse.Cloud.define("recordCheckout", function(req, res) {
-  var params = req.params;
+  var params    = req.params;
+  var userId    = params.userId;
+  var username  = params.username;
   BookingModel.getBookingByParams(params)
   .then(function (bookingData) {
       if (bookingData) {
-        var params = { userId: userId, username: username, bookingId: bookingData.id };
-        return RecordModel.recordCheckout(params);
+        var data = { userId: userId, username: username, bookingId: bookingData.id };
+        return RecordModel.recordCheckout(data);
       }
       else {
         throw('Please create booking first');
       }
+  })
+  .then( function (data) {
+      return res.success(data);
   })
   .catch( function (error) {
       return res.error(error);
