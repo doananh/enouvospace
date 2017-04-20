@@ -137,7 +137,6 @@ function getBookingPricingDetail (_booking) {
       return servicePricing;
     })
     .then( function (servicePricing) {
-        if (user.type === "anonymous") {
           var packagePricing  = getPackagePricingDetail(packageObject, packageCount, numOfUsers);
           var packageAmount   = packagePricing.total;
           var discountPricing = getDiscountDetailPricing(null, packageAmount); // temp remove discount
@@ -157,13 +156,6 @@ function getBookingPricingDetail (_booking) {
             payAmount: payAmount,
             bookingId: _booking.id
           });
-        }
-        else if (type === "customer") {
-          return resolve({});
-        }
-        else {
-          return resolve({});
-        }
     })
     .catch( function (error) {
       return reject(error);

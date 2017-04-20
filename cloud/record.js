@@ -30,20 +30,24 @@ Parse.Cloud.define("recordCheckout", function(req, res) {
   var params    = req.params;
   var userId    = params.userId;
   var username  = params.username;
-  BookingModel.getBookingByParams(params)
-  .then(function (bookingData) {
-      if (bookingData) {
-        var data = { userId: userId, username: username, bookingId: bookingData.id };
-        return RecordModel.recordCheckout(data);
-      }
-      else {
-        throw('Please create booking first');
-      }
-  })
-  .then( function (data) {
-      return res.success(data);
-  })
-  .catch( function (error) {
-      return res.error(error);
-  });
+  var showBookingPayment = params.showBookingPayment || false;
+
+  if (showBookingPayment) {
+    RecordModel.recordCheckoutAndPreviewBooking({ username: username, userId: userId })
+    .then( function (data) {
+        return res.success(data);
+    })
+    .catch( function (error) {
+        return res.error(error);
+    });
+  }
+  else {
+    RecordModel.recordCheckout({ username: username, userId: userId })
+    .then( function (data) {
+        return res.success(data);
+    })
+    .catch( function (error) {
+        return res.error(error);
+    });
+  }
 });

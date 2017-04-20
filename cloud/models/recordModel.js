@@ -5,6 +5,10 @@ var moment   = require('moment');
 var Constants = require('./../constant.js');
 var Tool      = require('./../utils/tools.js');
 
+var PriceCalculatingModel = require('./priceCalculatingModel.js');
+var BookingModel          = require('./bookingModel.js');
+var CheckoutModel         = require('./checkoutModel.js');
+
 const Parse = require('parse/node');
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MASTER_KEY);
 Parse.serverURL = process.env.SERVER_URL;
@@ -55,7 +59,7 @@ function recordCheckout (_params) {
         }
     })
     .then( function (recordData) {
-      return resolve({checkoutTime: checkoutTime});
+        return resolve({checkoutTime: checkoutTime});
     })
     .catch( function (error) {
         return reject(error);
@@ -63,5 +67,33 @@ function recordCheckout (_params) {
   });
 }
 
+function recordCheckoutAndPreviewBooking (_params) {
+  return new Promise( (resolve, reject) => {
+      BookingModel.getBookingByParams(_params)
+      .then( function (bookingData) {
+          if (bookingData) {
+            var data = { userId: _params.userId, username: _params.username };
+            return Parse.Promise.when([
+              recordCheckout(data),
+              PriceCalculatingModel.getBookingPricingDetail(bookingData)
+            ]);
+          }
+          else {
+            throw('Please create booking first');
+          }
+      })
+      .then( function (results) {
+          return CheckoutModel.formatResponseData(results[1]);
+      })
+      .then( function (formatData) {
+          return resolve(formatData);
+      })
+      .catch( function (error) {
+          return reject(error);
+      });
+  });
+}
+
 exports.recordCheckin   = recordCheckin;
 exports.recordCheckout  = recordCheckout;
+exports.recordCheckoutAndPreviewBooking = recordCheckoutAndPreviewBooking;
