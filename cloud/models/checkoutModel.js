@@ -19,6 +19,18 @@ function formatResponseData (_priceDetail) {
       var serviceAmountString   = Tool.formatToVNDString(_priceDetail.servicePricing.total);
       var totalPriceString      = Tool.formatToVNDString(_priceDetail.payAmount);
       var chargeRateString      = Tool.formatToVNDString(_priceDetail.packagePricing.package.chargeRate);
+      var userData = {
+
+        username: _priceDetail.user.username,
+        type: _priceDetail.user.type
+      }
+      if (_priceDetail.user.code) {
+        userData.code = _priceDetail.user.code;
+      }
+      if (_priceDetail.user.id) {
+        userData.id = _priceDetail.user.id;
+      }
+
       return resolve({
         customerName: _priceDetail.user.username,
         customerCode: _priceDetail.user.code,
@@ -54,11 +66,7 @@ function formatResponseData (_priceDetail) {
           text: totalPriceString,
           value: _priceDetail.payAmount
         },
-        user: {
-          code: _priceDetail.user.code,
-          username: _priceDetail.user.username,
-          type: _priceDetail.user.type
-        },
+        user: userData,
         bookingId: _priceDetail.bookingId
       });
     }

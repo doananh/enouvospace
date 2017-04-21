@@ -45,7 +45,7 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
     res.error('Require package params');
   }
 
-  if (!_.isDate(startTime)) {
+  if (_.isNull(startTime) || _.isUndefined(startTime)) {
     return res.error('Require start time params');
   }
 
