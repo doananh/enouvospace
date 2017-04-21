@@ -73,6 +73,35 @@ function isValidCode (_code) {
   return false;
 }
 
+function fixOpenAndCloseTime (_packageType, _openTime, _closeTime) {
+  var openTime  = _openTime ? moment(_openTime) : null;
+  var closeTime = _closeTime ? moment(_closeTime) : null;
+  switch (_packageType) {
+    case 'HOUR': {
+      break;
+    }
+    case 'DAY':
+    case 'WEEK':
+    case 'MONTH': {
+      if (openTime) {
+        openTime.set('hour', Constants.OPEN_HOUR_VI);
+        openTime.set('minute', Constants.OPEN_MINUTE_VI);
+
+      }
+      if (closeTime) {
+        closeTime.set('hour', Constants.CLOSE_HOUR_VI);
+        closeTime.set('minute', Constants.CLOSE_MINUTE_VI);
+      }
+      break;
+    }
+  }
+
+    return {
+      openTime: openTime ? openTime.utc().toDate() : null,
+      closeTime: closeTime ? closeTime.utc().toDate() : null
+    };
+}
+
 function getEndTimeFromPackage (_startTime, _type, _count) {
   switch (_type) {
     case 'HOUR': {
@@ -192,3 +221,4 @@ exports.isValidCode       = isValidCode;
 exports.formatToVNDString = formatToVNDString;
 exports.getEndTimeFromPackage = getEndTimeFromPackage;
 exports.getDurationDetail     = getDurationDetail;
+exports.fixOpenAndCloseTime   = fixOpenAndCloseTime;
