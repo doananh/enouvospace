@@ -41,7 +41,6 @@ function getPackagePricingDetail (_package, _packageCount, _numberOfUsers) {
 }
 
 function calculatePackagePrice (_packageCount, _chargeRate, _numberOfUsers) {
-  // const ceilValue = Math.ceil(_packageCount);
   var res = _chargeRate * _packageCount * _numberOfUsers;
   return res;
 }
@@ -95,12 +94,14 @@ function shouldChangeToDayPackage (_packageObject, _packageCount, _startTime) {
       }
     }
     else {
-      endTime = Tool.getEndTimeFromPackage(_startTime, _packageObject.type, _packageCount);
+      var endTime   = Tool.getEndTimeFromPackage(_startTime, _packageObject.type, _packageCount);
+      var fixTime   = Tool.fixOpenAndCloseTime(packageType, _startTime, endTime);
+
       return resolve({
         packageObject: _packageObject,
         packageCount: _packageCount,
-        startTime: _startTime,
-        endTime: endTime
+        startTime: fixTime.openTime,
+        endTime: fixTime.closeTime
       });
     }
   });

@@ -22,8 +22,8 @@ function formatResponseData (_priceDetail) {
       return resolve({
         customerName: _priceDetail.user.username,
         customerCode: _priceDetail.user.code,
-        checkinTime: startTime,
-        checkoutTime: endTime,
+        checkinTime: startTime.toISOString(),
+        checkoutTime: endTime.toISOString(),
         duration: {
           text: duration.text,
           value: duration.value
