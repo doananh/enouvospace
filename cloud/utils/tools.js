@@ -86,19 +86,21 @@ function fixOpenAndCloseTime (_packageType, _openTime, _closeTime) {
       if (openTime) {
         openTime.set('hour', Constants.OPEN_HOUR_VI);
         openTime.set('minute', Constants.OPEN_MINUTE_VI);
+        openTime.add(Constants.TIME_OFFSET_MINUTES, 'minutes');
 
       }
       if (closeTime) {
         closeTime.set('hour', Constants.CLOSE_HOUR_VI);
         closeTime.set('minute', Constants.CLOSE_MINUTE_VI);
+        closeTime.add(Constants.TIME_OFFSET_MINUTES, 'minutes');
       }
       break;
     }
   }
 
     return {
-      openTime: openTime ? openTime.utc().toDate() : null,
-      closeTime: closeTime ? closeTime.utc().toDate() : null
+      openTime: openTime ? openTime.toDate() : null,
+      closeTime: closeTime ? closeTime.toDate() : null
     };
 }
 
