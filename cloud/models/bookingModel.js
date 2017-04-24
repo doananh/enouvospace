@@ -134,10 +134,17 @@ function getBookingByParams (_params) {
     else {
       return reject('Require code | bookingId params | userId');
     }
+
+    if (_params.status) {
+      bookingQuery.equalTo("status", _params.status);
+    }
+
     bookingQuery.first().then( function (booking) {
       if (booking) {
-        var status = booking.get('status');
-        if (status === "CLOSED") {
+        if (_params.status) {
+          return resolve(booking);
+        }
+        else if (booking.get('status') === 'CLOSED') {
           throw('Your booking has been closed. Please request new one or contact reception.');
         }
         return resolve(booking);

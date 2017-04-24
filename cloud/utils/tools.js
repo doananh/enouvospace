@@ -173,7 +173,7 @@ function getDurationDetail (_startTime, _endTime, _package) {
     case 'WEEK': {
       var mStartTime      = moment(_startTime)
       var mEndTime        = moment(_endTime);
-      var diffTime        = mEndTime.diff(startTime);
+      var diffTime        = mEndTime.diff(mStartTime);
       var duration        = moment.duration(diffTime);
       var durationString  = "";
       var weekString      = (duration.weeks() > 1) ? " weeks " : " week ";
