@@ -29,7 +29,14 @@ function recordCheckin (_params) {
     record.set("booking", { "__type":"Pointer","className":"Booking","objectId":bookingId });
     record.save().then( function (data) {
       var checkinTime = data.get('checkinTime');
-      return resolve({checkinTime: checkinTime.toISOString()});
+      return resolve({
+        checkinTime: checkinTime.toISOString(),
+        objectId: data.id,
+        user: {
+          userId: data.get('userId'),
+          username: data.get('username')
+        }
+      });
     })
     .catch ( function (error) {
       return reject(error);
