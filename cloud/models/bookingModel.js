@@ -138,7 +138,7 @@ function getBookingByParams (_params) {
       if (booking) {
         var status = booking.get('status');
         if (status === "CLOSED") {
-          throw('This booking has been previously closed');
+          throw('Your booking has been closed. Please request new one or contact reception.');
         }
         return resolve(booking);
       }
