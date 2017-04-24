@@ -12,6 +12,8 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
   var startTime     = req.object.get('startTime');
   var endTime       = req.object.get('endTime');
   var status        = req.object.get('status');
+  console.log('save___')
+  console.log(startTime);
 
   if (_.isUndefined(user) || _.isEmpty(user)) {
     return res.error('Require user params');

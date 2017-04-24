@@ -66,7 +66,13 @@ function createNewBooking(_params, _code) {
     booking.set("payAmount", 0);
     booking.set("discountAmount", 0);
 
-    booking.set("startTime", moment().toDate());
+    if (_params.startTime) {
+      booking.set("startTime", new Date(_params.startTime));
+    }
+    else {
+      booking.set("startTime", moment().toDate());
+    }
+
     if (_code) {
       booking.set("user", {"code": _code, "username": "anonymous " + _code, type: "anonymous"});
     }
