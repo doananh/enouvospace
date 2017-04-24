@@ -8,7 +8,7 @@ Parse.Cloud.define("recordCheckin", function(req, res) {
   var params    = req.params;
   var userId    = params.userId;
   var username  = params.username;
-  BookingModel.getBookingByParams({ userId: userId, username: username, status: "OPEN"})
+  BookingModel.getBookingByParams({ userId: userId, username: username, status: "OPEN", latest: true })
   .then(function (bookingData) {
       if (bookingData) {
         var data = { userId: userId, username: username, bookingId: bookingData.id};
@@ -30,10 +30,11 @@ Parse.Cloud.define("recordCheckout", function(req, res) {
   var params    = req.params;
   var userId    = params.userId;
   var username  = params.username;
+  var bookingId = params.bookingId;
   var showBookingPayment = params.showBookingPayment || false;
 
   if (showBookingPayment) {
-    RecordModel.recordCheckoutAndPreviewBooking({ username: username, userId: userId, status: "OPEN" })
+    RecordModel.recordCheckoutAndPreviewBooking({ username: username, userId: userId, bookingId: bookingId, status: "OPEN" })
     .then( function (data) {
         return res.success(data);
     })

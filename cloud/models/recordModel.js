@@ -35,7 +35,8 @@ function recordCheckin (_params) {
         user: {
           userId: data.get('userId'),
           username: data.get('username')
-        }
+        },
+        bookingId: data.get('booking').objectId
       });
     })
     .catch ( function (error) {
