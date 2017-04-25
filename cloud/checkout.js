@@ -12,9 +12,6 @@ Parse.Cloud.define("checkoutByCode", function(req, res) {
       .then(function (bookingData) {
           return PriceCalculatingModel.getBookingPricingDetail(bookingData)
       })
-      .then(function(priceDetail) {
-          return CheckoutModel.formatResponseData(priceDetail)
-      })
       .then( function (formatData) {
           var packageObject = {
             name: formatData.package.name,
@@ -57,9 +54,6 @@ Parse.Cloud.define("checkoutByBookingId", function(req, res) {
     BookingModel.getBookingByParams({bookingId: params.bookingId})
     .then(function (bookingData) {
         return PriceCalculatingModel.getBookingPricingDetail(bookingData)
-    })
-    .then(function(priceDetail) {
-        return CheckoutModel.formatResponseData(priceDetail)
     })
     .then( function (formatData) {
       var packageObject = {

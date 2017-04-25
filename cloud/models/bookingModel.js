@@ -156,7 +156,7 @@ function getBookingByParams (_params) {
         return resolve(booking[0]);
       }
       else {
-        throw('Booking not found');
+        throw('No booking found.');
       }
     })
     .catch( function (error) {

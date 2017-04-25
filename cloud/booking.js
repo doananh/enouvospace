@@ -11,9 +11,6 @@ Parse.Cloud.define("previewBooking", function(req, res) {
   .then(function (bookingData) {
       return PriceCalculatingModel.getBookingPricingDetail(bookingData);
   })
-  .then(function(priceDetail) {
-      return CheckoutModel.formatResponseData(priceDetail)
-  })
   .then( function (formatData) {
       return res.success(formatData);
   })

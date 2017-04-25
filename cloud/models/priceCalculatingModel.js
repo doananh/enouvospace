@@ -5,6 +5,7 @@ var Tool          = require('./../utils/tools.js');
 var DiscountModel = require('./discountModel.js');
 var PackageModel  = require('./packageModel.js');
 var Constants     = require('../constant.js');
+var CheckoutModel = require('./checkoutModel.js');
 
 function getDiscountDetailPricing (_discount, _packageAmount) {
   var result = {total: 0, percent: 0, amount: 0};
@@ -142,8 +143,7 @@ function getBookingPricingDetail (_booking) {
           var packageAmount   = packagePricing.total;
           var discountPricing = getDiscountDetailPricing(null, packageAmount); // temp remove discount
           var payAmount       = servicePricing.total + packagePricing.total - discountPricing.total;
-          // // Pricing details
-          return resolve({
+          return {
             user: user,
             servicePricing: servicePricing,
             packagePricing: packagePricing,
@@ -156,7 +156,11 @@ function getBookingPricingDetail (_booking) {
             numOfUsers: numOfUsers,
             payAmount: payAmount,
             bookingId: _booking.id
-          });
+          };
+    })
+    .then( function(priceDetail) {
+      var formatResponseData = CheckoutModel.formatResponseData(priceDetail);
+      return resolve(formatResponseData);
     })
     .catch( function (error) {
       return reject(error);

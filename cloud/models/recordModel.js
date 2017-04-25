@@ -7,7 +7,6 @@ var Tool      = require('./../utils/tools.js');
 
 var PriceCalculatingModel = require('./priceCalculatingModel.js');
 var BookingModel          = require('./bookingModel.js');
-var CheckoutModel         = require('./checkoutModel.js');
 
 const Parse = require('parse/node');
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MASTER_KEY);
@@ -67,7 +66,13 @@ function recordCheckout (_params) {
         }
     })
     .then( function (recordData) {
-        return resolve({checkoutTime: checkoutTime});
+        var recordObject = {
+          objectId: recordData.id,
+          checkinTime: recordData.get('checkinTime'),
+          checkoutTime: recordData.get('checkoutTime'),
+          bookingId: recordData.get('booking').id
+        };
+        return resolve(recordObject);
     })
     .catch( function (error) {
         return reject(error);
@@ -91,10 +96,10 @@ function recordCheckoutAndPreviewBooking (_params) {
           }
       })
       .then( function (results) {
-          return CheckoutModel.formatResponseData(results[1]);
-      })
-      .then( function (formatData) {
-          return resolve(formatData);
+          var recordObject = results[0];
+          var priceDetailData = results[1];
+          priceDetailData.latestRecord = recordObject;
+          return resolve(priceDetailData);
       })
       .catch( function (error) {
           return reject(error);

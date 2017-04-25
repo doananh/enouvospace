@@ -4,10 +4,9 @@ var Constants = require('../constant.js');
 var Tool      = require('../utils/tools.js');
 
 function formatResponseData (_priceDetail) {
-  return new Promise((resolve, reject) => {
     if (_priceDetail) {
       if (!_priceDetail.validTime || !_priceDetail.packagePricing) {
-        return reject('Cannot format checkout data');
+        throw ('Cannot format checkout data');
       }
 
       var startTime   = _priceDetail.validTime.startTime;
@@ -20,7 +19,6 @@ function formatResponseData (_priceDetail) {
       var totalPriceString      = Tool.formatToVNDString(_priceDetail.payAmount);
       var chargeRateString      = Tool.formatToVNDString(_priceDetail.packagePricing.package.chargeRate);
       var userData = {
-
         username: _priceDetail.user.username,
         type: _priceDetail.user.type
       }
@@ -31,7 +29,7 @@ function formatResponseData (_priceDetail) {
         userData.id = _priceDetail.user.id;
       }
 
-      return resolve({
+      return {
         customerName: _priceDetail.user.username,
         customerCode: _priceDetail.user.code,
         checkinTime: startTime.toISOString(),
@@ -68,12 +66,11 @@ function formatResponseData (_priceDetail) {
         },
         user: userData,
         bookingId: _priceDetail.bookingId
-      });
+      }
     }
     else {
-      return reject('data is undefined|null');
+      throw ('cannot format empty data');
     }
-  });
 }
 
 exports.formatResponseData = formatResponseData;
