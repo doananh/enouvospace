@@ -67,7 +67,10 @@ function recordCheckout (_params) {
         }
     })
     .then( function (recordData) {
-        return resolve({checkoutTime: checkoutTime});
+        return resolve({
+          objectId: recordData.id,
+          checkoutTime: checkoutTime.toISOString()
+        });
     })
     .catch( function (error) {
         return reject(error);
