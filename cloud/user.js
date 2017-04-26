@@ -46,7 +46,7 @@ Parse.Cloud.define('deleteUser', function(request, response) {
   });
 });
 
-Parse.Cloud.define('requestResetPassword', function(req, res) {
+Parse.Cloud.define('requestPasswordReset', function(req, res) {
   var email = req.params.email;
   Parse.User.requestPasswordReset(email, {})
   .then( function (result) {
