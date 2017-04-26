@@ -46,6 +46,9 @@
             },
             "name": {
                 "type": "String"
+            },
+            "roleName": {
+                "type": "String"
             }
         },
         "classLevelPermissions": {
@@ -71,7 +74,8 @@
             },
             "delete": {
                 "role:ADMIN": true,
-                "role:MODERATOR": true
+                "role:MODERATOR": true,
+                "*": true
             },
             "addField": {
                 "role:ADMIN": true
@@ -154,7 +158,8 @@
             },
             "delete": {
                 "role:MODERATOR": true,
-                "role:ADMIN": true
+                "role:ADMIN": true,
+                "*": true
             },
             "addField": {
                 "role:ADMIN": true
@@ -206,15 +211,18 @@
             },
             "create": {
                 "role:MODERATOR": true,
-                "role:ADMIN": true
+                "role:ADMIN": true,
+                "*": true
             },
             "update": {
                 "role:MODERATOR": true,
-                "role:ADMIN": true
+                "role:ADMIN": true,
+                "*": true
             },
             "delete": {
                 "role:MODERATOR": true,
-                "role:ADMIN": true
+                "role:ADMIN": true,
+                "*": true
             },
             "addField": {
                 "role:ADMIN": true
@@ -267,11 +275,13 @@
             },
             "update": {
                 "role:MODERATOR": true,
-                "role:ADMIN": true
+                "role:ADMIN": true,
+                "*": true
             },
             "delete": {
                 "role:MODERATOR": true,
-                "role:ADMIN": true
+                "role:ADMIN": true,
+                "*": true
             },
             "addField": {
                 "role:ADMIN": true
@@ -335,11 +345,13 @@
             },
             "update": {
                 "role:MODERATOR": true,
-                "role:ADMIN": true
+                "role:ADMIN": true,
+                "*": true
             },
             "delete": {
                 "role:MODERATOR": true,
-                "role:ADMIN": true
+                "role:ADMIN": true,
+                "*": true
             },
             "addField": {
                 "role:ADMIN": true
@@ -439,15 +451,18 @@
             },
             "create": {
                 "role:MODERATOR": true,
-                "role:ADMIN": true
+                "role:ADMIN": true,
+                "*": true
             },
             "update": {
                 "role:MODERATOR": true,
-                "role:ADMIN": true
+                "role:ADMIN": true,
+                "*": true
             },
             "delete": {
                 "role:MODERATOR": true,
-                "role:ADMIN": true
+                "role:ADMIN": true,
+                "*": true
             },
             "addField": {
                 "role:ADMIN": true
@@ -501,9 +516,7 @@
             "delete": {
                 "*": true
             },
-            "addField": {
-                "*": true
-            }
+            "addField": {}
         }
     },
     {
@@ -665,6 +678,71 @@
             },
             "addField": {
                 "role:ADMIN": true
+            }
+        }
+    },
+    {
+        "className": "Record",
+        "fields": {
+            "objectId": {
+                "type": "String"
+            },
+            "createdAt": {
+                "type": "Date"
+            },
+            "updatedAt": {
+                "type": "Date"
+            },
+            "ACL": {
+                "type": "ACL"
+            },
+            "checkinTime": {
+                "type": "Date"
+            },
+            "checkoutTime": {
+                "type": "Date"
+            },
+            "booking": {
+                "type": "Pointer",
+                "targetClass": "Booking"
+            },
+            "userId": {
+                "type": "String"
+            },
+            "username": {
+                "type": "String"
+            }
+        },
+        "classLevelPermissions": {
+            "find": {
+                "*": true,
+                "role:ADMIN": true,
+                "role:MODERATOR": true
+            },
+            "get": {
+                "*": true,
+                "role:ADMIN": true,
+                "role:MODERATOR": true
+            },
+            "create": {
+                "*": true,
+                "role:ADMIN": true,
+                "role:MODERATOR": true
+            },
+            "update": {
+                "*": true,
+                "role:ADMIN": true,
+                "role:MODERATOR": true
+            },
+            "delete": {
+                "*": true,
+                "role:ADMIN": true,
+                "role:MODERATOR": true
+            },
+            "addField": {
+                "*": true,
+                "role:ADMIN": true,
+                "role:MODERATOR": true
             }
         }
     }
