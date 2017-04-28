@@ -11,13 +11,12 @@ function getDefaultPackage () {
 
 function getAllPackage () {
   return new Promise((resolve, reject) => {
-      var packageQuery = new Parse.Query("Package");
-      packageQuery.ascending("order");
-      Parse.Promise.when(packageQuery.find())
-      .then( function (result) {
+      var query = new Parse.Query("Package");
+      query.ascending("order");
+      query.find().then( function (result) {
         if (result && result.length) {
-          const packageData = _.map(result, function(element){ return element.toJSON()});
-          return resolve(packageData);
+          const jsonData = _.map(result, function(element){ return element.toJSON()});
+          return resolve(jsonData);
         }
         else {
           throw('No package data found');

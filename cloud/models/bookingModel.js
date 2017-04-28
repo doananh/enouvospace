@@ -15,10 +15,7 @@ Parse.serverURL = process.env.SERVER_URL;
 function createBookingForLoginUser(_params) {
   return new Promise((resolve, reject) => {
     var packageType = _params.packageType;
-    if (Constants.PACKAGE_TYPES.indexOf(packageType) < 0) {
-      return reject('Require params packageType for createBookingForLoginUser');
-    }
-    else {
+    if (packageType) {
       PackageModel.getPackageByType(packageType).then(function (result) {
         var bookingParams = _.extend({}, _params, {"package": result});
         return createNewBooking(bookingParams, null);
@@ -30,6 +27,9 @@ function createBookingForLoginUser(_params) {
       .catch( function (error) {
         return reject(error);
       });
+    }
+    else {
+      return reject('Require params packageType for createBookingForLoginUser');
     }
   });
 }
@@ -137,7 +137,7 @@ function getBookingByParams (_params) {
       return reject('Require code | bookingId params | userId');
     }
 
-    if (_params.status) {
+    if (!_.isUndefined(_params.status)) {
       bookingQuery.equalTo("status", _params.status);
     }
 
@@ -165,7 +165,27 @@ function getBookingByParams (_params) {
   });
 }
 
+function getUserBooking (_params) {
+  return new Promise((resolve, reject) => {
+    var bookingQuery = new Parse.Query("Booking");
+    if (_params.userId) {
+      bookingQuery.equalTo("user.id", _params.userId);
+    }
+    else {
+      return reject('Require userId');
+    }
+    bookingQuery.descending("createdAt");
+    bookingQuery.find().then( function (bookings) {
+      return resolve(bookings);
+    })
+    .catch( function (error) {
+      return reject(error);
+    });
+  });
+}
+
 exports.createBookingForLoginUser     = createBookingForLoginUser;
 exports.createBookingForAnonymousUser = createBookingForAnonymousUser;
 exports.createNewBooking              = createNewBooking;
 exports.getBookingByParams            = getBookingByParams;
+exports.getUserBooking                = getUserBooking;
