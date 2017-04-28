@@ -28,6 +28,25 @@ function getAllPackage () {
   });
 }
 
+function getAllPackageType () {
+  return new Promise((resolve, reject) => {
+      var query = new Parse.Query("PackageType");
+      query.ascending("order");
+      query.find().then( function (result) {
+        if (result && result.length) {
+          const jsonData = _.map(result, function(element){ return element.toJSON()});
+          return resolve(jsonData);
+        }
+        else {
+          throw('No packageType data found');
+        }
+      })
+      .catch( function (error) {
+        return reject(error);
+      });
+  });
+}
+
 function getPackageByType (_type) {
   return new Promise((resolve, reject) => {
     if (_type) {
@@ -55,3 +74,4 @@ function getPackageByType (_type) {
 exports.getDefaultPackage = getDefaultPackage;
 exports.getPackageByType  = getPackageByType;
 exports.getAllPackage     = getAllPackage;
+exports.getAllPackageType = getAllPackageType;
