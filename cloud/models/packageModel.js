@@ -5,10 +5,6 @@ const Parse = require('parse/node');
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MASTER_KEY);
 Parse.serverURL = process.env.SERVER_URL;
 
-function getDefaultPackage () {
-  return getPackageByType(Constants.DEFAULT_PACKAGE_TYPE);
-}
-
 function getAllPackage () {
   return new Promise((resolve, reject) => {
       var query = new Parse.Query("Package");
@@ -47,31 +43,26 @@ function getAllPackageType () {
   });
 }
 
-function getPackageByType (_type) {
+function getPackageById (_id) {
   return new Promise((resolve, reject) => {
-    if (_type) {
-      var packageQuery = new Parse.Query("Package")
-      packageQuery.equalTo("type", _type);
-      packageQuery.first()
-      .then( function (result) {
-        if (result) {
-          return resolve({"name": result.get('name'), "type": result.get('type'),  "chargeRate": result.get('chargeRate'), "objectId": result.id});
-        }
-        else {
-          throw("No package found with type " + _type);
-        }
-      })
-      .catch( function (error) {
-        return reject(error);
-      });
+    var query = new Parse.Query("Package");
+    query.ascending("order");
+    if (_id) {
+      query.equalTo("objectId", _id);
     }
     else {
-      return reject('Require type of package');
+      return reject('require package id params')
     }
+    query.first().then(function (package) {
+      return resolve(package);
+    })
+    .catch( function (error) {
+      return reject(error);
+    });
   });
+
 }
 
-exports.getDefaultPackage = getDefaultPackage;
-exports.getPackageByType  = getPackageByType;
+exports.getPackageById    = getPackageById;
 exports.getAllPackage     = getAllPackage;
 exports.getAllPackageType = getAllPackageType;

@@ -71,28 +71,28 @@ function shouldChangeToDayPackage (_packageObject, _packageCount, _startTime) {
       var endTime       = Tool.getEndTimeFromPackage(_startTime, packageType, null);
       var duration      = moment.duration(moment(endTime).diff(moment(_startTime)));
       var packageCount  = duration.asHours();
-      if (packageCount >= Constants.CHANGE_HOUR_TO_DAY_PACKAGE) {
-        PackageModel.getPackageByType('DAY')
-        .then( function (packageObject) {
-            return resolve({
-              packageObject: packageObject,
-              packageCount: 1,
-              startTime: _startTime,
-              endTime: endTime
-            });
-        })
-        .catch( function (error) {
-          return reject(error);
-        })
-      }
-      else {
+      // if (packageCount >= Constants.CHANGE_HOUR_TO_DAY_PACKAGE) {
+      //   PackageModel.getPackageByType('DAY')
+      //   .then( function (packageObject) {
+      //       return resolve({
+      //         packageObject: packageObject,
+      //         packageCount: 1,
+      //         startTime: _startTime,
+      //         endTime: endTime
+      //       });
+      //   })
+      //   .catch( function (error) {
+      //     return reject(error);
+      //   })
+      // }
+      // else {
         return resolve({
           packageObject: _packageObject,
           packageCount: packageCount,
           startTime: _startTime,
           endTime: endTime
         });
-      }
+      // }
     }
     else {
       var endTime   = Tool.getEndTimeFromPackage(_startTime, _packageObject.type, _packageCount);

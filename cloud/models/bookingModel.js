@@ -14,10 +14,10 @@ Parse.serverURL = process.env.SERVER_URL;
 
 function createBookingForLoginUser(_params) {
   return new Promise((resolve, reject) => {
-    var packageType = _params.packageType;
-    if (packageType) {
-      PackageModel.getPackageByType(packageType).then(function (result) {
-        var bookingParams = _.extend({}, _params, {"package": result});
+    var packageId = _params.packageId;
+    if (packageId) {
+      PackageModel.getPackageById(packageId).then(function (packageData) {
+        var bookingParams = _.extend({}, _params, {"package": packageData.toJSON()});
         return createNewBooking(bookingParams, null);
       })
       .then(function (data) {
@@ -29,7 +29,7 @@ function createBookingForLoginUser(_params) {
       });
     }
     else {
-      return reject('Require params packageType for createBookingForLoginUser');
+      return reject('Require params packageId for createBookingForLoginUser');
     }
   });
 }
