@@ -19,19 +19,6 @@ Parse.Cloud.define("previewBooking", function(req, res) {
   });
 });
 
-Parse.Cloud.define("getLatestValidBooking", function(req, res) {
-  var params = req.params;
-  params.latest = true;
-  params.hasClosed = false;
-  BookingModel.getBookingByParams(params)
-  .then(function (bookingData) {
-    return resolve(bookingData);
-  })
-  .catch( function (error) {
-      return res.error(error);
-  });
-});
-
 Parse.Cloud.define("loadUserBooking", function(req, res) {
   var params = req.params;
   BookingModel.getUserBooking(params)
