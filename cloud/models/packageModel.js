@@ -60,7 +60,6 @@ function getPackageById (_id) {
       return reject(error);
     });
   });
-
 }
 
 exports.getPackageById    = getPackageById;

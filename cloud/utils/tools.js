@@ -77,12 +77,12 @@ function fixOpenAndCloseTime (_packageType, _openTime, _closeTime) {
   var openTime  = _openTime ? moment(_openTime) : null;
   var closeTime = _closeTime ? moment(_closeTime) : null;
   switch (_packageType) {
-    case 'HOUR': {
+    case 'HOURLY': {
       break;
     }
-    case 'DAY':
-    case 'WEEK':
-    case 'MONTH': {
+    case 'DAILY':
+    case 'WEEKLY':
+    case 'MONTHLY': {
       if (openTime) {
         openTime.set('hour', Constants.OPEN_HOUR_VI);
         openTime.set('minute', Constants.OPEN_MINUTE_VI);
@@ -106,7 +106,7 @@ function fixOpenAndCloseTime (_packageType, _openTime, _closeTime) {
 
 function getEndTimeFromPackage (_startTime, _type, _count) {
   switch (_type) {
-    case 'HOUR': {
+    case 'HOURLY': {
       var endTime = moment(_startTime);
       if (_count) {
         endTime = endTime.add(_count, 'hours');
@@ -116,15 +116,15 @@ function getEndTimeFromPackage (_startTime, _type, _count) {
       }
       return endTime.toDate();
     }
-    case 'DAY': {
+    case 'DAILY': {
       var endTime = moment(_startTime).add(_count - 1, 'days');
       return endTime.toDate();
     }
-    case 'WEEK': {
+    case 'WEEKLY': {
       var endTime = moment(_startTime).add(_count, 'weeks');
       return endTime.toDate();
     }
-    case 'MONTH': {
+    case 'MONTHLY': {
       var endTime = moment(_startTime).add(_count, 'months');
       return endTime.toDate();
     }
@@ -136,7 +136,7 @@ function getEndTimeFromPackage (_startTime, _type, _count) {
 
 function getDurationDetail (_startTime, _endTime, _package) {
   switch (_package) {
-    case 'HOUR': {
+    case 'HOURLY': {
       var diffTime              = moment(_endTime).diff(moment(_startTime));
       var duration              = moment.duration(diffTime);
       var hourString            = (duration.hours() > 1) ? " hours " : " hour ";
@@ -148,7 +148,7 @@ function getDurationDetail (_startTime, _endTime, _package) {
         "value": duration.hours() * 60 + duration.minutes()
       }
     }
-    case 'DAY': {
+    case 'DAILY': {
       var mStartTime      = moment(_startTime)
       var mEndTime        = moment(_endTime);
       var diffTime        = mEndTime.diff(mStartTime);
@@ -170,7 +170,7 @@ function getDurationDetail (_startTime, _endTime, _package) {
         "value": 0
       }
     }
-    case 'WEEK': {
+    case 'WEEKLY': {
       var mStartTime      = moment(_startTime)
       var mEndTime        = moment(_endTime);
       var diffTime        = mEndTime.diff(mStartTime);
@@ -190,7 +190,7 @@ function getDurationDetail (_startTime, _endTime, _package) {
         "value": 0
       }
     }
-    case 'MONTH': {
+    case 'MONTHLY': {
       var mStartTime      = moment(_startTime)
       var mEndTime        = moment(_endTime);
       var diffTime        = mEndTime.diff(mStartTime);
@@ -216,6 +216,16 @@ function getDurationDetail (_startTime, _endTime, _package) {
   }
 }
 
+function getPackageType (_name) {
+  var PACKAGE_TYPES = ['HOURLY', 'DAILY', 'WEEKLY', 'MONTHLY'];
+  var packageType = PACKAGE_TYPES.filter(function (item) {
+    console.log(item);
+    console.log(_name)
+    return _name.toUpperCase().indexOf(item) > -1;
+  });
+  return packageType && packageType[0];
+}
+
 exports.getCode           = getCode;
 exports.formatStringTime  = formatStringTime;
 exports.getRandomString   = getRandomString;
@@ -224,3 +234,4 @@ exports.formatToVNDString = formatToVNDString;
 exports.getEndTimeFromPackage = getEndTimeFromPackage;
 exports.getDurationDetail     = getDurationDetail;
 exports.fixOpenAndCloseTime   = fixOpenAndCloseTime;
+exports.getPackageType        = getPackageType;

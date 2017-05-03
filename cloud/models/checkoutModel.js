@@ -11,7 +11,10 @@ function formatResponseData (_priceDetail) {
 
       var startTime   = _priceDetail.validTime.startTime;
       var endTime     = _priceDetail.validTime.endTime;
-      var packageType = _priceDetail.packagePricing.package.type;
+
+      var displayName = _priceDetail.packagePricing.package.packageType.displayName;
+      var packageType = Tool.getPackageType(displayName);
+
       var duration              = Tool.getDurationDetail(startTime, endTime, packageType);
       var packageAmountString   = Tool.formatToVNDString(_priceDetail.packagePricing.total);
       var discountAmountString  = Tool.formatToVNDString(_priceDetail.discountPricing.total);
@@ -48,7 +51,6 @@ function formatResponseData (_priceDetail) {
             value: _priceDetail.packagePricing.total,
           },
           count: _priceDetail.packageCount,
-          type: _priceDetail.packagePricing.package.type,
           id: _priceDetail.packagePricing.package.id
         },
         serviceAmount: {

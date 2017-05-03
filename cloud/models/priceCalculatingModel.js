@@ -31,10 +31,10 @@ function getPackagePricingDetail (_package, _packageCount, _numberOfUsers) {
   if (_package)  {
     var chargeRate = _package.chargeRate;
     var name       = _package.name;
-    var type       = _package.type;
+    var venue      = _package.venue;
     var id         = _package.objectId;
     var total      = calculatePackagePrice(_packageCount, chargeRate, _numberOfUsers);
-    result.package = {name: name, chargeRate: chargeRate, type: type, id: id};
+    result.package = _package;
     result.total   = total;
   }
 
@@ -66,36 +66,27 @@ function getServicePricingDetail (_services) {
 
 function shouldChangeToDayPackage (_packageObject, _packageCount, _startTime) {
   return new Promise((resolve, reject) => {
-    var packageType = _packageObject.type;
-    if (packageType === 'HOUR') {
+    const displayName = _packageObject.packageType.displayName;
+    var packageType = Tool.getPackageType(displayName);
+    if (packageType === 'HOURLY') {
       var endTime       = Tool.getEndTimeFromPackage(_startTime, packageType, null);
       var duration      = moment.duration(moment(endTime).diff(moment(_startTime)));
       var packageCount  = duration.asHours();
-      // if (packageCount >= Constants.CHANGE_HOUR_TO_DAY_PACKAGE) {
-      //   PackageModel.getPackageByType('DAY')
-      //   .then( function (packageObject) {
-      //       return resolve({
-      //         packageObject: packageObject,
-      //         packageCount: 1,
-      //         startTime: _startTime,
-      //         endTime: endTime
-      //       });
-      //   })
-      //   .catch( function (error) {
-      //     return reject(error);
-      //   })
-      // }
-      // else {
-        return resolve({
-          packageObject: _packageObject,
-          packageCount: packageCount,
-          startTime: _startTime,
-          endTime: endTime
-        });
-      // }
+      if (packageCount >= Constants.CHANGE_HOUR_TO_DAY_PACKAGE) {
+        ///
+      }
+      else {
+        ///
+      }
+      return resolve({
+        packageObject: _packageObject,
+        packageCount: packageCount,
+        startTime: _startTime,
+        endTime: endTime
+      });
     }
     else {
-      var endTime   = Tool.getEndTimeFromPackage(_startTime, _packageObject.type, _packageCount);
+      var endTime   = Tool.getEndTimeFromPackage(_startTime, packageType, _packageCount);
       var fixTime   = Tool.fixOpenAndCloseTime(packageType, _startTime, endTime);
 
       return resolve({
