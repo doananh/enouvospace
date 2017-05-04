@@ -104,9 +104,9 @@ function createNewBooking(_params, _code) {
       });
     }
     else {
-      PackageModel.getDefaultPackage()
-      .then( function (defaultPackage) {
-        booking.set("package", defaultPackage);
+      GlobalVariable.getAnonymousPackage()
+      .then( function (anonymousPackage) {
+        booking.set("package", anonymousPackage.toJSON());
         return booking.save();
       })
       .then( function (bookingData) {

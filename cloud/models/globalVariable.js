@@ -44,5 +44,26 @@ function generateAnonymousCode() {
   });
 }
 
+function getAnonymousPackage () {
+  return new Promise((resolve, reject) => {
+      var query = new Parse.Query("GlobalVariable");
+      query.include("anonymousPackage");
+      query.first().then(function (data) {
+        if (data) {
+          var anonymousPackage = data.get('anonymousPackage');
+          return resolve(anonymousPackage);
+        }
+        else {
+          // create new default here
+          return resolve({/* */});
+        }
+    })
+    .catch(function (error) {
+      return reject(error);
+    });
+  });
+}
+
+exports.getAnonymousPackage     = getAnonymousPackage;
 exports.getLatestAnonymousCode  = getLatestAnonymousCode;
 exports.generateAnonymousCode   = generateAnonymousCode;
