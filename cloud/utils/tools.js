@@ -219,8 +219,6 @@ function getDurationDetail (_startTime, _endTime, _package) {
 function getPackageType (_name) {
   var PACKAGE_TYPES = ['HOURLY', 'DAILY', 'WEEKLY', 'MONTHLY'];
   var packageType = PACKAGE_TYPES.filter(function (item) {
-    console.log(item);
-    console.log(_name)
     return _name.toUpperCase().indexOf(item) > -1;
   });
   return packageType && packageType[0];
