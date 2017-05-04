@@ -27,8 +27,8 @@ Parse.Cloud.define("checkoutByCode", function(req, res) {
             booking.set("discountAmount", formatData.discountAmount.value);
             booking.set("serviceAmount", formatData.serviceAmount.value);
             booking.set("package", packageObject);
-            booking.set("startTime", formatData.checkinTime);
-            booking.set("endTime", formatData.checkoutTime);
+            booking.set("startTime", new Date(formatData.checkinTime));
+            booking.set("endTime", new Date(formatData.checkoutTime));
             booking.set("status", "CLOSED");
             booking.set("user", formatData.user);
             return booking.save();
