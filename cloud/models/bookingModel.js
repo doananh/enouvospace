@@ -165,6 +165,26 @@ function getBookingByParams (_params) {
   });
 }
 
+function getLastValidUserBooking (_params) {
+  return new Promise((resolve, reject) => {
+    var bookingQuery = new Parse.Query("Booking");
+    if (_params.userId) {
+      bookingQuery.equalTo("user.id", _params.userId);
+    }
+    else {
+      return reject('Require user id params');
+    }
+    bookingQuery.descending("createdAt");
+    bookingQuery.equalTo("status", "OPEN");
+    bookingQuery.first().then( function (bookings) {
+      return resolve(bookings);
+    })
+    .catch( function (error) {
+      return reject(error);
+    });
+  });
+}
+
 function getUserBooking (_params) {
   return new Promise((resolve, reject) => {
     var bookingQuery = new Parse.Query("Booking");
@@ -189,3 +209,4 @@ exports.createBookingForAnonymousUser = createBookingForAnonymousUser;
 exports.createNewBooking              = createNewBooking;
 exports.getBookingByParams            = getBookingByParams;
 exports.getUserBooking                = getUserBooking;
+exports.getLastValidUserBooking       = getLastValidUserBooking;

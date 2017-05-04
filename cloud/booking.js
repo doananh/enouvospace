@@ -30,3 +30,28 @@ Parse.Cloud.define("loadUserBooking", function(req, res) {
     return res.error(error);
   });
 });
+
+Parse.Cloud.define("getLastValidUserBooking", function(req, res) {
+  var params = req.params;
+  if (params.user && params.user.id) {
+    BookingModel.getLastValidUserBooking({userId: params.user.id})
+    .then( function (bookingData) {
+      if (bookingData) {
+        return res.success(bookingData.toJSON());
+      }
+      else {
+        throw('No booking found. Please contact reception to booking a new one.')
+      }
+
+    })
+    .catch( function (error) {
+      return res.error(error);
+    });
+  }
+  else if (params.user && !params.user.id) {
+    return res.error('Require user id params');
+  }
+  else {
+    return res.error('Require user params');
+  }
+});
