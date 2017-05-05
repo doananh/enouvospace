@@ -14,28 +14,29 @@ Parse.serverURL = process.env.SERVER_URL;
 
 function recordCheckin (_params) {
   return new Promise( (resolve, reject) => {
-    var checkinTime = moment().toDate();
+    var checkinTime = _params.checkinTime ?  _params.checkinTime : moment().toDate();
     var username    = _params.username;
     var userId      = _params.userId;
     var bookingId   = _params.bookingId;
-
+    var code        = _params.code;
     var Record = Parse.Object.extend("Record");
     var record = new Record();
-
     record.set("checkinTime", checkinTime);
     record.set("username", username);
     record.set("userId", userId);
     record.set("booking", { "__type":"Pointer","className":"Booking","objectId":bookingId });
     record.save().then( function (data) {
       var checkinTime = data.get('checkinTime');
+      var booking     = data.get('booking');
       return resolve({
         checkinTime: checkinTime.toISOString(),
         objectId: data.id,
         user: {
           userId: data.get('userId'),
-          username: data.get('username')
+          username: data.get('username'),
+          code: code
         },
-        bookingId: data.get('booking').objectId
+        bookingId: booking.objectId
       });
     })
     .catch ( function (error) {

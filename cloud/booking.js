@@ -23,7 +23,9 @@ Parse.Cloud.define("loadUserBooking", function(req, res) {
   var params = req.params;
   BookingModel.getUserBooking(params)
   .then( function (data) {
-    var jsonData = _.map(data, function(element){ return element.toJSON()});
+    var jsonData = _.map(data, function(element) {
+      return element.toJSON();
+    });
     return res.success(jsonData);
   })
   .catch( function (error) {

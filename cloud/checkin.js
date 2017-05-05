@@ -2,6 +2,7 @@ var _ = require('underscore');
 var moments = require('moment');
 var Tool = require('./utils/tools.js');
 var BookingUtil = require('./models/bookingModel.js');
+var RecordModel   = require('./models/recordModel.js');
 
 Parse.Cloud.define("checkin", function(req, res) {
   var params = req.params;
@@ -9,7 +10,8 @@ Parse.Cloud.define("checkin", function(req, res) {
     BookingUtil.createBookingForLoginUser(params)
     .then(function (data) {
       return res.success(data);
-    }, function (error) {
+    })
+    .catch(function (error) {
       return res.error(error);
     });
   }
@@ -18,9 +20,13 @@ Parse.Cloud.define("checkin", function(req, res) {
   }
   else {
     BookingUtil.createBookingForAnonymousUser(params)
-    .then(function (data) {
-      return res.success(data);
-    }, function (error) {
+    .then(function (checkinData) {
+      return RecordModel.recordCheckin(checkinData);
+    })
+    .then(function (recordData) {
+      return res.success(recordData);
+    })
+    .catch(function (error) {
       return res.error(error);
     });
   }

@@ -44,8 +44,14 @@ function createBookingForAnonymousUser(_params) {
       if (data) {
         var startTime = data.get('startTime');
         var user = data.get('user');
-        var code = user.code;
-        return resolve({code: code, checkinTime: startTime.toISOString()});
+        var bookingId = data.id;
+        var responseData = {
+          checkinTime: startTime,
+          username: user.username,
+          code: user.code,
+          bookingId: bookingId
+        }
+        return resolve(responseData);
       }
       else {
         throw('No booking data');
