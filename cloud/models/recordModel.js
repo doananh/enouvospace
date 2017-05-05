@@ -46,39 +46,45 @@ function recordCheckin (_params) {
 }
 
 function recordCheckout (_params) {
-  return new Promise( (resolve, reject) => {
-    var checkoutTime  = moment().toDate();
-    var username      = _params.username;
-    var userId        = _params.userId;
+    return new Promise( (resolve, reject) => {
+        var checkoutTime  = moment().toDate();
+        var username      = _params.username;
+        var userId        = _params.userId;
+        var bookingId     = _params.bookingId;
 
-    var recordQuery   = new Parse.Query("Record");
-    recordQuery.descending("createdAt");
-    recordQuery.equalTo("username", username);
-    recordQuery.equalTo("userId", userId);
+        var recordQuery   = new Parse.Query("Record");
+        recordQuery.descending("createdAt");
+        recordQuery.equalTo("username", username);
+        if (userId) {
+          recordQuery.equalTo("userId", userId);
+        }
+        if (bookingId) {
+          recordQuery.equalTo("booking", { "__type":"Pointer","className":"Booking","objectId":bookingId });
+        }
 
-    recordQuery.first()
-    .then( function (recordData) {
-        if (recordData) {
-          recordData.set("checkoutTime", checkoutTime);
-          return recordData.save();
-        }
-        else {
-          throw('No record found to checkout');
-        }
-    })
-    .then( function (recordData) {
-        var recordObject = {
-          objectId: recordData.id,
-          checkinTime: recordData.get('checkinTime'),
-          checkoutTime: recordData.get('checkoutTime'),
-          bookingId: recordData.get('booking').id
-        };
-        return resolve(recordObject);
-    })
-    .catch( function (error) {
-        return reject(error);
+        recordQuery.first()
+        .then( function (recordData) {
+            if (recordData) {
+              recordData.set("checkoutTime", checkoutTime);
+              return recordData.save();
+            }
+            else {
+              throw('No record found to checkout');
+            }
+        })
+        .then( function (recordData) {
+            var recordObject = {
+              objectId: recordData.id,
+              checkinTime: recordData.get('checkinTime'),
+              checkoutTime: recordData.get('checkoutTime'),
+              bookingId: recordData.get('booking').id
+            };
+            return resolve(recordObject);
+        })
+        .catch( function (error) {
+            return reject(error);
+        });
     });
-  });
 }
 
 function recordCheckoutAndPreviewBooking (_params) {

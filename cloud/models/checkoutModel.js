@@ -5,12 +5,8 @@ var Tool      = require('../utils/tools.js');
 
 function formatResponseData (_priceDetail) {
     if (_priceDetail) {
-      if (!_priceDetail.validTime || !_priceDetail.packagePricing) {
-        throw ('Cannot format checkout data');
-      }
-
-      var startTime   = _priceDetail.validTime.startTime;
-      var endTime     = _priceDetail.validTime.endTime;
+      var startTime   = _priceDetail.startTime;
+      var endTime     = _priceDetail.endTime;
 
       var displayName = _priceDetail.packagePricing.package.packageType.displayName;
       var packageType = Tool.getPackageType(displayName);
@@ -51,7 +47,7 @@ function formatResponseData (_priceDetail) {
             value: _priceDetail.packagePricing.total,
           },
           count: _priceDetail.packageCount,
-          id: _priceDetail.packagePricing.package.id
+          id: _priceDetail.packagePricing.package.objectId
         },
         serviceAmount: {
           text: serviceAmountString,

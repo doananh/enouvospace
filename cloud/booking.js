@@ -9,12 +9,12 @@ Parse.Cloud.define("previewBooking", function(req, res) {
   var params = req.params;
   BookingModel.getBookingByParams(params)
   .then(function (bookingData) {
-      return PriceCalculatingModel.getBookingPricingDetail(bookingData);
+      return PriceCalculatingModel.previewPricing(bookingData);
   })
-  .then( function (formatData) {
+  .then(function (formatData) {
       return res.success(formatData);
   })
-  .catch( function (error) {
+  .catch(function (error) {
       return res.error(error);
   });
 });
@@ -22,13 +22,13 @@ Parse.Cloud.define("previewBooking", function(req, res) {
 Parse.Cloud.define("loadUserBooking", function(req, res) {
   var params = req.params;
   BookingModel.getUserBooking(params)
-  .then( function (data) {
+  .then(function (data) {
     var jsonData = _.map(data, function(element) {
       return element.toJSON();
     });
     return res.success(jsonData);
   })
-  .catch( function (error) {
+  .catch(function (error) {
     return res.error(error);
   });
 });
@@ -37,7 +37,7 @@ Parse.Cloud.define("getLastValidUserBooking", function(req, res) {
   var params = req.params;
   if (params.user && params.user.id) {
     BookingModel.getLastValidUserBooking({userId: params.user.id})
-    .then( function (bookingData) {
+    .then(function (bookingData) {
       if (bookingData) {
         return res.success(bookingData.toJSON());
       }
@@ -46,7 +46,7 @@ Parse.Cloud.define("getLastValidUserBooking", function(req, res) {
       }
 
     })
-    .catch( function (error) {
+    .catch(function (error) {
       return res.error(error);
     });
   }
