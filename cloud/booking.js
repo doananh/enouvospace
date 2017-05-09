@@ -44,7 +44,6 @@ Parse.Cloud.define("getLastValidUserBooking", function(req, res) {
       else {
         throw('No booking found. Please contact reception to booking a new one.')
       }
-
     })
     .catch(function (error) {
       return res.error(error);

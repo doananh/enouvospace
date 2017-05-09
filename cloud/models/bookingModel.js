@@ -16,7 +16,16 @@ function createBookingForLoginUser(_params) {
   return new Promise((resolve, reject) => {
     var packageId = _params.packageId;
     if (packageId) {
-      PackageModel.getPackageById(packageId).then(function (packageData) {
+      getLastValidUserBooking({userId: _params.user.id})
+      .then(function (lastValidBooking) {
+        if (lastValidBooking) {
+          throw('You only register one booking');
+        }
+        else {
+          PackageModel.getPackageById(packageId);
+        }
+      })
+      .then(function (packageData) {
         var bookingParams = _.extend({}, _params, {"package": packageData.toJSON()});
         return createNewBooking(bookingParams, null);
       })
