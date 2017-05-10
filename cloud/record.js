@@ -11,8 +11,18 @@ Parse.Cloud.define("recordCheckin", function(req, res) {
   BookingModel.getBookingByParams({ userId: userId, username: username, status: "OPEN", latest: true })
   .then(function (bookingData) {
       if (bookingData) {
-        var startTime = bookingData.get('startTime');
-        var isBefore = moment().isBefore(startTime);
+        var startTime       = bookingData.get('startTime');
+        var packageObject   = bookingData.get('package');
+        var displayName     = packageObject.packageType.displayName;
+        var packageType     = Tool.getPackageType(displayName);
+        if ( ((packageType === 'HOURLY') || (packageType === 'HOURLY'))
+          &&  moment().isBefore(startTime)
+        ) {
+            throw('Checkin time doesn\'t match with booking time');
+        }
+        else {
+           ////
+        }
         if (isBefore) {
           throw('Checkin time doesn\'t match with booking time');
         }
@@ -39,7 +49,12 @@ Parse.Cloud.define("recordCheckout", function(req, res) {
   var showBookingPayment = params.showBookingPayment || false;
 
   if (showBookingPayment) {
-    RecordModel.recordCheckoutAndPreviewBooking({ username: username, userId: userId, bookingId: bookingId, status: "OPEN" })
+    RecordModel.recordCheckoutAndPreviewBooking({
+      username: username,
+      userId: userId,
+      bookingId: bookingId,
+      status: "OPEN"
+    })
     .then( function (data) {
         return res.success(data);
     })
