@@ -1,5 +1,5 @@
 var _ = require('underscore');
-var moments = require('moment');
+var moment = require('moment');
 
 var BookingModel  = require('./models/bookingModel.js');
 var RecordModel   = require('./models/recordModel.js');
@@ -11,6 +11,11 @@ Parse.Cloud.define("recordCheckin", function(req, res) {
   BookingModel.getBookingByParams({ userId: userId, username: username, status: "OPEN", latest: true })
   .then(function (bookingData) {
       if (bookingData) {
+        var startTime = bookingData.get('startTime');
+        var isBefore = moment().isBefore(startTime);
+        if (isBefore) {
+          throw('Checkin time doesn\'t match with booking time');
+        }
         var data = { userId: userId, username: username, bookingId: bookingData.id};
         return RecordModel.recordCheckin(data)
       }
