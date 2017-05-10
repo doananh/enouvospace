@@ -54,7 +54,9 @@ function recordCheckout (_params) {
 
         var recordQuery   = new Parse.Query("Record");
         recordQuery.descending("createdAt");
-        recordQuery.equalTo("username", username);
+        if (username) {
+          recordQuery.equalTo("username", username);
+        }
         if (userId) {
           recordQuery.equalTo("userId", userId);
         }
