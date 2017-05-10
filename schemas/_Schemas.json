@@ -181,9 +181,6 @@
             "ACL": {
                 "type": "ACL"
             },
-            "type": {
-                "type": "String"
-            },
             "name": {
                 "type": "String"
             },
@@ -191,11 +188,10 @@
                 "type": "Number"
             },
             "venue": {
-                "type": "Pointer",
-                "targetClass": "Venue"
+                "type": "Object"
             },
-            "order": {
-                "type": "Number"
+            "packageType": {
+                "type": "Object"
             }
         },
         "classLevelPermissions": {
@@ -376,10 +372,16 @@
             "name": {
                 "type": "String"
             },
-            "type": {
+            "capacity": {
+                "type": "Number"
+            },
+            "displayName": {
                 "type": "String"
             },
-            "capacity": {
+            "peopleNumbers": {
+                "type": "String"
+            },
+            "order": {
                 "type": "Number"
             }
         },
@@ -650,6 +652,10 @@
             },
             "latestAnonymousCode": {
                 "type": "String"
+            },
+            "anonymousPackage": {
+                "type": "Pointer",
+                "targetClass": "Package"
             }
         },
         "classLevelPermissions": {
@@ -743,6 +749,52 @@
                 "*": true,
                 "role:ADMIN": true,
                 "role:MODERATOR": true
+            }
+        }
+    },
+    {
+        "className": "PackageType",
+        "fields": {
+            "objectId": {
+                "type": "String"
+            },
+            "createdAt": {
+                "type": "Date"
+            },
+            "updatedAt": {
+                "type": "Date"
+            },
+            "ACL": {
+                "type": "ACL"
+            },
+            "name": {
+                "type": "String"
+            },
+            "displayName": {
+                "type": "String"
+            },
+            "order": {
+                "type": "Number"
+            }
+        },
+        "classLevelPermissions": {
+            "find": {
+                "*": true
+            },
+            "get": {
+                "*": true
+            },
+            "create": {
+                "*": true
+            },
+            "update": {
+                "*": true
+            },
+            "delete": {
+                "*": true
+            },
+            "addField": {
+                "*": true
             }
         }
     }
