@@ -106,6 +106,7 @@ function recordCheckoutAndPreviewBooking (_params) {
           var recordObject = results[0];
           var priceDetailData = results[1];
           priceDetailData.latestRecord = recordObject;
+          priceDetailData.isPreviewBooking = true;
           return resolve(priceDetailData);
       })
       .catch( function (error) {
