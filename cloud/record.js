@@ -43,7 +43,7 @@ Parse.Cloud.define("recordCheckout", function(req, res) {
 
   BookingModel.getBookingByParams({ bookingId: bookingId, status: "OPEN" })
     .then(function(bookingInfo) {
-      if(bookingInfo.willPayWhenCheckout) {
+      if(bookingInfo.package && bookingInfo.package.willPayWhenCheckout) {
         return RecordModel.recordCheckoutAndPreviewBooking({ username: username, userId: userId, bookingId: bookingId, status: "OPEN" });
       } else {
         return RecordModel.recordCheckout({ username: username, userId: userId });
