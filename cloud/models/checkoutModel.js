@@ -7,6 +7,7 @@ function formatResponseData (_priceDetail) {
     if (_priceDetail) {
       var startTime   = _priceDetail.startTime;
       var endTime     = _priceDetail.endTime;
+      var checkinTime = _priceDetail.checkinTime;
 
       var displayName = _priceDetail.packagePricing.package.packageType.displayName;
       var packageType = Tool.getPackageType(displayName);
@@ -31,7 +32,7 @@ function formatResponseData (_priceDetail) {
       return {
         customerName: _priceDetail.user.username,
         customerCode: _priceDetail.user.code,
-        checkinTime: startTime.toISOString(),
+        checkinTime: checkinTime ? checkinTime.toISOString() : startTime.toISOString(),
         checkoutTime: endTime.toISOString(),
         duration: {
           text: duration.text,

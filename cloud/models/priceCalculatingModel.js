@@ -6,6 +6,7 @@ var DiscountModel = require('./discountModel.js');
 var PackageModel  = require('./packageModel.js');
 var Constants     = require('../constant.js');
 var CheckoutModel = require('./checkoutModel.js');
+var RecordModel   = require('./recordModel.js');
 
 function getDiscountDetailPricing (_discount, _packageAmount) {
     var result = {total: 0, percent: 0, amount: 0};
@@ -64,25 +65,31 @@ function getServicePricingDetail (_services) {
     return result;
 }
 
-function shouldChangeToDayPackage (_packageObject, _packageCount, _startTime) {
+function shouldChangeToDayPackage (_packageObject, _packageCount, _startTime, bookingId) {
     return new Promise((resolve, reject) => {
         const displayName = _packageObject.packageType.displayName;
         var packageType = Tool.getPackageType(displayName);
         if (packageType === 'HOURLY') {
-          var endTime       = Tool.getEndTimeFromPackage(_startTime, packageType, null);
-          var duration      = moment.duration(moment(endTime).diff(moment(_startTime)));
-          var packageCount  = duration.asHours();
-          if (packageCount >= Constants.CHANGE_HOUR_TO_DAY_PACKAGE) {
-            ///
-          }
-          else {
-            ///
-          }
-          return resolve({
-            packageObject: _packageObject,
-            packageCount: packageCount,
-            startTime: _startTime,
-            endTime: endTime
+          RecordModel.getRecordByParams({bookingId: bookingId})
+          .then(function (recordData) {
+              var checkinTime = recordData && recordData.get('checkinTime');
+              var endTime       = Tool.getEndTimeFromPackage(checkinTime, packageType, null);
+              var duration      = moment.duration(moment(endTime).diff(moment(checkinTime)));
+              var packageCount  = duration.asHours();
+              /* temp remove
+              if (packageCount >= Constants.CHANGE_HOUR_TO_DAY_PACKAGE) {
+                ///
+              }
+              else {
+                ///
+              }*/
+              return resolve({
+                packageObject: _packageObject,
+                packageCount: packageCount,
+                startTime: _startTime,
+                endTime: endTime,
+                checkinTime: checkinTime
+              });
           });
         }
         else {
@@ -110,13 +117,18 @@ function calculateBookingPricing (bookingObject) {
       var user            = bookingObject.get('user');
       var status          = bookingObject.get('status');
       var isPaid          = bookingObject.get('isPaid');
+      var checkinTime     = bookingObject.get('startTime'); // this for fixing hourly price with checkinTime - not startTime
 
-      shouldChangeToDayPackage(packageObject, packageCount, startTime)
+
+      shouldChangeToDayPackage(packageObject, packageCount, startTime, bookingId)
       .then(function (afterChangeData) {
           packageCount  = afterChangeData.packageCount;
           packageObject = afterChangeData.packageObject;
           startTime     = afterChangeData.startTime;
           endTime       = afterChangeData.endTime;
+          if (afterChangeData.checkinTime) {
+            checkinTime = afterChangeData.checkinTime;
+          }
           // ------------------------------------------------
           var servicesQuery     = new Parse.Query('Service');
           servicesQuery.include('servicePackage');
@@ -138,6 +150,7 @@ function calculateBookingPricing (bookingObject) {
               packagePricing: packagePricing,
               discountPricing: discountPricing,
               startTime: startTime,
+              checkinTime: checkinTime,
               endTime: endTime,
               numOfUsers: numOfUsers,
               packageCount: packageCount,
