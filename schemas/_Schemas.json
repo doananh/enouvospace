@@ -119,9 +119,6 @@
             "isPaid": {
                 "type": "Boolean"
             },
-            "payAmount": {
-                "type": "Number"
-            },
             "discountAmount": {
                 "type": "Number"
             },
@@ -132,6 +129,9 @@
                 "type": "Object"
             },
             "serviceAmount": {
+                "type": "Number"
+            },
+            "payAmount": {
                 "type": "Number"
             }
         },
@@ -192,6 +192,9 @@
             },
             "packageType": {
                 "type": "Object"
+            },
+            "willPayWhenCheckout": {
+                "type": "Boolean"
             }
         },
         "classLevelPermissions": {
