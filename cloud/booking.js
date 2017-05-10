@@ -42,7 +42,9 @@ Parse.Cloud.define("getLastValidUserBooking", function(req, res) {
         return res.success(bookingData.toJSON());
       }
       else {
-        throw('No booking found. Please contact reception to booking a new one.')
+        // return empty for handle no booking on client app
+        // to avoid crash => need adding "{}" for converting response to JSON
+        return res.success({});
       }
     })
     .catch(function (error) {
