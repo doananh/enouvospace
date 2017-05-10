@@ -11,8 +11,18 @@ Parse.Cloud.define("recordCheckin", function(req, res) {
   BookingModel.getBookingByParams({ userId: userId, username: username, status: "OPEN", latest: true })
   .then(function (bookingData) {
       if (bookingData) {
-        var startTime = bookingData.get('startTime');
-        var isBefore = moment().isBefore(startTime);
+        var startTime       = bookingData.get('startTime');
+        var packageObject   = bookingData.get('package');
+        var displayName     = packageObject.packageType.displayName;
+        var packageType     = Tool.getPackageType(displayName);
+        if ( ((packageType === 'HOURLY') || (packageType === 'HOURLY'))
+          &&  moment().isBefore(startTime)
+        ) {
+            throw('Checkin time doesn\'t match with booking time');
+        }
+        else {
+           ////
+        }
         if (isBefore) {
           throw('Checkin time doesn\'t match with booking time');
         }

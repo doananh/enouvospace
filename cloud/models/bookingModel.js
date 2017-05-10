@@ -30,8 +30,7 @@ function createBookingForLoginUser(_params) {
         return createNewBooking(bookingParams, null);
       })
       .then(function (data) {
-        var startTime = data.get('startTime');
-        return resolve({checkinTime: startTime.toISOString()});
+        return resolve(data.toJSON());
       })
       .catch( function (error) {
         return reject(error);
