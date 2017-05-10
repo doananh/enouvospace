@@ -22,7 +22,7 @@ function createBookingForLoginUser(_params) {
           throw('You only register one booking');
         }
         else {
-          PackageModel.getPackageById(packageId);
+          return PackageModel.getPackageById(packageId);
         }
       })
       .then(function (packageData) {
