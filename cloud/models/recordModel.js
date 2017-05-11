@@ -97,7 +97,7 @@ function recordCheckoutAndPreviewBooking (_params) {
             var data = { userId: _params.userId, username: _params.username };
             return Parse.Promise.when([
               recordCheckout(data),
-              PriceCalculatingModel.getBookingPricingDetail(bookingData)
+              PriceCalculatingModel.previewPricing(bookingData)
             ]);
           }
           else {
