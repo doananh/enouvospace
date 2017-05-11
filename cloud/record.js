@@ -13,10 +13,15 @@ Parse.Cloud.define("recordCheckin", function(req, res) {
       if (bookingData) {
         var startTime       = bookingData.get('startTime');
         var packageObject   = bookingData.get('package');
-        var willPayWhenCheckout     = packageObject.willPayWhenCheckout;
+        var willPayWhenCheckout = packageObject.willPayWhenCheckout;
 
-        if (willPayWhenCheckout && moment().isBefore(moment(startTime))) {
-          throw('Checkin time doesn\'t match with booking time');
+        if (willPayWhenCheckout) {
+          var duration      = moment.duration(moment().diff(moment(startTime)));
+          var hours         = Math.abs(duration.asHours());
+          var  HOUR_BETWEEN_CHECKIN_TIME_START_TIME = 14;
+          if (hours > HOUR_BETWEEN_CHECKIN_TIME_START_TIME) {
+            throw('Checkin time doesn\'t match with booking time');
+          }
         }
         else {
            ////
