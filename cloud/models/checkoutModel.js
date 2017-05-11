@@ -12,7 +12,7 @@ function formatResponseData (_priceDetail) {
       var displayName = _priceDetail.packagePricing.package.packageType.displayName;
       var packageType = Tool.getPackageType(displayName);
 
-      var duration              = Tool.getDurationDetail(startTime, endTime, packageType);
+      var duration              = Tool.getDurationDetail(checkinTime || startTime , endTime, packageType);
       var packageAmountString   = Tool.formatToVNDString(_priceDetail.packagePricing.total);
       var discountAmountString  = Tool.formatToVNDString(_priceDetail.discountPricing.total);
       var serviceAmountString   = Tool.formatToVNDString(_priceDetail.servicePricing.total);
