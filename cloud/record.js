@@ -14,7 +14,8 @@ Parse.Cloud.define("recordCheckin", function(req, res) {
         var startTime       = bookingData.get('startTime');
         var packageObject   = bookingData.get('package');
         var willPayWhenCheckout     = packageObject.willPayWhenCheckout;
-        if (willPayWhenCheckout && moment().isBefore(startTime)) {
+
+        if (willPayWhenCheckout && moment().isBefore(moment(startTime))) {
           throw('Checkin time doesn\'t match with booking time');
         }
         else {
