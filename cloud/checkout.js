@@ -50,6 +50,7 @@ Parse.Cloud.define("checkoutByCode", function(req, res) {
 
 Parse.Cloud.define("checkoutByBookingId", function(req, res) {
   var params = req.params;
+
   if (params && params.bookingId) {
     BookingModel.getBookingByParams({bookingId: params.bookingId})
     .then(function (bookingObject) {
@@ -78,7 +79,15 @@ Parse.Cloud.define("checkoutByBookingId", function(req, res) {
           username: bookingSaveResult.get('user').username,
           userId: bookingSaveResult.get('user').id
         }
-        return RecordModel.recordCheckout(recordParams)
+        return RecordModel.getRecordByParams({bookingId: bookingSaveResult.id});
+    })
+    .then(function (recordData) {
+        if (recordData) {
+          return RecordModel.recordCheckout(recordParams)
+        }
+        else {
+          return res.success({});
+        }
     })
     .then(function (recordData) {
         return res.success(recordData);
