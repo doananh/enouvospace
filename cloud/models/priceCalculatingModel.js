@@ -73,8 +73,9 @@ function shouldChangeToDayPackage (_packageObject, _packageCount, _startTime, bo
           RecordModel.getRecordByParams({bookingId: bookingId})
           .then(function (recordData) {
               var checkinTime = recordData && recordData.get('checkinTime');
-              var endTime       = Tool.getEndTimeFromPackage(checkinTime, packageType, null);
-              var duration      = moment.duration(moment(endTime).diff(moment(checkinTime)));
+
+              var endTime       = Tool.getEndTimeFromPackage(checkinTime || _startTime, packageType, null);
+              var duration      = moment.duration(moment(endTime).diff(moment(checkinTime || _startTime)));
               var packageCount  = duration.asHours();
               /* temp remove
               if (packageCount >= Constants.CHANGE_HOUR_TO_DAY_PACKAGE) {
