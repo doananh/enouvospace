@@ -88,10 +88,10 @@ function createNewBooking(_params, _code) {
     }
 
     if (_code) {
-      booking.set("user", {"code": _code, "username": "anonymous " + _code, type: "anonymous"});
+      booking.set("user", {"code": _code, "username": "anonymous" + _code, "name": "anonymous " + _code, type: "anonymous"});
     }
     else {
-      booking.set("user", {"id": _params.user.id, "username": _params.user.username, type: "customer"});
+      booking.set("user", {"id": _params.user.id, "username": _params.user.username, "name": _params.user.name, type: "customer"});
     }
 
     if (_params && _params.numOfUsers) {
