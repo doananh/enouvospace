@@ -71,5 +71,26 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
     }
   }
 
+  if (status === "CLOSED" && (req.original.get('status') === "OPEN")) {
+    var pushQuery = new Parse.Query(Parse.Installation);
+    pushQuery.equalTo("user", { "__type":"Pointer","className":"_User","objectId": user.id });
+    Parse.Push.send({
+      where: pushQuery,
+      data: {
+        alert: "YOUR BOOKING HAS BEEN CLOSED",
+        sound: "default"
+      }
+    }, {
+        success: function(){
+          console.log('Send Push Success');
+        },
+        error: function (error) {
+          console.log(error);
+        }
+    }, {
+      useMasterKey: true
+    });
+  }
+
   return res.success();
 });
