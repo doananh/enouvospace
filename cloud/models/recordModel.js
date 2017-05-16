@@ -172,11 +172,30 @@ function groupUserCheckinFollowTime(_request, _recordDataToArrayJson, _periodOfT
       groupUserFollowTime =  groupUserCheckinFollowMonths(_recordDataToArrayJson, _periodOfTime);
       break;
     case 'yearly':
+      groupUserFollowTime =  groupUserCheckinFollowYears(_recordDataToArrayJson, _periodOfTime);
       break;
     default:
       groupUserFollowTime =  groupUserCheckinFollowDays(_recordDataToArrayJson, _periodOfTime);
   }
   return groupUserFollowTime;
+}
+
+function groupUserCheckinFollowYears(_recordDataToArrayJson, _periodOfTime) {
+  var YearArray = [];
+  var currentYear = moment(_periodOfTime.startDateTime);
+  var stopYear = moment(_periodOfTime.endDateTime);
+  var groupUserFollowYears =  _.groupBy(_recordDataToArrayJson, function(value) {
+    return moment(value.checkinTime.iso).year();
+  });
+  while (moment(currentYear).isSameOrBefore(moment(stopYear))) {
+    var groupUserFollowCurrentYear = groupUserFollowYears[moment(currentYear).year()];
+    YearArray.push({
+      displayTime: moment(currentYear).format("YYYY"),
+      count: (groupUserFollowCurrentYear && groupUserFollowCurrentYear.length > 0) ? groupUserFollowCurrentYear.length : 0
+    });
+    currentYear = moment(currentYear).add(1, 'year');
+  }
+  return YearArray;
 }
 
 function groupUserCheckinFollowMonths(_recordDataToArrayJson, _periodOfTime) {

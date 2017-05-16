@@ -91,8 +91,9 @@ function getStart_EndDay(review) {
       startDateTime = moment(now).subtract(11, 'months').startOf('month').toDate();
       endDateTime = moment(now).endOf("month").toDate();
       break;
-    case 'custom':
-      return getCustomTimeRange(review);
+    case 'yearly':
+      startDateTime = moment(now).subtract(11, 'years').startOf('year').toDate();
+      endDateTime = moment(now).endOf("year").toDate();
       break;
     default:
       startDateTime = moment(now).startOf('day').toDate();
