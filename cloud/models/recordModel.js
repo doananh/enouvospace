@@ -145,18 +145,12 @@ function getRecords (_request, _periodOfTime) {
     var recordQuery   = new Parse.Query("Record");
     recordQuery.greaterThanOrEqualTo("checkinTime", startDateTime);
     recordQuery.lessThanOrEqualTo("checkinTime", endDateTime);
-    recordQuery.descending("checkinTime");
+    recordQuery.include("booking");
     recordQuery.find()
     .then(function (recordData) {
       if (recordData) {
         var recordDataToArrayJson = Tool.convertArrayParseObjToArrayJson(recordData);
-        var groupUserFollowDays = groupUserCheckinFollowDays(recordDataToArrayJson);
-        var data = _.map(groupUserFollowDays, function(recordData, key) {
-          return  { 
-                    displayTime: key,
-                    count: groupUserFollowDays[key].length
-                  };
-        });
+        var groupUserFollowTime = groupUserCheckinFollowTime(_request, recordDataToArrayJson, _periodOfTime);
       }
       else {
         throw('No record found');
@@ -165,11 +159,40 @@ function getRecords (_request, _periodOfTime) {
   });
 }
 
-function groupUserCheckinFollowDays(_recordDataToArrayJson) {
+function groupUserCheckinFollowTime(_request, _recordDataToArrayJson, _periodOfTime) {
+  var groupUserFollowTime;
+  switch (_request.type) {
+    case 'daily':
+      groupUserFollowTime =  groupUserCheckinFollowDays(_recordDataToArrayJson, _periodOfTime);
+      break;
+    case 'weekly':
+      break;
+    case 'monthly':
+      break;
+    case 'yearly':
+      break;
+    default:
+      groupUserFollowTime =  groupUserCheckinFollowDays(_recordDataToArrayJson, _periodOfTime);
+  }
+  return groupUserFollowTime;
+}
+
+function groupUserCheckinFollowDays(_recordDataToArrayJson, _periodOfTime) {
+  var dateArray = [];
+  var currentDate = moment(_periodOfTime.startDateTime).format('YYYY-MM-DD');
+  var stopDate = moment(_periodOfTime.endDateTime).format('YYYY-MM-DD');
   var groupUserFollowDays =  _.groupBy(_recordDataToArrayJson, function(value) {
     return moment(value.checkinTime.iso).format("YYYY-MM-DD");
   });
-  return groupUserFollowDays;
+  while (moment(currentDate).isBefore(moment(stopDate)) || moment(currentDate).isSame(moment(stopDate))) {
+    var groupUserFollowCurrentDay = groupUserFollowDays[currentDate];
+    dateArray.push({
+      displayTime: currentDate,
+      count: (groupUserFollowCurrentDay && groupUserFollowCurrentDay.length > 0) ? groupUserFollowCurrentDay.length : 0
+    });
+    currentDate = moment(currentDate).add(1, 'days').format("YYYY-MM-DD");
+  }
+  return dateArray;
 }
 
 function uniqUserCheckinFollowDays(_groupUserFollowDay) {
