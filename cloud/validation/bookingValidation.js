@@ -80,15 +80,14 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
         alert: "YOUR BOOKING HAS BEEN CLOSED",
         sound: "default"
       }
-    }, {
-        success: function(){
-          console.log('Send Push Success');
-        },
-        error: function (error) {
-          console.log(error);
-        }
-    }, {
+    },{
       useMasterKey: true
+    })
+    .then(function (result) {
+      console.log('Send Push Success');
+    })
+    .catch(function (error) {
+      console.log(error);
     });
   }
 
