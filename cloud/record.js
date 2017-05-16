@@ -64,3 +64,47 @@ Parse.Cloud.define("recordCheckout", function(req, res) {
       return res.error(error);
     });
 });
+
+Parse.Cloud.define("getStatisticUserCheckin", function(req, res) {
+    var review = req.params;
+    if (!review.type) return;
+    var timeRange = getStart_EndDay(review);
+    RecordModel.getRecords(review, timeRange).then(function(recordData) {
+    }, function(err) {
+      res.error(err);
+    });
+});
+
+function getStart_EndDay(review) {
+  var now = new Date();
+  var startDateTime, endDateTime;
+  switch (review.type) {
+    case 'daily':
+      startDateTime = moment(now).subtract(11, 'day').startOf('day').toDate();
+      endDateTime = moment(now).endOf('day').toDate();
+      break;
+    case 'weekly':
+      startDateTime = moment(now).startOf('week').toDate();
+      endDateTime = moment(now).endOf("week").toDate();
+      break;
+    case 'monthly':
+      startDateTime = moment(now).startOf('month').toDate();
+      endDateTime = moment(now).endOf("month").toDate();
+      break;
+    case 'custom':
+      return getCustomTimeRange(review);
+      break;
+    default:
+      startDateTime = moment(now).startOf('day').toDate();
+      endDateTime = moment(now).endOf('day').toDate();
+  }
+  return { startDateTime: startDateTime, endDateTime: endDateTime};
+}
+
+function getCustomTimeRange(timeRange, validateTime) {
+  var now = new Date();
+  var _startDateTime, _endDateTime;
+  _startDateTime = moment(timeRange.startDateTime).toDate();
+  _endDateTime = moment(timeRange.endDateTime).toDate();
+  return { startDateTime: _startDateTime, endDateTime: _endDateTime, timezoneOffset: timeRange.timezoneOffset };
+}

@@ -138,6 +138,48 @@ function getRecordByParams (_params) {
   });
 }
 
+function getRecords (_request, _periodOfTime) {
+  return new Promise( (resolve, reject) => {
+    var startDateTime = _periodOfTime.startDateTime;
+    var endDateTime = _periodOfTime.endDateTime;
+    var recordQuery   = new Parse.Query("Record");
+    recordQuery.greaterThanOrEqualTo("checkinTime", startDateTime);
+    recordQuery.lessThanOrEqualTo("checkinTime", endDateTime);
+    recordQuery.descending("checkinTime");
+    recordQuery.find()
+    .then(function (recordData) {
+      if (recordData) {
+        var recordDataToArrayJson = Tool.convertArrayParseObjToArrayJson(recordData);
+        var groupUserFollowDays = groupUserCheckinFollowDays(recordDataToArrayJson);
+        var data = _.map(groupUserFollowDays, function(recordData, key) {
+          return  { 
+                    displayTime: key,
+                    count: groupUserFollowDays[key].length
+                  };
+        });
+      }
+      else {
+        throw('No record found');
+      }
+    })
+  });
+}
+
+function groupUserCheckinFollowDays(_recordDataToArrayJson) {
+  var groupUserFollowDays =  _.groupBy(_recordDataToArrayJson, function(value) {
+    return moment(value.checkinTime.iso).format("YYYY-MM-DD");
+  });
+  return groupUserFollowDays;
+}
+
+function uniqUserCheckinFollowDays(_groupUserFollowDay) {
+  var uniqUsers = _.uniq(_groupUserFollowDay, false, function(item) {
+    return (item && item.userId) ? item.userId : item;
+  });
+  return uniqUsers;
+}
+
+exports.getRecords = getRecords;
 exports.getRecordByParams = getRecordByParams;
 exports.recordCheckin   = recordCheckin;
 exports.recordCheckout  = recordCheckout;

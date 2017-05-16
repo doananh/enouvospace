@@ -224,6 +224,13 @@ function getPackageType (_name) {
   return packageType && packageType[0];
 }
 
+function convertArrayParseObjToArrayJson(listParseObj) {
+  return listParseObj.map((parseObj) => {
+    return parseObj.toJSON();
+  });
+}
+
+exports.convertArrayParseObjToArrayJson           = convertArrayParseObjToArrayJson;
 exports.getCode           = getCode;
 exports.formatStringTime  = formatStringTime;
 exports.getRandomString   = getRandomString;
