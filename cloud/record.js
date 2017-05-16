@@ -84,7 +84,7 @@ function getStart_EndDay(review) {
       endDateTime = moment(now).endOf('day').toDate();
       break;
     case 'weekly':
-      startDateTime = moment(now).startOf('week').toDate();
+      startDateTime = moment(now).subtract(11, 'weeks').startOf('week').toDate();
       endDateTime = moment(now).endOf("week").toDate();
       break;
     case 'monthly':

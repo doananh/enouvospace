@@ -166,6 +166,7 @@ function groupUserCheckinFollowTime(_request, _recordDataToArrayJson, _periodOfT
       groupUserFollowTime =  groupUserCheckinFollowDays(_recordDataToArrayJson, _periodOfTime);
       break;
     case 'weekly':
+    groupUserFollowTime =  groupUserCheckinFollowWeeks(_recordDataToArrayJson, _periodOfTime);
       break;
     case 'monthly':
       break;
@@ -177,6 +178,24 @@ function groupUserCheckinFollowTime(_request, _recordDataToArrayJson, _periodOfT
   return groupUserFollowTime;
 }
 
+function groupUserCheckinFollowWeeks(_recordDataToArrayJson, _periodOfTime) {
+  var weekArray = [];
+  var currentWeek = moment(_periodOfTime.startDateTime).week();
+  var stopWeek = moment(_periodOfTime.endDateTime).week();
+  var groupUserFollowWeeks =  _.groupBy(_recordDataToArrayJson, function(value) {
+    return moment(value.checkinTime.iso).week();
+  });
+  while ((parseInt(currentWeek) < parseInt(stopWeek)) || (parseInt(currentWeek) === parseInt(stopWeek))) {
+    var groupUserFollowCurrentWeek = groupUserFollowWeeks[currentWeek];
+    weekArray.push({
+      displayTime: currentWeek,
+      count: (groupUserFollowCurrentWeek && groupUserFollowCurrentWeek.length > 0) ? groupUserFollowCurrentWeek.length : 0
+    });
+    currentWeek++;
+  }
+  return weekArray;
+}
+
 function groupUserCheckinFollowDays(_recordDataToArrayJson, _periodOfTime) {
   var dateArray = [];
   var currentDate = moment(_periodOfTime.startDateTime).format('YYYY-MM-DD');
@@ -184,13 +203,13 @@ function groupUserCheckinFollowDays(_recordDataToArrayJson, _periodOfTime) {
   var groupUserFollowDays =  _.groupBy(_recordDataToArrayJson, function(value) {
     return moment(value.checkinTime.iso).format("YYYY-MM-DD");
   });
-  while (moment(currentDate).isBefore(moment(stopDate)) || moment(currentDate).isSame(moment(stopDate))) {
+  while (moment(currentDate).isSameOrBefore(moment(stopDate))) {
     var groupUserFollowCurrentDay = groupUserFollowDays[currentDate];
     dateArray.push({
       displayTime: currentDate,
       count: (groupUserFollowCurrentDay && groupUserFollowCurrentDay.length > 0) ? groupUserFollowCurrentDay.length : 0
     });
-    currentDate = moment(currentDate).add(1, 'days').format("YYYY-MM-DD");
+    currentDate = moment(currentDate).add(1, 'day').format("YYYY-MM-DD");
   }
   return dateArray;
 }
