@@ -208,7 +208,7 @@ function groupUserCheckinFollowMonths(_recordDataToArrayJson, _periodOfTime) {
   while (moment(currentMonth).isSameOrBefore(moment(stopMonth))) {
     var groupUserFollowCurrentMonth = groupUserFollowMonths[moment(currentMonth).month()];
     monthArray.push({
-      displayTime: moment(currentMonth).format("YYYY-MM-DD"),
+      displayTime: moment(currentMonth).format("MM/YYYY"),
       count: (groupUserFollowCurrentMonth && groupUserFollowCurrentMonth.length > 0) ? groupUserFollowCurrentMonth.length : 0
     });
     currentMonth = moment(currentMonth).add(1, 'month');
@@ -244,7 +244,7 @@ function groupUserCheckinFollowDays(_recordDataToArrayJson, _periodOfTime) {
   while (moment(currentDate).isSameOrBefore(moment(stopDate))) {
     var groupUserFollowCurrentDay = groupUserFollowDays[currentDate];
     dateArray.push({
-      displayTime: currentDate,
+      displayTime: moment(currentDate).format("DD/MM/YYYY"),
       count: (groupUserFollowCurrentDay && groupUserFollowCurrentDay.length > 0) ? groupUserFollowCurrentDay.length : 0
     });
     currentDate = moment(currentDate).add(1, 'day').format("YYYY-MM-DD");
