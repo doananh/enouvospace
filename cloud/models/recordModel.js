@@ -166,9 +166,10 @@ function groupUserCheckinFollowTime(_request, _recordDataToArrayJson, _periodOfT
       groupUserFollowTime =  groupUserCheckinFollowDays(_recordDataToArrayJson, _periodOfTime);
       break;
     case 'weekly':
-    groupUserFollowTime =  groupUserCheckinFollowWeeks(_recordDataToArrayJson, _periodOfTime);
+      groupUserFollowTime =  groupUserCheckinFollowWeeks(_recordDataToArrayJson, _periodOfTime);
       break;
     case 'monthly':
+      groupUserFollowTime =  groupUserCheckinFollowMonths(_recordDataToArrayJson, _periodOfTime);
       break;
     case 'yearly':
       break;
@@ -176,6 +177,24 @@ function groupUserCheckinFollowTime(_request, _recordDataToArrayJson, _periodOfT
       groupUserFollowTime =  groupUserCheckinFollowDays(_recordDataToArrayJson, _periodOfTime);
   }
   return groupUserFollowTime;
+}
+
+function groupUserCheckinFollowMonths(_recordDataToArrayJson, _periodOfTime) {
+  var monthArray = [];
+  var currentMonth = moment(_periodOfTime.startDateTime);
+  var stopMonth = moment(_periodOfTime.endDateTime);
+  var groupUserFollowMonths =  _.groupBy(_recordDataToArrayJson, function(value) {
+    return moment(value.checkinTime.iso).month();
+  });
+  while (moment(currentMonth).isSameOrBefore(moment(stopMonth))) {
+    var groupUserFollowCurrentMonth = groupUserFollowMonths[moment(currentMonth).month()];
+    monthArray.push({
+      displayTime: moment(currentMonth).format("YYYY-MM-DD"),
+      count: (groupUserFollowCurrentMonth && groupUserFollowCurrentMonth.length > 0) ? groupUserFollowCurrentMonth.length : 0
+    });
+    currentMonth = moment(currentMonth).add(1, 'month');
+  }
+  return monthArray;
 }
 
 function groupUserCheckinFollowWeeks(_recordDataToArrayJson, _periodOfTime) {
