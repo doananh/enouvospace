@@ -21,6 +21,3 @@ require('./validation/globalVariableValidation.js');
 require('./validation/businessValidation.js');
 require('./validation/recordValidation.js');
 require('./validation/userValidation.js');
-
-// other here
-require('./notification/pushAPI.js');
