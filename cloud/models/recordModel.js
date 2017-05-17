@@ -192,7 +192,8 @@ function groupUserCheckinFollowYears(_recordDataToArrayJson, _periodOfTime) {
     var groupUserFollowCurrentYear = groupUserFollowYears[moment(currentYear).year()];
     YearArray.push({
       displayTime: moment(currentYear).format("YYYY"),
-      count: (groupUserFollowCurrentYear && groupUserFollowCurrentYear.length > 0) ? groupUserFollowCurrentYear.length : 0
+      count: (groupUserFollowCurrentYear && groupUserFollowCurrentYear.length > 0) ? groupUserFollowCurrentYear.length : 0,
+      totalPrice: (groupUserFollowCurrentYear && groupUserFollowCurrentYear.length > 0) ? totalPriceCheckin(groupUserFollowCurrentYear) : 0
     });
     currentYear = moment(currentYear).add(1, 'year');
   }
@@ -210,7 +211,8 @@ function groupUserCheckinFollowMonths(_recordDataToArrayJson, _periodOfTime) {
     var groupUserFollowCurrentMonth = groupUserFollowMonths[moment(currentMonth).month()];
     monthArray.push({
       displayTime: moment(currentMonth).format("MM/YYYY"),
-      count: (groupUserFollowCurrentMonth && groupUserFollowCurrentMonth.length > 0) ? groupUserFollowCurrentMonth.length : 0
+      count: (groupUserFollowCurrentMonth && groupUserFollowCurrentMonth.length > 0) ? groupUserFollowCurrentMonth.length : 0,
+      totalPrice: (groupUserFollowCurrentMonth && groupUserFollowCurrentMonth.length > 0) ? totalPriceCheckin(groupUserFollowCurrentMonth) : 0
     });
     currentMonth = moment(currentMonth).add(1, 'month');
   }
@@ -228,7 +230,8 @@ function groupUserCheckinFollowWeeks(_recordDataToArrayJson, _periodOfTime) {
     var groupUserFollowCurrentWeek = groupUserFollowWeeks[currentWeek];
     weekArray.push({
       displayTime: currentWeek,
-      count: (groupUserFollowCurrentWeek && groupUserFollowCurrentWeek.length > 0) ? groupUserFollowCurrentWeek.length : 0
+      count: (groupUserFollowCurrentWeek && groupUserFollowCurrentWeek.length > 0) ? groupUserFollowCurrentWeek.length : 0,
+      totalPrice: (groupUserFollowCurrentWeek && groupUserFollowCurrentWeek.length > 0) ? totalPriceCheckin(groupUserFollowCurrentWeek) : 0
     });
     currentWeek++;
   }
@@ -246,11 +249,20 @@ function groupUserCheckinFollowDays(_recordDataToArrayJson, _periodOfTime) {
     var groupUserFollowCurrentDay = groupUserFollowDays[currentDate];
     dateArray.push({
       displayTime: moment(currentDate).format("DD/MM/YYYY"),
-      count: (groupUserFollowCurrentDay && groupUserFollowCurrentDay.length > 0) ? groupUserFollowCurrentDay.length : 0
+      count: (groupUserFollowCurrentDay && groupUserFollowCurrentDay.length > 0) ? groupUserFollowCurrentDay.length : 0,
+      totalPrice: (groupUserFollowCurrentDay && groupUserFollowCurrentDay.length > 0) ? totalPriceCheckin(groupUserFollowCurrentDay) : 0
     });
     currentDate = moment(currentDate).add(1, 'day').format("YYYY-MM-DD");
   }
   return dateArray;
+}
+
+function totalPriceCheckin(_data) {
+  var totalPrice = 0;
+  _.each(_data, function(item) {
+    totalPrice += item.booking.payAmount; 
+  });
+  return totalPrice;
 }
 
 function uniqUserCheckinFollowDays(_groupUserFollowDay) {
