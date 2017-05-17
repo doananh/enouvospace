@@ -5,10 +5,9 @@ var BookingModel  = require('./models/bookingModel.js');
 var RecordModel   = require('./models/recordModel.js');
 
 Parse.Cloud.define("recordCheckin", function(req, res) {
-  var params    = req.params;
-  var userId    = params.userId;
-  var username  = params.username;
-  BookingModel.getBookingByParams({ userId: userId, username: username, status: "OPEN", latest: true })
+  var params  = req.params;
+  var user    = params.user;  
+  BookingModel.getLastValidUserBooking({user: params.user})
   .then(function (bookingData) {
       if (bookingData) {
         var startTime       = bookingData.get('startTime');
@@ -26,7 +25,7 @@ Parse.Cloud.define("recordCheckin", function(req, res) {
         else {
            ////
         }
-        var data = { userId: userId, username: username, bookingId: bookingData.id};
+        var data = { user: user, bookingId: bookingData.id};
         return RecordModel.recordCheckin(data)
       }
       else {

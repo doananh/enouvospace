@@ -156,7 +156,7 @@ function getBookingByParams (_params) {
           query.equalTo("user.code", anonymousCode);
         }
         if (bookingId) {
-          query.equalTo("objectId", _params.bookingId);
+          query.equalTo("objectId", bookingId);
         }
         if (userId) {
           query.equalTo("user.id", userId);
@@ -174,7 +174,7 @@ function getBookingByParams (_params) {
         query.equalTo("status", status);
       }
 
-      if (sortByTime || latest) {
+      if (sortByTime) {
         query.descending("createdAt");
       }
 
@@ -222,6 +222,40 @@ function getLastValidUserBooking (_params) {
   });
 }
 
+function previewBooking (_params) {
+  return new Promise((resolve, reject) => {
+      var query = new Parse.Query("Booking");
+      var bookingId = _params.id;
+      if (bookingId) {
+        getBookingByParams({id: bookingId})
+        .then(function (booking) {
+            if (booking) {
+              var status = booking.get('status');
+              if (status === "CANCELED") {
+                throw('Your booking has been canceled before');
+              }
+              if (status === "CLOSED") {
+                throw('Your booking has been closed before');
+              }
+              if (status === "PENDING") {
+                throw('Your booking is on waiting for approval');
+              }
+              return resolve(booking);
+            }
+            else {
+              throw('No booking found');
+            }
+        })
+        .catch(function (error) {
+            return reject(error);
+        });
+      }
+      else {
+        return reject('Require booking id');
+      }
+  });
+}
+
 function getUserBooking (_params) {
   return new Promise((resolve, reject) => {
       var query = new Parse.Query("Booking");
@@ -247,3 +281,4 @@ exports.createBookingForAnonymousUser = createBookingForAnonymousUser;
 exports.getBookingByParams            = getBookingByParams;
 exports.getUserBooking                = getUserBooking;
 exports.getLastValidUserBooking       = getLastValidUserBooking;
+exports.previewBooking                = previewBooking;

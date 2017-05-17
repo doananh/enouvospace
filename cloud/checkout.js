@@ -51,8 +51,8 @@ Parse.Cloud.define("checkoutByCode", function(req, res) {
 Parse.Cloud.define("checkoutByBookingId", function(req, res) {
   var params = req.params;
 
-  if (params && params.bookingId) {
-    BookingModel.getBookingByParams({bookingId: params.bookingId})
+  if (params) {
+    BookingModel.getBookingByParams(params)
     .then(function (bookingObject) {
         return PriceCalculatingModel.calculateBookingPricing(bookingObject)
         .then(function (data) {
@@ -69,7 +69,7 @@ Parse.Cloud.define("checkoutByBookingId", function(req, res) {
             return bookingObject.save();
         })
         .then(function (bookingData) {
-          return bookingData;
+            return bookingData;
         })
         .catch(function (error) {
             return res.error(error);
@@ -77,21 +77,21 @@ Parse.Cloud.define("checkoutByBookingId", function(req, res) {
         /// temp write as a callback promise - will change later
     })
     .then(function (bookingSaveResult) {
-          return RecordModel.getRecordByParams({bookingId: bookingSaveResult.id})
-          .then(function (recordData) {
-              if (recordData) {
-                var recordParams = {
-                  bookingId: bookingSaveResult.id,
-                  username: bookingSaveResult.get('user').username,
-                  userId: bookingSaveResult.get('user').id
-                }
-                return RecordModel.recordCheckout(recordParams)
+        return RecordModel.getRecordByParams({bookingId: bookingSaveResult.id})
+        .then(function (recordData) {
+            if (recordData) {
+              var recordParams = {
+                bookingId: bookingSaveResult.id,
+                username: bookingSaveResult.get('user').username,
+                userId: bookingSaveResult.get('user').id
               }
-              else {
-                return {};
-              }
-          });
-          //temp fix as callback promise - will change later
+              return RecordModel.recordCheckout(recordParams)
+            }
+            else {
+              return {};
+            }
+        });
+        //temp fix as callback promise - will change later
     })
     .then(function (recordData) {
         return res.success(recordData);

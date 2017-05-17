@@ -7,7 +7,7 @@ var PriceCalculatingModel = require('./models/priceCalculatingModel.js');
 
 Parse.Cloud.define("previewBooking", function(req, res) {
     var params = req.params;
-    BookingModel.getBookingByParams(params)
+    BookingModel.previewBooking(params)
     .then(function (bookingData) {
         return PriceCalculatingModel.previewPricing(bookingData);
     })
