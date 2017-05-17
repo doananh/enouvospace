@@ -151,9 +151,10 @@ function getRecords (_request, _periodOfTime) {
       if (recordData) {
         var recordDataToArrayJson = Tool.convertArrayParseObjToArrayJson(recordData);
         var groupUserFollowTime = groupUserCheckinFollowTime(_request, recordDataToArrayJson, _periodOfTime);
+        return resolve(groupUserFollowTime);
       }
       else {
-        throw('No record found');
+        return reject('No record found');
       }
     })
   });
