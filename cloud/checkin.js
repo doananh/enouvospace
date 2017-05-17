@@ -6,28 +6,29 @@ var RecordModel   = require('./models/recordModel.js');
 
 Parse.Cloud.define("checkin", function(req, res) {
   var params = req.params;
-  if (params.user && params.user.id && params.user.username) {
+  var user   = params.user;
+  if (user && user.id && user.username) {
     BookingModel.createBookingForLoginUser(params)
-    .then(function (data) {
-      return res.success(data);
+    .then(function (bookingData) {
+        return res.success(bookingData);
     })
     .catch(function (error) {
-      return res.error(error);
+        return res.error(error);
     });
   }
   else if (params.user && (!params.user.id || !params.user.username)) {
-    return res.error('Require id and username params for check in user');
+    return res.error('Require id and username params for creating booking');
   }
   else {
     BookingModel.createBookingForAnonymousUser(params)
     .then(function (checkinData) {
-      return RecordModel.recordCheckin(checkinData);
+        return RecordModel.recordCheckin(checkinData);
     })
     .then(function (recordData) {
-      return res.success(recordData);
+        return res.success(recordData);
     })
     .catch(function (error) {
-      return res.error(error);
+        return res.error(error);
     });
   }
 });

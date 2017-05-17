@@ -1,8 +1,9 @@
 
-var _       = require('underscore');
+var _      = require('underscore');
 var moment = require('moment');
 
 var Constants = require('./../constant.js');
+var PushApi   = require('./../notification/pushApi.js');
 
 Parse.Cloud.beforeSave("Booking", function(req, res) {
   var user          = req.object.get('user');
@@ -12,6 +13,8 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
   var startTime     = req.object.get('startTime');
   var endTime       = req.object.get('endTime');
   var status        = req.object.get('status');
+  var preStatus     = req.original.get('status');
+  var isNewBooking  = req.object.id;
 
   if (_.isUndefined(user) || _.isEmpty(user)) {
     return res.error('Require user params');
@@ -64,31 +67,13 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
     // }
   }
 
-  if (status === "OPEN" && req.object.id) {
-    var preStatus     = req.original.get('status');
-    if (preStatus === "CLOSED") {
-      return res.error('Cannot open the closed booking')
-    }
+  if (!isNewBooking && (status !== "CLOSED") && (preStatus === "CLOSED")) {
+    return res.error('Cannot OPEN a CLOSED booking');
   }
 
-  if (status === "CLOSED" && (req.original.get('status') === "OPEN")) {
-    var pushQuery = new Parse.Query(Parse.Installation);
-    pushQuery.equalTo("user", { "__type":"Pointer","className":"_User","objectId": user.id });
-    Parse.Push.send({
-      where: pushQuery,
-      data: {
-        alert: "YOUR BOOKING HAS BEEN CLOSED",
-        sound: "default"
-      }
-    },{
-      useMasterKey: true
-    })
-    .then(function (result) {
-      console.log('Send Push Success');
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+  if (!isNewBooking && (status !== preStatus)) {
+    var message = "YOUR BOOKING HAS BEEN CHANGE FROM " + preStatus + " TO " + status;
+    PushApi.notifyBookingChange(req.object.toJSON(), user, message);
   }
 
   return res.success();
