@@ -81,7 +81,7 @@ function createNewBooking(_params, _code) {
       booking.set("payAmount", 0);
       booking.set("discountAmount", 0);
 
-      if (code) {
+      if (_code) {
         booking.set("status", "OPEN");
       }
       else {

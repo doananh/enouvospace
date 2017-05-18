@@ -6,7 +6,7 @@ var RecordModel   = require('./models/recordModel.js');
 
 Parse.Cloud.define("recordCheckin", function(req, res) {
   var params  = req.params;
-  var user    = params.user;  
+  var user    = params.user;
   BookingModel.getLastValidUserBooking({user: params.user})
   .then(function (bookingData) {
       if (bookingData) {
@@ -19,7 +19,7 @@ Parse.Cloud.define("recordCheckin", function(req, res) {
           var hours         = Math.abs(duration.asHours());
           var  HOUR_BETWEEN_CHECKIN_TIME_START_TIME = 14;
           if (hours > HOUR_BETWEEN_CHECKIN_TIME_START_TIME) {
-            throw('Checkin time doesn\'t match with booking time');
+            // throw('Checkin time doesn\'t match with booking time');
           }
         }
         else {
