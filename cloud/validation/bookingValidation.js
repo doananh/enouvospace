@@ -13,7 +13,7 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
   var startTime     = req.object.get('startTime');
   var endTime       = req.object.get('endTime');
   var status        = req.object.get('status');
-  var isNewBooking  = req.object.id;
+  var isNewBooking  = !req.object.id;
   var preStatus     = req.original && req.original.get('status');
 
   if (_.isUndefined(user) || _.isEmpty(user)) {

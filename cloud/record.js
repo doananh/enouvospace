@@ -41,8 +41,6 @@ Parse.Cloud.define("recordCheckin", function(req, res) {
 
 Parse.Cloud.define("recordCheckout", function(req, res) {
   var params    = req.params;
-  var userId    = params.userId;
-  var username  = params.username;
   var bookingId = params.bookingId;
 
   BookingModel.getBookingByParams({ id: bookingId, status: "OPEN" })
