@@ -12,24 +12,23 @@ Parse.Cloud.define("recordCheckin", function(req, res) {
       if (bookingData) {
         var startTime       = bookingData.get('startTime');
         var packageObject   = bookingData.get('package');
+        var status          = bookingData.get('status');
         var willPayWhenCheckout = packageObject.willPayWhenCheckout;
 
-        if (willPayWhenCheckout) {
-          var duration      = moment.duration(moment().diff(moment(startTime)));
-          var hours         = Math.abs(duration.asHours());
-          var  HOUR_BETWEEN_CHECKIN_TIME_START_TIME = 14;
-          if (hours > HOUR_BETWEEN_CHECKIN_TIME_START_TIME) {
-            // throw('Checkin time doesn\'t match with booking time');
-          }
+        if (status === "PENDING") {
+          throw('Your booking is on waiting for approval');
         }
-        else {
-           ////
+        if (status === "CLOSED") {
+          throw('Your booking has been closed before');
         }
-        var data = { user: user, bookingId: bookingData.id};
-        return RecordModel.recordCheckin(data)
+        if (status === "CANCELED") {
+          throw('Your booking has been canceled before');
+        }
+
+        return RecordModel.recordCheckin(bookingData);
       }
       else {
-        throw('Please create booking first');
+        throw('No booking found. Please create new booking');
       }
   })
   .then( function (data) {
@@ -46,21 +45,43 @@ Parse.Cloud.define("recordCheckout", function(req, res) {
   var username  = params.username;
   var bookingId = params.bookingId;
 
-  BookingModel.getBookingByParams({ bookingId: bookingId, status: "OPEN" })
-    .then(function(bookingInfo) {
-      var bookingInfoToJSON = bookingInfo.toJSON();
-      if (bookingInfoToJSON.package && bookingInfoToJSON.package.willPayWhenCheckout) {
-        return RecordModel.recordCheckoutAndPreviewBooking({ username: username, userId: userId, bookingId: bookingId, status: "OPEN" });
+  BookingModel.getBookingByParams({ id: bookingId, status: "OPEN" })
+  .then(function (bookingData) {
+      var bookingDataJSON = bookingData.toJSON();
+      if (bookingDataJSON.package && bookingDataJSON.package.willPayWhenCheckout) {
+        return RecordModel.recordCheckoutAndPreviewBooking(bookingData);
       }
       else {
-        return RecordModel.recordCheckout({ username: username, userId: userId });
+        return RecordModel.recordCheckout(bookingData);
       }
-    })
-    .then(function(data) {
+  })
+  .then(function (data) {
       return res.success(data);
-    })
-    .catch( function (error) {
+  })
+  .catch(function (error) {
       return res.error(error);
+  });
+});
+
+Parse.Cloud.define("getLastValidUserRecord", function(req, res) {
+    var params  = req.params;
+    RecordModel.getLastValidRecord({bookingId: params.bookingId})
+    .then(function (recordData) {
+        if (recordData) {
+          var recordObject = {
+            objectId: recordData.id,
+            checkinTime: recordData.get('checkinTime'),
+            checkoutTime: recordData.get('checkoutTime'),
+            booking: recordData.get('booking').toJSON()
+          };
+          return res.success(recordObject);
+        }
+        else {
+          return res.success({});
+        }
+    })
+    .catch(function (error) {
+        return res.error(error);
     });
 });
 

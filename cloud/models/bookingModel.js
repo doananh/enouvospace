@@ -167,8 +167,7 @@ function getBookingByParams (_params) {
       }
 
       if (valid) {
-        query.notEqualTo("status", "CLOSED");
-        query.notEqualTo("status", "CANCELED");
+        query.notContainedIn("status", ["CLOSED", "CANCELED"]);
       }
       else if (!_.isUndefined(status)) {
         query.equalTo("status", status);
