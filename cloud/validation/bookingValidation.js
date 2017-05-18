@@ -3,7 +3,7 @@ var _      = require('underscore');
 var moment = require('moment');
 
 var Constants = require('./../constant.js');
-var PushApi   = require('./../notification/pushApi.js');
+var PushApi   = require('./../notification/pushAPI.js');
 
 Parse.Cloud.beforeSave("Booking", function(req, res) {
   var user          = req.object.get('user');
