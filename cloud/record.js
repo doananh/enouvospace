@@ -67,7 +67,7 @@ Parse.Cloud.define("recordCheckout", function(req, res) {
 Parse.Cloud.define("getStatisticUserCheckin", function(req, res) {
     var review = req.params;
     if (!review.type) return;
-    var timeRange = getStart_EndDay(review);
+    var timeRange = RecordModel.getStart_EndDay(review);
     RecordModel.getRecords(review, timeRange)
     .then(function(recordData) {
       return res.success({totalUsersCheckedIn: recordData});
@@ -76,30 +76,3 @@ Parse.Cloud.define("getStatisticUserCheckin", function(req, res) {
       return res.error(error);
     });
 });
-
-function getStart_EndDay(review) {
-  var now = new Date();
-  var startDateTime, endDateTime;
-  switch (review.type) {
-    case 'daily':
-      startDateTime = moment(now).subtract(11, 'day').startOf('day').toDate();
-      endDateTime = moment(now).endOf('day').toDate();
-      break;
-    case 'weekly':
-      startDateTime = moment(now).subtract(11, 'weeks').startOf('week').toDate();
-      endDateTime = moment(now).endOf("week").toDate();
-      break;
-    case 'monthly':
-      startDateTime = moment(now).subtract(11, 'months').startOf('month').toDate();
-      endDateTime = moment(now).endOf("month").toDate();
-      break;
-    case 'yearly':
-      startDateTime = moment(now).subtract(11, 'years').startOf('year').toDate();
-      endDateTime = moment(now).endOf("year").toDate();
-      break;
-    default:
-      startDateTime = moment(now).startOf('day').toDate();
-      endDateTime = moment(now).endOf('day').toDate();
-  }
-  return { startDateTime: startDateTime, endDateTime: endDateTime};
-}

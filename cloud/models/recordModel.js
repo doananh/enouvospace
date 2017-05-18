@@ -137,6 +137,33 @@ function getRecordByParams (_params) {
   });
 }
 
+function getStart_EndDay(review) {
+  var now = new Date();
+  var startDateTime, endDateTime;
+  switch (review.type) {
+    case 'daily':
+      startDateTime = moment(now).subtract(11, 'day').startOf('day').toDate();
+      endDateTime = moment(now).endOf('day').toDate();
+      break;
+    case 'weekly':
+      startDateTime = moment(now).subtract(11, 'weeks').startOf('week').toDate();
+      endDateTime = moment(now).endOf("week").toDate();
+      break;
+    case 'monthly':
+      startDateTime = moment(now).subtract(11, 'months').startOf('month').toDate();
+      endDateTime = moment(now).endOf("month").toDate();
+      break;
+    case 'yearly':
+      startDateTime = moment(now).subtract(11, 'years').startOf('year').toDate();
+      endDateTime = moment(now).endOf("year").toDate();
+      break;
+    default:
+      startDateTime = moment(now).startOf('day').toDate();
+      endDateTime = moment(now).endOf('day').toDate();
+  }
+  return { startDateTime: startDateTime, endDateTime: endDateTime};
+}
+
 function getRecords (_request, _periodOfTime) {
   return new Promise( (resolve, reject) => {
     var startDateTime = _periodOfTime.startDateTime;
@@ -271,6 +298,7 @@ function uniqUserCheckinFollowDays(_groupUserFollowDay) {
   return uniqUsers;
 }
 
+exports.getStart_EndDay = getStart_EndDay;
 exports.getRecords = getRecords;
 exports.getRecordByParams = getRecordByParams;
 exports.recordCheckin   = recordCheckin;
