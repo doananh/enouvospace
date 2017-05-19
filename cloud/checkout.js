@@ -76,22 +76,8 @@ Parse.Cloud.define("checkoutByBookingId", function(req, res) {
         });
         /// temp write as a callback promise - will change later
     })
-    .then(function (bookingSaveResult) {
-        return RecordModel.getRecordByParams({bookingId: bookingSaveResult.id})
-        .then(function (recordData) {
-            if (recordData) {
-              var recordParams = {
-                bookingId: bookingSaveResult.id,
-                username: bookingSaveResult.get('user').username,
-                userId: bookingSaveResult.get('user').id
-              }
-              return RecordModel.recordCheckout(recordParams)
-            }
-            else {
-              return {};
-            }
-        });
-        //temp fix as callback promise - will change later
+    .then(function (bookingData) {
+        return RecordModel.recordCheckout(bookingData);
     })
     .then(function (recordData) {
         return res.success(recordData);
