@@ -4,6 +4,10 @@ var moment = require('moment');
 
 var Constants = require('./../constant.js');
 var PushApi   = require('./../notification/pushAPI.js');
+var Mailgun = require('mailgun-js')({
+    apiKey: process.env.EMAIL_API_KEY,
+    domain: process.env.EMAIL_DOMAIN
+});
 
 Parse.Cloud.beforeSave("Booking", function(req, res) {
   var user          = req.object.get('user');
@@ -78,3 +82,23 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
 
   return res.success();
 });
+
+Parse.Cloud.afterSave("Booking", function(request, response) {
+  var isNewBooking  = request.original;
+  var startTime = request.object.get('startTime');
+  var data = request.object;
+  if (isNewBooking) {
+    Mailgun.messages().send({
+      to: 'minh.nguyen@enouvo.com',
+      from: process.env.EMAIL_FROM,
+      subject: 'You have submitted booking in Enouvo Space at '+ moment(startTime).format('DD/MM/YYYY'),
+      html: 'Testing some Mailgun awesomness!',
+    }, function (error, body) {
+      if (error) {
+          console.log("Uh oh, something went wrong");
+      } else {
+          console.log("Email sent!");
+      }
+    });
+  }
+})
