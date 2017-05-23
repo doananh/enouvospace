@@ -274,6 +274,34 @@ function getUserBooking (_params) {
   });
 }
 
+function getBookingById (_params) {
+  return new Promise((resolve, reject) => {
+      var query = new Parse.Query("Booking");
+      var booking = _params.booking;
+      var checkinTime = _params.checkinTime;
+      if (booking && booking.objectId) {
+        query.equalTo("objectId", booking.objectId);
+        query.first().then(function(bookingData) {
+          if (bookingData) {
+            bookingData.set('startTime', checkinTime);
+            return bookingData.save(null)
+          } else {
+            return reject("No found booking to update");
+          }
+        })
+        .then(function (saveResult) {
+          return resolve(saveResult);
+        })
+        .catch(function (error) {
+          return reject(error);
+        })
+      } else {
+        return reject('Require booking id');
+      }
+  });
+}
+
+exports.getBookingById = getBookingById;
 exports.createNewBooking              = createNewBooking;
 exports.createBookingForLoginUser     = createBookingForLoginUser;
 exports.createBookingForAnonymousUser = createBookingForAnonymousUser;

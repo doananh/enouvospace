@@ -85,10 +85,10 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
 });
 
 Parse.Cloud.afterSave("Booking", function(request, response) {
-  var isNewBooking  = request.original;
+  var isPreviousBooking  = request.original;
   var startTime = request.object.get('startTime');
   var htmlMail = htmlConvert.convert(request);
-  if (isNewBooking) {
+  if (!isPreviousBooking) {
     Mailgun.messages().send({
       to: 'minh.nguyen@enouvo.com',
       from: process.env.EMAIL_FROM,

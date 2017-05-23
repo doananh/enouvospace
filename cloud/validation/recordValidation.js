@@ -3,6 +3,7 @@ var _       = require('underscore');
 var moment = require('moment');
 
 var Constants = require('./../constant.js');
+var BookingModel          = require('./../models/bookingModel.js');
 
 Parse.Cloud.beforeSave("Record", function(req, res) {
   var username      = req.object.get('username');
@@ -27,4 +28,19 @@ Parse.Cloud.beforeSave("Record", function(req, res) {
   }
 
   return res.success();
+});
+
+Parse.Cloud.afterSave("Record", function(request, response) {
+  var isPreviousRecord = request.original;
+  var checkinTime = request.object.get('checkinTime');
+  var bookingToJSON = request.object.get('booking').toJSON();
+  if (!isPreviousRecord) {
+    BookingModel.getBookingById({ booking: bookingToJSON, checkinTime: checkinTime })
+      .then(function (bookingData) {
+        return response.success();
+      })
+      .catch(function (error) {
+          return response.error(error);
+      });
+  }
 });
