@@ -151,6 +151,7 @@ function getBookingByParams (_params) {
       var sortByTime    = _params.sortByTime;
       var status        = _params.status;
       var valid         = _params.valid;
+      var notCancel     = _params.notCancel;
       if (anonymousCode || userId || bookingId) {
         if (anonymousCode) {
           query.equalTo("user.code", anonymousCode);
@@ -168,6 +169,9 @@ function getBookingByParams (_params) {
 
       if (valid) {
         query.notContainedIn("status", ["CLOSED", "CANCELED"]);
+      }
+      else if (notCancel) {
+        query.notEqualTo("status", "CANCELED");
       }
       else if (!_.isUndefined(status)) {
         query.equalTo("status", status);
@@ -260,7 +264,7 @@ function getUserBooking (_params) {
       var query = new Parse.Query("Booking");
       var user = _params.user;
       if (user && user.id) {
-        getBookingByParams({user: user, sortByTime: true})
+        getBookingByParams({user: user, sortByTime: true, notCancel: true})
         .then(function (bookings) {
             return resolve(bookings || []);
         })
