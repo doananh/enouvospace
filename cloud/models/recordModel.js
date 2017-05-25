@@ -60,8 +60,9 @@ function recordCheckin (bookingData) {
       var code  = user.code;
       if (code) {
         var newRecordData = {
-          userId: null,
-          username: user.username,
+          user: {
+            username: user.username
+          },
           bookingId: bookingData.id
         }
         createNewRecord(newRecordData)
