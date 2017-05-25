@@ -220,6 +220,7 @@ function previewBooking (_params) {
   return new Promise((resolve, reject) => {
       var query = new Parse.Query("Booking");
       var bookingId = _params.id;
+      var code      = _params.code;
       if (bookingId) {
         getBookingByParams({id: bookingId})
         .then(function (booking) {
@@ -244,8 +245,32 @@ function previewBooking (_params) {
             return reject(error);
         });
       }
+      else if (code) {
+        getBookingByParams({code: code})
+        .then(function (booking) {
+            if (booking) {
+              var status = booking.get('status');
+              if (status === "CANCELED") {
+                throw('Your booking has been canceled before');
+              }
+              if (status === "CLOSED") {
+                throw('Your booking has been closed before');
+              }
+              if (status === "PENDING") {
+                throw('Your booking is on waiting for approval');
+              }
+              return resolve(booking);
+            }
+            else {
+              throw('No booking found');
+            }
+        })
+        .catch(function (error) {
+            return reject(error);
+        });
+      }
       else {
-        return reject('Require booking id');
+        return reject('Require booking id || code for preview booking');
       }
   });
 }
