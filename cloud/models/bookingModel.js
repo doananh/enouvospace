@@ -321,6 +321,32 @@ function getBookingById (_params) {
   });
 }
 
+function getRecordByBookingId (_params) {
+  return new Promise((resolve, reject) => {
+      var query = new Parse.Query("Record");
+      if (_params && _params.id) {
+        query.equalTo("booking", { "__type": "Pointer", "className": "Booking", "objectId": _params.id });
+        query.first().then(function(recordData) {
+          if (recordData) {
+            recordData.set('checkoutTime', moment().toDate());
+            return recordData.save(null)
+          } else {
+            return reject("No found booking to update");
+          }
+        })
+        .then(function (saveResult) {
+          return resolve(saveResult);
+        })
+        .catch(function (error) {
+          return reject(error);
+        })
+      } else {
+        return reject('Require booking id');
+      }
+  });
+}
+
+exports.getRecordByBookingId = getRecordByBookingId;
 exports.getBookingById = getBookingById;
 exports.createNewBooking              = createNewBooking;
 exports.createBookingForLoginUser     = createBookingForLoginUser;

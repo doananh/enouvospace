@@ -9,6 +9,7 @@ var Mailgun = require('mailgun-js')({
     domain: process.env.EMAIL_DOMAIN
 });
 var userModel = require('./../models/userModel.js');
+var bookingModel = require('./../models/bookingModel.js');
 var htmlConvert = require('./../emailTemplate/htmlConvert.js');
 
 Parse.Cloud.beforeSave("Booking", function(req, res) {
@@ -94,6 +95,16 @@ Parse.Cloud.afterSave("Booking", function(request, response) {
   var startTime = request.object.get('startTime');
   var user = request.object.get('user');
   var htmlMail = htmlConvert.convert(request);
+  var status = request.object.get('status');
+  if (status === "CANCELED") {
+    bookingModel.getRecordByBookingId(request.object)
+    .then(function (data) {
+      return response.success();
+    })
+    .catch(function (error) {
+      return response.error(error);
+    });
+  }
   if (!isPreviousBooking && user && user.id) {
     userModel.getUserWithId(user.id)
     .then(function (data) {
