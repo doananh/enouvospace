@@ -10,8 +10,6 @@
   "license": "MIT",
   "dependencies": {
     "better-npm-run": "0.0.13",
-    "cache": "^1.1.2",
-    "clean": "^4.0.2",
     "docker-links": "^1.0.2",
     "dotenv": "^2.0.0",
     "express": "~4.11.x",
