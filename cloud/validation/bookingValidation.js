@@ -51,7 +51,7 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
     return res.error('Require username in user')
   }
 
-  if ( _.isUndefined(packageCount) || _.isNull(packageCount) || (packageCount < 0)) {
+  if ( _.isNumber(packageCount) && (packageCount < 0)) {
     return res.error('invalid number of package');
   }
 

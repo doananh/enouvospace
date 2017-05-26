@@ -86,6 +86,14 @@ function createNewBooking(_params, _code) {
         booking.set("startTime", moment().toDate());
       }
 
+      if (_params.endTime) {
+        booking.set("endTime", new Date(_params.endTime));
+      }
+
+      if (_params.packageCount) {
+        booking.set("packageCount", _params.packageCount);
+      }
+
       if (_code) {
         booking.set("user", {"code": _code, "username": "anonymous" + _code, "name": "anonymous " + _code, type: "anonymous"});
       }
@@ -100,12 +108,6 @@ function createNewBooking(_params, _code) {
         booking.set("numOfUsers", 1);
       }
 
-      if (_params.packageCount) {
-        booking.set("packageCount", _params.packageCount);
-      }
-      else {
-        booking.set("packageCount", 1);
-      }
       // anonymous package pointer default on GlobalVariable Table
       if (_params && _params.package) {
         booking.set("package", _params.package);
