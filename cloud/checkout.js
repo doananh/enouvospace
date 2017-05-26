@@ -30,11 +30,7 @@ Parse.Cloud.define("checkoutByCode", function(req, res) {
         /// temp write as a callback promise - will change later
     })
     .then(function (bookingSaveResult) {
-        var recordParams = {
-          bookingId: bookingSaveResult.id,
-          username: bookingSaveResult.get('user').username
-        }
-        return RecordModel.recordCheckout(recordParams)
+        return RecordModel.recordCheckout(bookingSaveResult)
     })
     .then(function (recordData) {
         return res.success(recordData);
