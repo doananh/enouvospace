@@ -22,6 +22,10 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
   var isNewBooking  = !req.object.id;
   var preStatus     = req.original && req.original.get('status');
 
+  if (status === "CANCELED") {
+    req.object.set("endTime", moment().toDate());
+  }
+
   if (_.isUndefined(user) || _.isEmpty(user)) {
     return res.error('Require user params');
   }
