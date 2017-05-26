@@ -90,7 +90,7 @@ Parse.Cloud.afterSave("Booking", function(request, response) {
   var htmlMail = htmlConvert.convert(request);
   if (!isPreviousBooking) {
     Mailgun.messages().send({
-      to: 'minh.nguyen@enouvo.com',
+      to: process.env.EMAIL_FROM,
       from: process.env.EMAIL_FROM,
       subject: 'You have submitted booking in Enouvo Space at '+ moment(startTime).format('DD/MM/YYYY'),
       html: htmlMail,
