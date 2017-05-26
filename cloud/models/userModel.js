@@ -7,4 +7,10 @@ function getUserWithBusiness (_businessData) {
   return userQuery.find();
 }
 
+function getUserWithId (_id) {
+  var userQuery = new Parse.Query("User");
+  return userQuery.get(_id, { useMasterKey: true });
+}
+
 exports.getUserWithBusiness   = getUserWithBusiness;
+exports.getUserWithId = getUserWithId;
