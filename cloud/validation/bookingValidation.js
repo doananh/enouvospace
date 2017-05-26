@@ -8,6 +8,7 @@ var Mailgun = require('mailgun-js')({
     apiKey: process.env.EMAIL_API_KEY,
     domain: process.env.EMAIL_DOMAIN
 });
+var userModel = require('./../models/userModel.js');
 var htmlConvert = require('./../emailTemplate/htmlConvert.js');
 
 Parse.Cloud.beforeSave("Booking", function(req, res) {
@@ -20,6 +21,10 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
   var status        = req.object.get('status');
   var isNewBooking  = !req.object.id;
   var preStatus     = req.original && req.original.get('status');
+
+  if (status === "CANCELED") {
+    req.object.set("endTime", moment().toDate());
+  }
 
   if (_.isUndefined(user) || _.isEmpty(user)) {
     return res.error('Require user params');
@@ -87,19 +92,31 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
 Parse.Cloud.afterSave("Booking", function(request, response) {
   var isPreviousBooking  = request.original;
   var startTime = request.object.get('startTime');
+  var user = request.object.get('user');
   var htmlMail = htmlConvert.convert(request);
-  if (!isPreviousBooking) {
-    Mailgun.messages().send({
-      to: process.env.EMAIL_FROM,
-      from: process.env.EMAIL_FROM,
-      subject: 'You have submitted booking in Enouvo Space at '+ moment(startTime).format('DD/MM/YYYY'),
-      html: htmlMail,
-    }, function (error, body) {
-      if (error) {
-          console.log("Uh oh, something went wrong");
+  if (!isPreviousBooking && user && user.id) {
+    userModel.getUserWithId(user.id)
+    .then(function (data) {
+      var email = data.get('email');
+      if (email) {
+        Mailgun.messages().send({
+          to: email,
+          from: process.env.EMAIL_FROM,
+          subject: 'You have submitted booking in Enouvo Space at '+ moment(startTime).format('DD/MM/YYYY'),
+          html: htmlMail,
+        }, function (error, body) {
+          if (error) {
+            return response.error("Uh oh, something went wrong");
+          } else {
+            return response.success("Email sent!");
+          }
+        });
       } else {
-          console.log("Email sent!");
+        return response.error("Require email");
       }
+    })
+    .catch(function (error) {
+        return response.error(error);
     });
   }
 })
