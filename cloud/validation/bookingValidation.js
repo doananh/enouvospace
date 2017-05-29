@@ -99,10 +99,10 @@ Parse.Cloud.afterSave("Booking", function(request, response) {
   if (status === "CANCELED") {
     bookingModel.getRecordByBookingId(request.object)
     .then(function (data) {
-      return response.success();
+      console.log('Update checkoutTime field in record successfully');
     })
     .catch(function (error) {
-      return response.error(error);
+      console.log(error);
     });
   }
   if (!isPreviousBooking && user && user.id) {
@@ -117,17 +117,17 @@ Parse.Cloud.afterSave("Booking", function(request, response) {
           html: htmlMail,
         }, function (error, body) {
           if (error) {
-            return response.error("Uh oh, something went wrong");
+            console.log("Uh oh, something went wrong");
           } else {
-            return response.success("Email sent!");
+            console.log("Email sent!");
           }
         });
       } else {
-        return response.error("Require email");
+        console.log("Require email");
       }
     })
     .catch(function (error) {
-        return response.error(error);
+        console.log(error);
     });
   }
 })
