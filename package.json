@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "better-npm-run": "0.0.13",
+    "cron": "^1.2.1",
     "docker-links": "^1.0.2",
     "dotenv": "^2.0.0",
     "express": "~4.11.x",
@@ -19,13 +20,13 @@
     "moment": "^2.17.1",
     "nodemon": "^1.8.1",
     "parse": "~1.8.0",
-    "parse-server": "^2.3.1",
+    "parse-server": "^2.4.1",
     "parse-server-azure-storage": "^1.1.0",
-    "underscore": "^1.8.3",
-    "request": "*"
+    "request": "*",
+    "underscore": "^1.8.3"
   },
   "scripts": {
-    "newClear": "yarn add cache clean",
+    "newClear": "rm -rf node_modules && npm cache clean && npm install",
     "start": "better-npm-run start:dev",
     "start:test": "better-npm-run start:test",
     "start:prod": "better-npm-run start:prod",
