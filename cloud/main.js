@@ -21,3 +21,6 @@ require('./validation/globalVariableValidation.js');
 require('./validation/businessValidation.js');
 require('./validation/recordValidation.js');
 require('./validation/userValidation.js');
+
+// require job
+require('./jobs/bookingReminding.js');
