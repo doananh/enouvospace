@@ -145,6 +145,7 @@ function getBookingByParams (_params) {
       var status        = _params.status;
       var valid         = _params.valid;
       var isHistory     = _params.isHistory;
+      var isUserBooking = _params.isUserBooking;
       if (anonymousCode || userId || bookingId) {
         if (anonymousCode) {
           query.equalTo("user.code", anonymousCode);
@@ -165,6 +166,10 @@ function getBookingByParams (_params) {
       }
       else if (isHistory) {
         query.equalTo("status", "CLOSED");
+      }
+      else if (isUserBooking) {
+        console.log('isUserBooking')
+        query.containedIn("status", ["CLOSED", "OPEN", "PENDING"]);
       }
       else if (!_.isUndefined(status)) {
         query.equalTo("status", status);
@@ -282,7 +287,7 @@ function getUserBooking (_params) {
       var query = new Parse.Query("Booking");
       var user = _params.user;
       if (user && user.id) {
-        getBookingByParams({user: user, sortByTime: true, isHistory: true})
+        getBookingByParams({user: user, sortByTime: true, isHistory: false, isUserBooking: true})
         .then(function (bookings) {
             return resolve(bookings || []);
         })
