@@ -4,12 +4,13 @@ Parse.serverURL = process.env.SERVER_URL;
 var CronJob = require('cron').CronJob;
 
 var recordCheckoutEndOfDateJob = new CronJob({
-  cronTime: '00 00 23 * * 1-6',
+  cronTime: '00 25 11 * * 1-6',
   onTick: function() {
-    Parse.Config.get().then(function(config) {
+    Parse.Config.get()
+    .then(function (config) {
         return config.get('AutoCheckoutWithInHours');
     })
-    .then(function(AutoCheckoutWithInHours) {
+    .then(function (AutoCheckoutWithInHours) {
         var recordQuery = new Parse.Query('Record');
         var d = new Date();
         var time = AutoCheckoutWithInHours * 3600 * 1000;
@@ -21,20 +22,23 @@ var recordCheckoutEndOfDateJob = new CronJob({
             return record.save();
         })
         .then(function (result) {
-            console.log('Auto record checkout success');
+            // console.log('Auto record checkout success');
         })
         .catch(function (error) {
-            console.log('Auto record checkout failure');
-            console.log(error);
+            // console.log('Auto record checkout failure');
+            // console.log(error);
         });
     })
+    .catch(function (error) {
+        console.log(error);
+    });
   },
   start: true,
   timeZone: 'Asia/Ho_Chi_Minh'
 });
 
 var bookingRemindingJob = new CronJob({
-  cronTime: '00 00 22 * * 1-6',
+  cronTime: '00 30 7 * * 1-6',
   onTick: function() {
 
   },
