@@ -23,4 +23,4 @@ require('./validation/recordValidation.js');
 require('./validation/userValidation.js');
 
 // require job
-require('./jobs/bookingReminding.js');
+require('./jobs/scheduledJobs.js');

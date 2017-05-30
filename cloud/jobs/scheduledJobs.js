@@ -4,7 +4,7 @@ Parse.serverURL = process.env.SERVER_URL;
 var CronJob = require('cron').CronJob;
 
 var recordCheckoutEndOfDateJob = new CronJob({
-  cronTime: '00 00 22 * * 1-6',
+  cronTime: '00 00 23 * * 1-6',
   onTick: function() {
     Parse.Config.get().then(function(config) {
         return config.get('AutoCheckoutWithInHours');
@@ -15,6 +15,7 @@ var recordCheckoutEndOfDateJob = new CronJob({
         var time = AutoCheckoutWithInHours * 3600 * 1000;
         var desTime = new Date(d.getTime() - (time));
         recordQuery.greaterThanOrEqualTo('checkinTime', desTime);
+        recordQuery.doesNotExist('checkoutTime');
         recordQuery.each(function (record) {
             record.set('checkoutTime', d);
             return record.save();
