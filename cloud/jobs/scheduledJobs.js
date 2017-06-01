@@ -4,7 +4,7 @@ Parse.serverURL = process.env.SERVER_URL;
 var CronJob = require('cron').CronJob;
 
 var recordCheckoutEndOfDateJob = new CronJob({
-  cronTime: '00 13 12 * * 1-6',
+  cronTime: '00 00 23 * * 1-6',
   onTick: function() {
     Parse.Config.get()
     .then(function (config) {

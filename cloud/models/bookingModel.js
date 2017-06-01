@@ -168,7 +168,6 @@ function getBookingByParams (_params) {
         query.equalTo("status", "CLOSED");
       }
       else if (isUserBooking) {
-        console.log('isUserBooking')
         query.containedIn("status", ["CLOSED", "OPEN", "PENDING"]);
       }
       else if (!_.isUndefined(status)) {
