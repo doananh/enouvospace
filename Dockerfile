@@ -12,6 +12,8 @@ ADD jsconfig.json ${PARSE_HOME}/
 
 ADD public ${PARSE_HOME}/public
 
+ADD certs ${PARSE_HOME}/certs
+
 ## deployment is unnecessary
 #ADD app.json ${PARSE_HOME}/app.json # heroku
 #ADD azuredeploy.json ${PARSE_HOME}/azuredeploy.json # azure
