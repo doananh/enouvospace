@@ -15,12 +15,15 @@ function getDiscountDetailPricing (_discount, _packageAmount) {
       var percent = discount.percent;
       var amount  = discount.amount;
       if (percent && (percent > 0)) {
-        result.percent = percent;
-        result.total = _packageAmount * percent * 0.01;
+        result.percent  = percent;
+        var total       = _packageAmount * percent * 0.01;
+        var roundedTotal = +total.toFixed(2);
+        result.total   = roundedTotal || total;
       }
       else if (amount && (amount > 0)) {
         result.amount = amount;
-        result.total = amount;
+        var roundedTotal  = +amount.toFixed(2);
+        result.total      = roundedTotal || amount;
       }
     }
 
@@ -35,8 +38,9 @@ function getPackagePricingDetail (_package, _packageCount, _numberOfUsers) {
       var venue      = _package.venue;
       var id         = _package.objectId;
       var total      = calculatePackagePrice(_packageCount, chargeRate, _numberOfUsers);
+      var roundedTotal = +total.toFixed(2);
       result.package = _package;
-      result.total   = total;
+      result.total   = roundedTotal || total;
     }
 
     return result;
@@ -59,7 +63,9 @@ function getServicePricingDetail (_services) {
         totalPrice        += count * servicePackage.chargeRate;
         result.items.push(item);
       });
-      result.total = totalPrice;
+      var roundedTotal = +totalPrice.toFixed(2);
+      result.package = _package;
+      result.total   = roundedTotal || total;
     }
 
     return result;
