@@ -185,5 +185,67 @@ function previewPricing (bookingObject) {
   });
 }
 
+function checkPricing (_bookingParams) {
+  return new Promise((resolve, reject) => {
+      var packageId     = _bookingParams.packageId;
+      PackageModel.getPackageById(packageId)
+      .then(function (packageData) {
+          var numOfUsers    = _bookingParams.numOfUsers;
+          var packageCount  = _bookingParams.packageCount;
+          var startTime     = _bookingParams.startTime;
+          var endTime       = _bookingParams.endTime;
+          if (packageData) {
+            var chargeRate      = packageData.get('chargeRate');
+            var packageTypeName = packageData.get('packageType') && packageData.get('packageType').name;
+            var packageType     = packageTypeName && packageTypeName.toUpperCase();
+            if (packageType === 'HOURLY') {
+              if (endTime) {
+                var duration  = moment.duration(moment(endTime).diff(moment(startTime)));
+                var hours     = duration.asHours();
+                var price     = hours * chargeRate * numOfUsers;
+                var message   = Tool.formatToVNDString(price);
+                return resolve({text: message, price: price.toFixed(2)})
+              }
+              else {
+                var message = Tool.formatToVNDString(chargeRate);
+                return resolve({text: message + ' / HOUR'});
+              }
+            }
+            else if (packageType === 'DAILY') {
+              var format           = 'YYYY-MM-DD';
+              var strFormatedStart = moment(startTime).format(format);
+              var strFormatedEnd   = moment(endTime).format(format);
+              var mStartTime       = moment(strFormatedStart);
+              var mEndTime         = moment(strFormatedEnd);
+              var dayCount  = Tool.getWorkDay(mStartTime, mEndTime);
+              var price     = dayCount * chargeRate * numOfUsers;
+              var message   = Tool.formatToVNDString(price);
+              return resolve({text: message, price: price.toFixed(2)})
+            }
+            else if (packageType) {
+              if (packageCount) {
+                var price     = packageCount * chargeRate * numOfUsers;
+                var message   = Tool.formatToVNDString(price);
+                return resolve({text: message, price: price.toFixed(2)})
+              }
+              else {
+                throw('Require number of packages params');
+              }
+            }
+            else {
+              throw('No package type data found');
+            }
+          }
+          else {
+            throw('No package data found');
+          }
+      })
+      .catch(function (error) {
+          return reject(error);
+      });
+  });
+}
+
 exports.calculateBookingPricing   = calculateBookingPricing;
 exports.previewPricing            = previewPricing;
+exports.checkPricing              = checkPricing;
