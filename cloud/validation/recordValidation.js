@@ -31,16 +31,4 @@ Parse.Cloud.beforeSave("Record", function(req, res) {
 });
 
 Parse.Cloud.afterSave("Record", function(request, response) {
-  var isPreviousRecord = request.original;
-  var checkinTime = request.object.get('checkinTime');
-  var bookingToJSON = request.object.get('booking').toJSON();
-  if (!isPreviousRecord) {
-    BookingModel.getBookingById({ booking: bookingToJSON, checkinTime: checkinTime })
-      .then(function (bookingData) {
-        return response.success();
-      })
-      .catch(function (error) {
-          return response.error(error);
-      });
-  }
 });

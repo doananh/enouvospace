@@ -11,9 +11,25 @@ Parse.Cloud.define("loadStartupData", function(req, res) {
     ConfigModel.getConfig()
   ])
   .then(function (results) {
-    return res.success({venues: results[0], packages: results[1], packageTypes: results[2], remoteConfig: results[3] && results[3].attributes});
+      return res.success({
+        venues: results[0],
+        packages: results[1],
+        packageTypes: results[2],
+        remoteConfig: results[3] && results[3].attributes
+      });
   })
-  .catch( function (error) {
-    return res.error(error);
+  .catch(function (error) {
+      return res.error(error);
+  });
+});
+
+Parse.Cloud.define("getDataVersion", function(req, res) {
+  ConfigModel.getConfig()
+  .then(function (config) {
+      var dataVersion = config.get('dataVersion');
+      return res.success(dataVersion);
+  })
+  .catch(function (error) {
+      return res.error(error);
   });
 });
