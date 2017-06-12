@@ -353,6 +353,52 @@ function getRecordByBookingId (_params) {
   });
 }
 
+function updateBookingAndCheckingTable(_params) {
+  return new Promise((resolve, reject) => {
+    var recordQuery = new Parse.Query("Record");
+    var bookingQuery = new Parse.Query("Booking");
+    var checkinTime = _params.checkinTime;
+    if (_params && _params.recordId) {
+      recordQuery.equalTo("objectId", _params.recordId);
+      recordQuery.first().then(function(recordData) {
+        if (recordData) {
+          recordData.set('username', _params.customerName);
+          recordData.set('checkinTime', moment(checkinTime).toDate());
+          return recordData.save(null)
+        } else {
+          return reject("No found record to update");
+        }
+      })
+        .then(function (saveRecord) {
+          if (_params && _params.bookingId) {
+            bookingQuery.equalTo("objectId", _params.bookingId);
+            bookingQuery.first().then(function(bookingData) {
+              if (bookingData) {
+                var user = bookingData.get("user");
+                bookingData.set('package', _params.bookingPackage);
+                bookingData.set('numOfUsers', _params.numOfUsers);
+                bookingData.set('user', _.extend(user, {username: _params.customerName}));
+                return bookingData.save(null)
+              } else {
+                return reject("No found booking to update");
+              }
+            })
+              .then(function (bookingResult) {
+                return resolve(bookingResult);
+              })
+              .catch(function (error) {
+                return reject(error);
+              })
+          } else {
+            return reject('Require booking id');
+          }
+        })
+    } else {
+      return reject('Require record id');
+    }
+  });
+}
+
 function getAllBookingsUnCheckin (){
   return new Promise((resolve, reject) => {
     var query = new Parse.Query("Booking");
@@ -364,6 +410,7 @@ function getAllBookingsUnCheckin (){
   });
 }
 
+exports.updateBookingAndCheckingTable = updateBookingAndCheckingTable;
 exports.getRecordByBookingId = getRecordByBookingId;
 exports.getBookingById = getBookingById;
 exports.createNewBooking              = createNewBooking;
