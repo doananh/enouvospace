@@ -353,6 +353,17 @@ function getRecordByBookingId (_params) {
   });
 }
 
+function getAllBookings (){
+  return new Promise((resolve, reject) => {
+    var query = new Parse.Query("Booking");
+    query.find().then((data) => {
+      return resolve(data);
+    }).catch((err) => {
+      return reject(error);
+    });
+  });
+}
+
 exports.getRecordByBookingId = getRecordByBookingId;
 exports.getBookingById = getBookingById;
 exports.createNewBooking              = createNewBooking;
@@ -362,3 +373,4 @@ exports.getBookingByParams            = getBookingByParams;
 exports.getUserBooking                = getUserBooking;
 exports.getLastValidUserBooking       = getLastValidUserBooking;
 exports.previewBooking                = previewBooking;
+exports.getAllBookings                 = getAllBookings;

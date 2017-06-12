@@ -9,6 +9,7 @@ require('./checkin.js');
 require('./checkout.js');
 require('./record.js');
 require('./startup.js');
+require('./visitorManagement');
 
 
 // require before save _ after save for validating here

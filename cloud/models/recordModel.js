@@ -400,6 +400,19 @@ function uniqUserCheckinFollowDays(_groupUserFollowDay) {
   });
   return uniqUsers;
 }
+
+function getAllRecords (){
+  return new Promise((resolve, reject) => {
+    new Parse.Query("Record")
+      .find()
+      .then((data) => {
+        return resolve(data);
+      }).catch((err) => {
+        return reject(err);
+    })
+  });
+}
+
 exports.getStart_EndDay = getStart_EndDay;
 exports.getRecords          = getRecords;
 exports.getRecordByParams   = getRecordByParams;
@@ -407,3 +420,4 @@ exports.getLastValidRecord  = getLastValidRecord;
 exports.recordCheckin       = recordCheckin;
 exports.recordCheckout      = recordCheckout;
 exports.recordCheckoutAndPreviewBooking = recordCheckoutAndPreviewBooking;
+exports.getAllRecords       = getAllRecords;
