@@ -71,44 +71,54 @@ function getServicePricingDetail (_services) {
     return result;
 }
 
-function shouldChangeToDayPackage (_packageObject, _packageCount, _startTime, bookingId) {
+function shouldChangeToDayPackage (_package, _startTime, _endTime, _packageCount, _bookingId) {
     return new Promise((resolve, reject) => {
-        const displayName = _packageObject.packageType.displayName;
-        var packageType = Tool.getPackageType(displayName);
+        var packageTypeName = _package.packageType.name;
+        var packageType     = packageTypeName && packageTypeName.toUpperCase();
         if (packageType === 'HOURLY') {
-          RecordModel.getRecordByParams({bookingId: bookingId})
+          RecordModel.getRecordByParams({bookingId: _bookingId})
           .then(function (recordData) {
               var checkinTime = recordData && recordData.get('checkinTime');
-
-              var endTime       = Tool.getEndTimeFromPackage(checkinTime || _startTime, packageType, null);
-              var duration      = moment.duration(moment(endTime).diff(moment(checkinTime || _startTime)));
-              var packageCount  = duration.asHours();
-              /* temp remove
-              if (packageCount >= Constants.CHANGE_HOUR_TO_DAY_PACKAGE) {
-                ///
-              }
-              else {
-                ///
-              }*/
+              var startTime   = checkinTime || _startTime;
+              var endTime     = _endTime || moment().toDate();
+              var duration    = moment.duration(moment(endTime).diff(moment(startTime)));
+              var hours       = duration.asHours();
               return resolve({
-                packageObject: _packageObject,
-                packageCount: packageCount,
+                packageObject: _package,
+                packageCount: hours,
                 startTime: _startTime,
                 endTime: endTime,
                 checkinTime: checkinTime
               });
           });
         }
-        else {
+        else if (packageType === 'DAILY') {
+          var format           = 'YYYY-MM-DD';
+          var strFormatedStart = moment(_startTime).format(format);
+          var strFormatedEnd   = moment(_endTime).format(format);
+          var mStartTime       = moment(strFormatedStart);
+          var mEndTime         = moment(strFormatedEnd);
+          var dayCount         = Tool.getWorkDay(mStartTime, mEndTime);
+          return resolve({
+            packageObject: _package,
+            packageCount: dayCount,
+            startTime: _startTime,
+            endTime: _endTime
+          });
+        }
+        else if (packageType) {
           var endTime   = Tool.getEndTimeFromPackage(_startTime, packageType, _packageCount);
           var fixTime   = Tool.fixOpenAndCloseTime(packageType, _startTime, endTime);
-
+          console.log(_packageCount);
           return resolve({
-            packageObject: _packageObject,
+            packageObject: _package,
             packageCount: _packageCount,
             startTime: fixTime.openTime,
             endTime: fixTime.closeTime
           });
+        }
+        else {
+          return reject('Invalid package type params');
         }
     });
 }
@@ -126,8 +136,7 @@ function calculateBookingPricing (bookingObject) {
       var isPaid          = bookingObject.get('isPaid');
       var checkinTime     = bookingObject.get('startTime'); // this for fixing hourly price with checkinTime - not startTime
 
-
-      shouldChangeToDayPackage(packageObject, packageCount, startTime, bookingId)
+      shouldChangeToDayPackage(packageObject, startTime, endTime, packageCount, bookingId)
       .then(function (afterChangeData) {
           packageCount  = afterChangeData.packageCount;
           packageObject = afterChangeData.packageObject;
@@ -185,5 +194,67 @@ function previewPricing (bookingObject) {
   });
 }
 
+function checkPricing (_bookingParams) {
+  return new Promise((resolve, reject) => {
+      var packageId     = _bookingParams.packageId;
+      PackageModel.getPackageById(packageId)
+      .then(function (packageData) {
+          var numOfUsers    = _bookingParams.numOfUsers;
+          var packageCount  = _bookingParams.packageCount;
+          var startTime     = _bookingParams.startTime;
+          var endTime       = _bookingParams.endTime;
+          if (packageData) {
+            var chargeRate      = packageData.get('chargeRate');
+            var packageTypeName = packageData.get('packageType') && packageData.get('packageType').name;
+            var packageType     = packageTypeName && packageTypeName.toUpperCase();
+            if (packageType === 'HOURLY') {
+              if (endTime) {
+                var duration  = moment.duration(moment(endTime).diff(moment(startTime)));
+                var hours     = duration.asHours();
+                var price     = hours * chargeRate * numOfUsers;
+                var message   = Tool.formatToVNDString(price);
+                return resolve({text: message, price: price.toFixed(2)})
+              }
+              else {
+                var message = Tool.formatToVNDString(chargeRate);
+                return resolve({text: message + ' / HOUR'});
+              }
+            }
+            else if (packageType === 'DAILY') {
+              var format           = 'YYYY-MM-DD';
+              var strFormatedStart = moment(startTime).format(format);
+              var strFormatedEnd   = moment(endTime).format(format);
+              var mStartTime       = moment(strFormatedStart);
+              var mEndTime         = moment(strFormatedEnd);
+              var dayCount  = Tool.getWorkDay(mStartTime, mEndTime);
+              var price     = dayCount * chargeRate * numOfUsers;
+              var message   = Tool.formatToVNDString(price);
+              return resolve({text: message, price: price.toFixed(2)})
+            }
+            else if (packageType) {
+              if (packageCount) {
+                var price     = packageCount * chargeRate * numOfUsers;
+                var message   = Tool.formatToVNDString(price);
+                return resolve({text: message, price: price.toFixed(2)})
+              }
+              else {
+                throw('Require number of packages params');
+              }
+            }
+            else {
+              throw('No package type data found');
+            }
+          }
+          else {
+            throw('No package data found');
+          }
+      })
+      .catch(function (error) {
+          return reject(error);
+      });
+  });
+}
+
 exports.calculateBookingPricing   = calculateBookingPricing;
 exports.previewPricing            = previewPricing;
+exports.checkPricing              = checkPricing;

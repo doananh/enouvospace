@@ -28,12 +28,12 @@ function formatResponseData (_priceDetail) {
       if (_priceDetail.user.id) {
         userData.id = _priceDetail.user.id;
       }
-
+      var now = moment().toDate().toISOString()
       return {
         customerName: _priceDetail.user.username,
         customerCode: _priceDetail.user.code,
         checkinTime: checkinTime ? checkinTime.toISOString() : startTime.toISOString(),
-        checkoutTime: endTime.toISOString(),
+        checkoutTime: endTime ? endTime.toISOString() : now,
         duration: {
           text: duration.text,
           value: duration.value
