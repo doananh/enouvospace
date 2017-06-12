@@ -399,10 +399,12 @@ function updateBookingAndCheckingTable(_params) {
   });
 }
 
-function getAllBookingsUnCheckin (){
+function getAllRecordsForVisitorManagement (){
   return new Promise((resolve, reject) => {
     var query = new Parse.Query("Booking");
-    query.equalTo('hasCheckined', false).find().then((data) => {
+    query.equalTo('hasCheckined', false)
+      .descending('startTime')
+      .find().then((data) => {
       return resolve(data);
     }).catch((err) => {
       return reject(error);
@@ -420,4 +422,4 @@ exports.getBookingByParams            = getBookingByParams;
 exports.getUserBooking                = getUserBooking;
 exports.getLastValidUserBooking       = getLastValidUserBooking;
 exports.previewBooking                = previewBooking;
-exports.getAllBookingsUnCheckin       = getAllBookingsUnCheckin;
+exports.getAllRecordsForVisitorManagement       = getAllRecordsForVisitorManagement;

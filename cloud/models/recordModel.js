@@ -401,9 +401,10 @@ function uniqUserCheckinFollowDays(_groupUserFollowDay) {
   return uniqUsers;
 }
 
-function getAllRecords (){
+function getAllBookingsForVisitorManagement (){
   return new Promise((resolve, reject) => {
     new Parse.Query("Record")
+      .descending('checkinTime')
       .include("booking")
       .find()
       .then((data) => {
@@ -421,4 +422,4 @@ exports.getLastValidRecord  = getLastValidRecord;
 exports.recordCheckin       = recordCheckin;
 exports.recordCheckout      = recordCheckout;
 exports.recordCheckoutAndPreviewBooking = recordCheckoutAndPreviewBooking;
-exports.getAllRecords       = getAllRecords;
+exports.getAllBookingsForVisitorManagement       = getAllBookingsForVisitorManagement;
