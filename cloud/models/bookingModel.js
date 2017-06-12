@@ -399,6 +399,17 @@ function updateBookingAndCheckingTable(_params) {
   });
 }
 
+function getAllBookings (){
+  return new Promise((resolve, reject) => {
+    var query = new Parse.Query("Booking");
+    query.find().then((data) => {
+      return resolve(data);
+    }).catch((err) => {
+      return reject(error);
+    });
+  });
+}
+
 exports.updateBookingAndCheckingTable = updateBookingAndCheckingTable;
 exports.getRecordByBookingId = getRecordByBookingId;
 exports.getBookingById = getBookingById;
@@ -409,3 +420,4 @@ exports.getBookingByParams            = getBookingByParams;
 exports.getUserBooking                = getUserBooking;
 exports.getLastValidUserBooking       = getLastValidUserBooking;
 exports.previewBooking                = previewBooking;
+exports.getAllBookings                 = getAllBookings;
