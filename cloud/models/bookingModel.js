@@ -71,6 +71,7 @@ function createNewBooking(_params, _code) {
       booking.set("isPaid", false);
       booking.set("payAmount", 0);
       booking.set("discountAmount", 0);
+      booking.set("hasCheckined", false);
 
       if (_code) {
         booking.set("status", "OPEN");

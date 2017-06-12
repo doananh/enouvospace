@@ -54,9 +54,34 @@ function getLastValidRecord (_params) {
   });
 }
 
+function updateBookingData (_params) {
+  return new Promise((resolve, reject) => {
+      var hasCheckined = _params.hasCheckined;
+      var checkinTime = _params.checkinTime ?  _params.checkinTime : moment().toDate();
+      var query = new Parse.Query("Booking");
+      query.equalTo("objectId", _params.bookingId);
+      query.first().then(function(booking) {
+        if (booking) {
+          booking.set("startTime", checkinTime);
+          booking.set("hasCheckined", hasCheckined);
+          booking.save()
+        } else {
+          console.log('Update booking error');
+        }
+      })
+      .then(function (bookingData) {
+        console.log('Update booking successfully');
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  });
+}
+
 function recordCheckin (bookingData) {
   return new Promise((resolve, reject) => {
       var user  = bookingData.get('user');
+      var hasCheckined = bookingData.get('hasCheckined');
       var code  = user.code;
       if (code) {
         var newRecordData = {
@@ -68,6 +93,9 @@ function recordCheckin (bookingData) {
         createNewRecord(newRecordData)
         .then(function (recordData) {
             var checkinTime = recordData.get('checkinTime');
+            if(!hasCheckined) {
+              updateBookingData({bookingId: bookingData.id, checkinTime: checkinTime, hasCheckined: true})
+            }
             return resolve({
                 checkinTime: checkinTime.toISOString(),
                 objectId: recordData.id,
@@ -104,6 +132,9 @@ function recordCheckin (bookingData) {
             var checkinTime = recordData.get('checkinTime');
             var booking     = recordData.get('booking');
             var isNewRecord = booking && booking.id && booking.get('startTime');
+            if(!hasCheckined) {
+              updateBookingData({bookingId: bookingData.id, checkinTime: checkinTime, hasCheckined: true})
+            }
             return resolve({
                 checkinTime: checkinTime.toISOString(),
                 id: recordData.id,
