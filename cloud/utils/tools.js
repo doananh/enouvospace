@@ -1,9 +1,9 @@
-
-var _ = require('underscore');
+var _ = require('lodash');
 var moment    = require('moment');
 var Constants = require('../constant.js');
 
 const DEFAULT_CODE = "A000";
+const keyDateObject = ['createdAt', 'endTime', 'startTime', 'updatedAt'];
 
 function getCode(_code) {
   var charLoop     = "ABCDEFGHIJKLMNOPQRSTUVWXTZ";
@@ -243,6 +243,27 @@ function getWorkDay(start,end) {
   return Math.floor(total);
 }
 
+function flatJSON(data, parentKey) {
+  if(!parentKey) parentKey = "";
+  if(data && _.isPlainObject(data)) {
+    return _.reduce(data, function(result, value, key) {
+      if(keyDateObject.indexOf(key) !== -1 && typeof value !== 'string'){
+        result[(parentKey+key)] = value.iso;
+        return result;
+      }
+
+      if(_.isPlainObject(value)){
+        result = Object.assign({}, result, flatJSON(value, parentKey+key+'_'));
+      } else {
+        result[(parentKey+key)] = value;
+      }
+      return result;
+    }, {});
+  } else {
+    return data;
+  }
+}
+
 exports.convertArrayParseObjToArrayJson           = convertArrayParseObjToArrayJson;
 exports.getCode           = getCode;
 exports.formatStringTime  = formatStringTime;
@@ -254,3 +275,4 @@ exports.getDurationDetail     = getDurationDetail;
 exports.fixOpenAndCloseTime   = fixOpenAndCloseTime;
 exports.getPackageType        = getPackageType;
 exports.getWorkDay            = getWorkDay;
+exports.flatJSON              = flatJSON;

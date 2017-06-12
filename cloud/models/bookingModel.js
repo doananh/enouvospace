@@ -353,10 +353,10 @@ function getRecordByBookingId (_params) {
   });
 }
 
-function getAllBookings (){
+function getAllBookingsUnCheckin (){
   return new Promise((resolve, reject) => {
     var query = new Parse.Query("Booking");
-    query.find().then((data) => {
+    query.equalTo('hasCheckined', false).find().then((data) => {
       return resolve(data);
     }).catch((err) => {
       return reject(error);
@@ -373,4 +373,4 @@ exports.getBookingByParams            = getBookingByParams;
 exports.getUserBooking                = getUserBooking;
 exports.getLastValidUserBooking       = getLastValidUserBooking;
 exports.previewBooking                = previewBooking;
-exports.getAllBookings                 = getAllBookings;
+exports.getAllBookingsUnCheckin       = getAllBookingsUnCheckin;

@@ -404,6 +404,7 @@ function uniqUserCheckinFollowDays(_groupUserFollowDay) {
 function getAllRecords (){
   return new Promise((resolve, reject) => {
     new Parse.Query("Record")
+      .include("booking")
       .find()
       .then((data) => {
         return resolve(data);
