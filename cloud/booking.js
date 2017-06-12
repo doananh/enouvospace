@@ -30,6 +30,17 @@ Parse.Cloud.define("checkPricing", function(req, res) {
     });
 });
 
+Parse.Cloud.define("updateBookingAndCheckingTable", function(req, res) {
+    var params = req.params;
+    BookingModel.updateBookingAndCheckingTable(params)
+    .then(function (data) {
+        return res.success(data);
+    })
+    .catch(function (error) {
+        return res.error(error);
+    });
+});
+
 Parse.Cloud.define("loadUserBooking", function(req, res) {
     var params = req.params;
     BookingModel.getUserBooking(params)
