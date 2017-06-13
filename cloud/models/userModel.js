@@ -41,7 +41,7 @@ function loginWithEmail (params) {
           return Parse.User.logIn(username, password);
       })
       .then(function (response) {
-          return resolve(response);
+          return resolve(response.toJSON());
       })
       .catch(function (error) {
           return reject(error);
