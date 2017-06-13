@@ -1,4 +1,6 @@
 var _ = require('lodash');
+var UserModel = require('./models/userModel');
+
 
 Parse.Cloud.define('getUsers', function(request, response) {
   var userQuery = new Parse.Query(Parse.User);
@@ -10,37 +12,13 @@ Parse.Cloud.define('getUsers', function(request, response) {
 });
 
 Parse.Cloud.define("loginWithEmail", function(req, res) {
-  var userQuery = new Parse.Query(Parse.User);
   var params    = req.params;
-  var email     = params.email;
-  var password  = params.password;
-  userQuery.equalTo("email", email);
-  userQuery.first({useMasterKey: true})
-  .then(function (user) {
-      if (user) {
-        var username = user.get('username');
-        if (username && username.length) {
-          return user;
-        }
-        else {
-          var username = email.split('@')[0];
-          user.set("username", username);
-          return user.save(null, {useMasterKey:true});
-        }
-      }
-      else {
-        return res.error("This email hasn't been registered");
-      }
-  })
-  .then(function (user) {
-      var username = user.get('username');
-      return  Parse.User.logIn(username, password);
-  })
+  UserModel.loginWithEmail(params)
   .then(function (response) {
       return res.success(response);
   })
   .catch(function (error) {
-      return res.error(err);
+      return res.error(error);
   });
 });
 
