@@ -10,8 +10,17 @@ Parse.Cloud.define("getDataForVisitorManagement", (req, res) => {
     .then((data) => {
       return res.success(formatData(data[0], data[1]));
     }).catch((err) => {
-      return res.error(err);
-    })
+    return res.error(err);
+  })
+})
+
+Parse.Cloud.define("searchDataForVisitorManagement", (req, res) => {
+  Promise.all([BookingModel.searchBookingsForVisitorManagement(req.params), RecordModel.searchRecordsForVisitorManagement(req.params)])
+    .then((data) => {
+      return res.success(formatData(data[0], data[1]));
+    }).catch((err) => {
+    return res.error(err);
+  })
 })
 
 function formatData(listBookings, listRecords) {
@@ -56,8 +65,8 @@ function formatData(listBookings, listRecords) {
     return _.pick(data, [
       'bookingId', 'booking_user_username', 'booking_package_packageType_displayName', 'startTime', 'endTime', 'objectId',
       'booking_isPaid', 'booking_payAmount', 'booking_discountAmount', 'booking_createdAt', 'isBooking', 'booking_status',
-      'recordId', 'totalHours'
+      'booking_paymentMethod', 'recordId', 'totalHours'
     ]);
   });
-  return _.sortBy(listData, (data) => { return data.createdAt; }).reverse();
+  return _.sortBy(listData, (data) => { return data.startTime; }).reverse();
 }

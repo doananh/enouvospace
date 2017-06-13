@@ -422,6 +422,28 @@ function getAllRecordsForVisitorManagement (){
   });
 }
 
+function searchRecordsForVisitorManagement (params){
+  return new Promise((resolve, reject) => {
+    var query = new Parse.Query("Record");
+    if(params.visitorName)
+      query.equalTo('username', params.visitorName);
+    if(params.packageId)
+      query.equalTo('packageId', params.packageId);
+    if(params.startTime && params.endTime && new moment(params.startTime).isBefore(new moment(params.endTime)))
+      query.greaterThanOrEqualTo('checkinTime', new Date(params.startTime))
+        .lessThanOrEqualTo('checkinTime', new Date(params.endTime));
+
+    query.descending('checkinTime')
+      .include("booking")
+      .find()
+      .then((data) => {
+        return resolve(data);
+      }).catch((err) => {
+      return reject(err);
+    })
+  });
+}
+
 exports.getStart_EndDay = getStart_EndDay;
 exports.getRecords          = getRecords;
 exports.getRecordByParams   = getRecordByParams;
@@ -430,3 +452,4 @@ exports.recordCheckin       = recordCheckin;
 exports.recordCheckout      = recordCheckout;
 exports.recordCheckoutAndPreviewBooking = recordCheckoutAndPreviewBooking;
 exports.getAllRecordsForVisitorManagement = getAllRecordsForVisitorManagement;
+exports.searchRecordsForVisitorManagement = searchRecordsForVisitorManagement;
