@@ -399,7 +399,7 @@ function updateBookingAndCheckingTable(_params) {
   });
 }
 
-function getAllRecordsForVisitorManagement (){
+function getAllBookingsForVisitorManagement (){
   return new Promise((resolve, reject) => {
     var query = new Parse.Query("Booking");
     query.equalTo('hasCheckined', false)
@@ -422,4 +422,4 @@ exports.getBookingByParams            = getBookingByParams;
 exports.getUserBooking                = getUserBooking;
 exports.getLastValidUserBooking       = getLastValidUserBooking;
 exports.previewBooking                = previewBooking;
-exports.getAllRecordsForVisitorManagement       = getAllRecordsForVisitorManagement;
+exports.getAllBookingsForVisitorManagement       = getAllBookingsForVisitorManagement;
