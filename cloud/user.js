@@ -1,4 +1,6 @@
-var _ = require('underscore');
+var _ = require('lodash');
+var UserModel = require('./models/userModel');
+
 
 Parse.Cloud.define('getUsers', function(request, response) {
   var userQuery = new Parse.Query(Parse.User);
@@ -6,6 +8,17 @@ Parse.Cloud.define('getUsers', function(request, response) {
     response.success(users);
   }, function(err) {
     response.error(err);
+  });
+});
+
+Parse.Cloud.define("loginWithEmail", function(req, res) {
+  var params    = req.params;
+  UserModel.loginWithEmail(params)
+  .then(function (response) {
+      return res.success(response);
+  })
+  .catch(function (error) {
+      return res.error(error);
   });
 });
 
