@@ -17,14 +17,19 @@ Parse.Cloud.define("loginWithEmail", function(req, res) {
   userQuery.equalTo("email", email);
   userQuery.first({useMasterKey: true})
   .then(function (user) {
-      var username = user.get('username');
-      if (username && username.length) {
-        return user;
+      if (user) {
+        var username = user.get('username');
+        if (username && username.length) {
+          return user;
+        }
+        else {
+          var username = email.split('@')[0];
+          user.set("username", username);
+          return user.save(null, {useMasterKey:true});
+        }
       }
       else {
-        var username = email.split('@')[0];
-        user.set("username", username);
-        return user.save(null, {useMasterKey:true});
+        return res.error("This email hasn't been registered");
       }
   })
   .then(function (user) {
