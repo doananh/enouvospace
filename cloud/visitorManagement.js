@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var moment = require('moment');
 
 var BookingModel  = require('./models/bookingModel.js');
 var RecordModel   = require('./models/recordModel.js');
@@ -17,28 +18,45 @@ function formatData(listBookings, listRecords) {
   var bookings = listBookings.map((data) => {
     var newBooking = ultis.flatJSON({booking: data.toJSON(), isBooking: true});
     newBooking.bookingId = _.clone(newBooking.booking_objectId);
-    newBooking.startTime = _.clone(newBooking.booking_startTime);
-    newBooking.endTime = _.clone(newBooking.booking_endTime);
+    if(newBooking.booking_startTime){
+      newBooking.startTime = _.clone(newBooking.booking_startTime);
+      delete newBooking.booking_startTime;
+    }
+    if(newBooking.booking_endTime){
+      newBooking.endTime = _.clone(newBooking.booking_endTime);
+      delete newBooking.booking_endTime;
+    }
+    newBooking.objectId = 'B-'+newBooking.bookingId;
     delete newBooking.booking_objectId;
-    delete newBooking.booking_startTime;
-    delete newBooking.booking_endTime;
     return newBooking;
   });
   var records = listRecords.map((data) => {
     var newRecord = ultis.flatJSON(data.toJSON());
     newRecord.recordId = _.clone(newRecord.objectId);
-    newRecord.startTime = _.clone(newRecord.checkinTime);
-    newRecord.endTime = _.clone(newRecord.checkoutTime);
-    delete newRecord.objectId;
-    delete newRecord.checkinTime;
-    delete newRecord.checkoutTime;
+    if(newRecord.checkinTime){
+      newRecord.startTime = _.clone(newRecord.checkinTime);
+      delete newRecord.checkinTime;
+    }
+    if(newRecord.checkoutTime){
+      newRecord.endTime = _.clone(newRecord.checkoutTime);
+      delete newRecord.checkoutTime;
+    }
+    if(newRecord.booking_objectId){
+      newRecord.bookingId = _.clone(newRecord.booking_objectId);
+      delete newRecord.booking_objectId;
+    }
+    if(newRecord.startTime && newRecord.endTime) {
+      var duration = new moment(newRecord.endTime).diff(new moment(newRecord.startTime), 'minutes');
+      newRecord.totalHours = Math.floor(duration/60) +' hours '+ (duration%60) +' minutes';
+    }
+    newRecord.objectId = 'RC-'+newRecord.objectId;
     return newRecord;
   });
   var listData = records.concat(bookings).map((data) => {
     return _.pick(data, [
-      'bookingId', 'booking_user_username', 'booking_package_packageType_displayName', 'startTime', 'endTime',
+      'bookingId', 'booking_user_username', 'booking_package_packageType_displayName', 'startTime', 'endTime', 'objectId',
       'booking_isPaid', 'booking_payAmount', 'booking_discountAmount', 'booking_createdAt', 'isBooking', 'booking_status',
-      'recordId'
+      'recordId', 'totalHours'
     ]);
   });
   return _.sortBy(listData, (data) => { return data.createdAt; }).reverse();

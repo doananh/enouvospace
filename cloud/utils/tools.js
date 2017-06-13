@@ -247,7 +247,7 @@ function flatJSON(data, parentKey) {
   if(!parentKey) parentKey = "";
   if(data && _.isPlainObject(data)) {
     return _.reduce(data, function(result, value, key) {
-      if(keyDateObject.indexOf(key) !== -1 && typeof value !== 'string'){
+      if(_.isPlainObject(value) && value.__type === 'Date'){
         result[(parentKey+key)] = value.iso;
         return result;
       }
