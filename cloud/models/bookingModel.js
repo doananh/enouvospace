@@ -412,6 +412,27 @@ function getAllBookingsForVisitorManagement (){
   });
 }
 
+function searchBookingsForVisitorManagement (params){
+  return new Promise((resolve, reject) => {
+    var query = new Parse.Query("Booking");
+    if(params.visitorName)
+      query.equalTo('user.name', params.visitorName);
+    if(params.packageId)
+      query.equalTo('package.objectId', params.packageId);
+    if(params.startTime && params.endTime && new moment(params.startTime).isBefore(new moment(params.endTime)))
+      query.greaterThanOrEqualTo('startTime', new Date(params.startTime))
+        .lessThanOrEqualTo('startTime', new Date(params.endTime));
+
+    query.equalTo('hasCheckined', false)
+      .descending('startTime')
+      .find().then((data) => {
+      return resolve(data);
+    }).catch((err) => {
+      return reject(error);
+    });
+  });
+}
+
 exports.updateBookingAndCheckingTable = updateBookingAndCheckingTable;
 exports.getRecordByBookingId = getRecordByBookingId;
 exports.getBookingById = getBookingById;
@@ -423,3 +444,4 @@ exports.getUserBooking                = getUserBooking;
 exports.getLastValidUserBooking       = getLastValidUserBooking;
 exports.previewBooking                = previewBooking;
 exports.getAllBookingsForVisitorManagement       = getAllBookingsForVisitorManagement;
+exports.searchBookingsForVisitorManagement       = searchBookingsForVisitorManagement;
