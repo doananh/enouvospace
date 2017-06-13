@@ -21,6 +21,7 @@ function createNewRecord (_params) {
       record.set("username", _params.user && _params.user.username);
       record.set("userId", _params.user && _params.user.id);
       record.set("booking", { "__type":"Pointer","className":"Booking","objectId": _params.bookingId });
+      record.set("packageId", _params.packageId);
       record.save()
       .then(function (recordData) {
           return resolve(recordData);
@@ -65,30 +66,35 @@ function updateBookingData (_params) {
           booking.set("startTime", checkinTime);
           booking.set("hasCheckined", hasCheckined);
           booking.save()
-        } else {
+        }
+        else {
           console.log('Update booking error');
         }
       })
       .then(function (bookingData) {
-        console.log('Update booking successfully');
+          console.log('Update booking successfully');
       })
       .catch(function (error) {
-        console.log(error);
+          console.log(error);
       });
   });
 }
 
 function recordCheckin (bookingData) {
   return new Promise((resolve, reject) => {
-      var user  = bookingData.get('user');
-      var hasCheckined = bookingData.get('hasCheckined');
+      var user          = bookingData.get('user');
+      var hasCheckined  = bookingData.get('hasCheckined');
+      var packageData   = bookingData.get('package');
+      var packageId     = packageData && packageData.objectId;
+      console.log(packageId);
       var code  = user.code;
       if (code) {
         var newRecordData = {
           user: {
             username: user.username
           },
-          bookingId: bookingData.id
+          bookingId: bookingData.id,
+          packageId: packageId
         }
         createNewRecord(newRecordData)
         .then(function (recordData) {
@@ -123,7 +129,8 @@ function recordCheckin (bookingData) {
                   id: user.id,
                   username: user.username
                 },
-                bookingId: bookingData.id
+                bookingId: bookingData.id,
+                packageId: packageId
               }
               return createNewRecord(newRecordData);
             }
