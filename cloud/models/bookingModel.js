@@ -407,7 +407,7 @@ function getAllBookingsForVisitorManagement (){
       .find().then((data) => {
       return resolve(data);
     }).catch((err) => {
-      return reject(error);
+      return reject(err);
     });
   });
 }
@@ -428,7 +428,7 @@ function searchBookingsForVisitorManagement (params){
       .find().then((data) => {
       return resolve(data);
     }).catch((err) => {
-      return reject(error);
+      return reject(err);
     });
   });
 }
