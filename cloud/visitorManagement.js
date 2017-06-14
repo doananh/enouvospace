@@ -63,7 +63,7 @@ function formatData(listBookings, listRecords) {
   });
   var listData = records.concat(bookings).map((data) => {
     return _.pick(data, [
-      'bookingId', 'booking_user_username', 'booking_package_packageType_displayName', 'startTime', 'endTime', 'objectId',
+      'bookingId', 'booking_user_username', 'booking_package_name', 'startTime', 'endTime', 'objectId',
       'booking_isPaid', 'booking_payAmount', 'booking_discountAmount', 'booking_createdAt', 'isBooking', 'booking_status',
       'booking_paymentMethod', 'recordId', 'totalHours'
     ]);
