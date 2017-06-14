@@ -426,7 +426,7 @@ function searchRecordsForVisitorManagement (params){
   return new Promise((resolve, reject) => {
     var query = new Parse.Query("Record");
     if(params.visitorName)
-      query.equalTo('username', params.visitorName);
+      query.startsWith('username', params.visitorName);
     if(params.packageId)
       query.equalTo('packageId', params.packageId);
     if(params.startTime && params.endTime && new moment(params.startTime).isBefore(new moment(params.endTime)))

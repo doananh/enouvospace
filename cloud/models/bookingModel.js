@@ -416,7 +416,7 @@ function searchBookingsForVisitorManagement (params){
   return new Promise((resolve, reject) => {
     var query = new Parse.Query("Booking");
     if(params.visitorName)
-      query.equalTo('user.name', params.visitorName);
+      query.startsWith('user.name', params.visitorName);
     if(params.packageId)
       query.equalTo('package.objectId', params.packageId);
     if(params.startTime && params.endTime && new moment(params.startTime).isBefore(new moment(params.endTime)))
