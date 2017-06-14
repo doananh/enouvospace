@@ -56,7 +56,7 @@ function formatData(listBookings, listRecords) {
     }
     if(newRecord.startTime && newRecord.endTime) {
       var duration = new moment(newRecord.endTime).diff(new moment(newRecord.startTime), 'minutes');
-      newRecord.totalHours = Math.floor(duration/60) +' hours '+ (duration%60) +' minutes';
+      newRecord.totalHours = Math.floor(duration/60) +' h '+ (duration%60) +' m';
     }
     newRecord.objectId = 'RC-'+newRecord.objectId;
     return newRecord;
