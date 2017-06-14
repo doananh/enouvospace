@@ -358,43 +358,43 @@ function updateBookingAndCheckingTable(_params) {
     var recordQuery = new Parse.Query("Record");
     var bookingQuery = new Parse.Query("Booking");
     var checkinTime = _params.checkinTime;
-    if (_params && _params.recordId) {
-      recordQuery.equalTo("objectId", _params.recordId);
-      recordQuery.first().then(function(recordData) {
-        if (recordData) {
-          recordData.set('username', _params.customerName);
-          recordData.set('checkinTime', moment(checkinTime).toDate());
-          return recordData.save(null)
+    if (_params && _params.bookingId) {
+      bookingQuery.equalTo("objectId", _params.bookingId);
+      bookingQuery.first().then(function(bookingData) {
+        if (bookingData) {
+          var user = bookingData.get("user");
+          bookingData.set('package', _params.bookingPackage);
+          bookingData.set('numOfUsers', _params.numOfUsers);
+          bookingData.set('user', _.extend(user, {username: _params.customerName}));
+          return bookingData.save(null)
         } else {
-          return reject("No found record to update");
+          return reject("No found booking to update");
         }
       })
-        .then(function (saveRecord) {
-          if (_params && _params.bookingId) {
-            bookingQuery.equalTo("objectId", _params.bookingId);
-            bookingQuery.first().then(function(bookingData) {
-              if (bookingData) {
-                var user = bookingData.get("user");
-                bookingData.set('package', _params.bookingPackage);
-                bookingData.set('numOfUsers', _params.numOfUsers);
-                bookingData.set('user', _.extend(user, {username: _params.customerName}));
-                return bookingData.save(null)
+      .then(function (saveBooking) {
+        if (_params && _params.recordId) {
+            recordQuery.equalTo("objectId", _params.recordId);
+            recordQuery.first().then(function(recordData) {
+              if (recordData) {
+                recordData.set('username', _params.customerName);
+                recordData.set('checkinTime', moment(checkinTime).toDate());
+                return recordData.save(null)
               } else {
-                return reject("No found booking to update");
+                return reject("No found record to update");
               }
             })
-              .then(function (bookingResult) {
-                return resolve(bookingResult);
-              })
-              .catch(function (error) {
-                return reject(error);
-              })
-          } else {
-            return reject('Require booking id');
-          }
-        })
+            .then(function (recordResult) {
+              return resolve({booking: saveBooking, record: recordResult});
+            })
+            .catch(function (error) {
+              return reject(error);
+            })
+        } else {
+          return resolve({booking: saveBooking});
+        }
+      })
     } else {
-      return reject('Require record id');
+      return reject('Require booking id');
     }
   });
 }
