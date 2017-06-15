@@ -37,7 +37,12 @@ function getPackagePricingDetail (_package, _packageCount, _numberOfUsers) {
       var name       = _package.name;
       var venue      = _package.venue;
       var id         = _package.objectId;
-      var total      = calculatePackagePrice(_packageCount, chargeRate, _numberOfUsers);
+      var numOfUsers = _numberOfUsers;
+      var isPaidOnPersons = _package.isPaidOnPersons;
+      if ( !_.isUndefined(isPaidOnPersons) &&  !_.isNull(isPaidOnPersons) && !isPaidOnPersons) {
+        numOfUsers = 1;
+      }
+      var total      = calculatePackagePrice(_packageCount, chargeRate, numOfUsers);
       var roundedTotal = +total.toFixed(2);
       result.package = _package;
       result.total   = roundedTotal || total;
@@ -196,13 +201,17 @@ function previewPricing (bookingObject) {
 
 function checkPricing (_bookingParams) {
   return new Promise((resolve, reject) => {
-      var packageId     = _bookingParams.packageId;
+      var packageId = _bookingParams.packageId;
       PackageModel.getPackageById(packageId)
       .then(function (packageData) {
+          var isPaidOnPersons = packageData.get('isPaidOnPersons');
           var numOfUsers    = _bookingParams.numOfUsers;
           var packageCount  = _bookingParams.packageCount;
           var startTime     = _bookingParams.startTime;
           var endTime       = _bookingParams.endTime;
+          if ( !_.isUndefined(isPaidOnPersons) &&  !_.isNull(isPaidOnPersons) && !isPaidOnPersons) {
+            numOfUsers = 1;
+          }
           if (packageData) {
             var chargeRate      = packageData.get('chargeRate');
             var packageTypeName = packageData.get('packageType') && packageData.get('packageType').name;
