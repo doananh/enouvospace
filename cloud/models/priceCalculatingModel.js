@@ -164,6 +164,7 @@ function calculateBookingPricing (bookingObject) {
           var packageAmount   = packagePricing.total;
           var discountPricing = getDiscountDetailPricing(null, packageAmount); // temp remove discount
           var payAmount       = servicePricing.total + packageAmount - discountPricing.total;
+          var formatedPayAmout =  Tool.formatToVNDValue(payAmount);
 
           return resolve({
               user: user,
@@ -176,7 +177,7 @@ function calculateBookingPricing (bookingObject) {
               numOfUsers: numOfUsers,
               packageCount: packageCount,
               bookingId: bookingId,
-              payAmount: payAmount,
+              payAmount: formatedPayAmout,
               status: status
           });
       })
