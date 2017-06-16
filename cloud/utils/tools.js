@@ -67,12 +67,19 @@ function formatCurrencyWithComma(nStr) {
     return x1 + x2;
 }
 
+function formatToVNDValue (_value) {
+  var res = _value;
+  if (_value && _.isNumber(_value)) {
+    res = _.round(_value, -3);
+  }
+  return res;
+}
+
 function formatToVNDString (_value) {
   if (_value && _.isNumber(_value)) {
-    var roundToThoundsand = Math.round(_value / 1000) * 1000;
-    var res = roundToThoundsand.toFixed(0);
-    res = formatCurrencyWithComma(res) + " VND";
-    return res;
+    var roundedValue  = _.round(_value, -3);;
+    var formatedValue = formatCurrencyWithComma(roundedValue) + " VND";
+    return formatedValue;
   }
 
   return "0 VND";
@@ -282,6 +289,7 @@ exports.formatStringTime  = formatStringTime;
 exports.getRandomString   = getRandomString;
 exports.isValidCode       = isValidCode;
 exports.formatToVNDString = formatToVNDString;
+exports.formatToVNDValue  = formatToVNDValue;
 exports.getEndTimeFromPackage = getEndTimeFromPackage;
 exports.getDurationDetail     = getDurationDetail;
 exports.fixOpenAndCloseTime   = fixOpenAndCloseTime;
