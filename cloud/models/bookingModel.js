@@ -424,11 +424,11 @@ function searchBookingsForVisitorManagement (params){
         query.greaterThanOrEqualTo('startTime', new Date(params.startTime))
           .lessThanOrEqualTo('startTime', new Date(params.endTime));
       }else{
-        return reject({message: 'Please start time must be before end time!'});
+        return reject('Please start time must be before end time!');
       }
     }else{
       if((!params.startTime && params.endTime) || (!params.endTime && params.startTime)){
-        return reject({message: 'Please select start time and end time!'});
+        return reject('Please select start time and end time!');
       }
     }
 
