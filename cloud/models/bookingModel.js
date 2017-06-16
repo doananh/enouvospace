@@ -415,13 +415,22 @@ function getAllBookingsForVisitorManagement (){
 function searchBookingsForVisitorManagement (params){
   return new Promise((resolve, reject) => {
     var query = new Parse.Query("Booking");
-    if(params.visitorName)
+    if (params.visitorName)
       query.startsWith('user.name', params.visitorName);
-    if(params.packageId)
+    if (params.packageId)
       query.equalTo('package.objectId', params.packageId);
-    if(params.startTime && params.endTime && new moment(params.startTime).isBefore(new moment(params.endTime)))
-      query.greaterThanOrEqualTo('startTime', new Date(params.startTime))
-        .lessThanOrEqualTo('startTime', new Date(params.endTime));
+    if (params.startTime && params.endTime){
+      if(new moment(params.startTime).isBefore(new moment(params.endTime))){
+        query.greaterThanOrEqualTo('startTime', new Date(params.startTime))
+          .lessThanOrEqualTo('startTime', new Date(params.endTime));
+      }else{
+        return reject({message: 'Please start time must be before end time!'});
+      }
+    }else{
+      if((!params.startTime && params.endTime) || (!params.endTime && params.startTime)){
+        return reject({message: 'Please select start time and end time!'});
+      }
+    }
 
     query.equalTo('hasCheckined', false)
       .descending('startTime')

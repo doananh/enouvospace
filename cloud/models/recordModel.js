@@ -429,9 +429,18 @@ function searchRecordsForVisitorManagement (params){
       query.startsWith('username', params.visitorName);
     if(params.packageId)
       query.equalTo('packageId', params.packageId);
-    if(params.startTime && params.endTime && new moment(params.startTime).isBefore(new moment(params.endTime)))
-      query.greaterThanOrEqualTo('checkinTime', new Date(params.startTime))
-        .lessThanOrEqualTo('checkinTime', new Date(params.endTime));
+    if(params.startTime && params.endTime && new moment(params.startTime).isBefore(new moment(params.endTime))){
+      if(new moment(params.startTime).isBefore(new moment(params.endTime))){
+        query.greaterThanOrEqualTo('checkinTime', new Date(params.startTime))
+          .lessThanOrEqualTo('checkinTime', new Date(params.endTime));
+      }else{
+        return reject({message: 'Please start time must be before end time!'});
+      }
+    }else{
+      if((!params.startTime && params.endTime) || (!params.endTime && params.startTime)){
+        return reject({message: 'Please select start time and end time!'});
+      }
+    }
 
     query.descending('checkinTime')
       .include("booking")
