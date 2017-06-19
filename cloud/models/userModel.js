@@ -49,6 +49,13 @@ function loginWithEmail (params) {
   });
 }
 
+function getAllAdmin () {
+  var userQuery = new Parse.Query("User");
+    userQuery.equalTo("roleName", "ADMIN");
+  return userQuery.find({useMasterKey: true});
+}
+
+exports.getAllAdmin = getAllAdmin;
 exports.loginWithEmail      = loginWithEmail;
 exports.getUserWithBusiness = getUserWithBusiness;
 exports.getUserWithId       = getUserWithId;
