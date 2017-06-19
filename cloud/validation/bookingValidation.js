@@ -1,5 +1,5 @@
 
-var _      = require('underscore');
+var _      = require('lodash');
 var moment = require('moment');
 
 var Constants = require('../constant');
@@ -114,17 +114,22 @@ Parse.Cloud.afterSave("Booking", function(request, response) {
     .then(function (data) {
       var email = data.get('email');
       if (email) {
-        Mailgun.messages().send({
-          to: email,
-          from: process.env.EMAIL_FROM,
-          subject: 'You have submitted booking in Enouvo Space at '+ moment(startTime).format('DD/MM/YYYY'),
-          html: htmlMail,
-        }, function (error, body) {
-          if (error) {
-            console.log("Uh oh, something went wrong");
-          } else {
-            console.log("Email sent!");
-          }
+        var subject = 'You have submitted booking in Enouvo Space at '+ moment(startTime).format('DD/MM/YYYY');
+        sendMail(email, process.env.EMAIL_FROM, subject, htmlMail);
+      } else {
+        console.log("Require email");
+      }
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+
+    userModel.getAllAdmin()
+    .then(function (data) {
+      if (data && data.length > 0) {
+        _.forEach(data, function(value) {
+          var subject = 'You have got new booking from user'+user.name+'.Please approval booking in this user';
+          sendMail(value.get('email'), process.env.EMAIL_FROM, subject, '');
         });
       } else {
         console.log("Require email");
@@ -139,3 +144,18 @@ Parse.Cloud.afterSave("Booking", function(request, response) {
     recordModal.createOrUpdateRecordForPreBooking(request.object.toJSON());
   }
 })
+
+function sendMail (email_to, email_from, subject, html) {
+  return Mailgun.messages().send({
+      to: email_to,
+      from: email_from,
+      subject: subject,
+      html: html,
+    }, function (error, body) {
+      if (error) {
+        console.log("Uh oh, something went wrong");
+      } else {
+        console.log("Email sent!");
+      }
+  })
+}
