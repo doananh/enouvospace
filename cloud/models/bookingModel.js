@@ -442,6 +442,26 @@ function searchBookingsForVisitorManagement (params){
   });
 }
 
+function changeStatusBooking(params) {
+  console.log(params);
+  return new Promise((resolve, reject) => {
+    if(!params.bookingId) return reject("Missing bookingId");
+
+    var bookingQuery = new Parse.Query("Booking");
+    bookingQuery.equalTo("objectId", params.bookingId);
+    bookingQuery.first().then(function(bookingData) {
+      if (bookingData) {
+        bookingData.set('status', params.status);
+        return bookingData.save(null)
+      } else {
+        return reject("No found booking to update");
+      }
+    }).catch((error) => {
+      return reject(error);
+    })
+  });
+}
+
 exports.updateBookingAndCheckingTable = updateBookingAndCheckingTable;
 exports.getRecordByBookingId = getRecordByBookingId;
 exports.getBookingById = getBookingById;
@@ -454,3 +474,4 @@ exports.getLastValidUserBooking       = getLastValidUserBooking;
 exports.previewBooking                = previewBooking;
 exports.getAllBookingsForVisitorManagement       = getAllBookingsForVisitorManagement;
 exports.searchBookingsForVisitorManagement       = searchBookingsForVisitorManagement;
+exports.changeStatusBooking                      = changeStatusBooking;

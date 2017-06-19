@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var moments = require('moment');
 
+var Constants             = require('./constant');
 var BookingModel          = require('./models/bookingModel.js');
 var CheckoutModel         = require('./models/checkoutModel.js');
 var PriceCalculatingModel = require('./models/priceCalculatingModel.js');
@@ -65,4 +66,26 @@ Parse.Cloud.define("getLastValidUserBooking", function(req, res) {
     .catch(function (error) {
         return res.error(error);
     });
+});
+
+Parse.Cloud.define("approveBooking", function(req, res){
+    BookingModel.changeStatusBooking({
+        bookingId: req.params.bookingId,
+        status: Constants.BOOKING_STATUSES[4]
+    }).then(function(data){
+        return res.success(data ? data.toJSON() : {});
+    }).catch(function(error){
+        return res.error(error);
+    })
+});
+
+Parse.Cloud.define("rejectBooking", function(req, res){
+  BookingModel.changeStatusBooking({
+    bookingId: req.params.bookingId,
+    status: Constants.BOOKING_STATUSES[3]
+  }).then(function(data){
+    return res.success(data ? data.toJSON() : {});
+  }).catch(function(error){
+    return res.error(error);
+  })
 });

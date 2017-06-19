@@ -13,6 +13,7 @@ Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MA
 Parse.serverURL = process.env.SERVER_URL;
 
 function createNewRecord (_params) {
+  console.log(_params);
   return new Promise((resolve, reject) => {
       var checkinTime = _params.checkinTime ?  _params.checkinTime : moment().toDate();
       var Record = Parse.Object.extend("Record");
@@ -91,7 +92,7 @@ function recordCheckin (bookingData) {
       if (code) {
         var newRecordData = {
           user: {
-            username: user.username
+            username: user.name
           },
           bookingId: bookingData.id,
           packageId: packageId
@@ -100,7 +101,12 @@ function recordCheckin (bookingData) {
         .then(function (recordData) {
             var checkinTime = recordData.get('checkinTime');
             if(!hasCheckined) {
-              updateBookingData({bookingId: bookingData.id, checkinTime: checkinTime, hasCheckined: true})
+              updateBookingData({
+                bookingId: bookingData.id,
+                checkinTime: checkinTime,
+                hasCheckined: true,
+                status: Constants.BOOKING_STATUSES[2]
+              })
             }
             return resolve({
                 checkinTime: checkinTime.toISOString(),
@@ -127,7 +133,7 @@ function recordCheckin (bookingData) {
               var newRecordData = {
                 user: {
                   id: user.id,
-                  username: user.username
+                  username: user.name
                 },
                 bookingId: bookingData.id,
                 packageId: packageId
@@ -140,7 +146,12 @@ function recordCheckin (bookingData) {
             var booking     = recordData.get('booking');
             var isNewRecord = booking && booking.id && booking.get('startTime');
             if(!hasCheckined) {
-              updateBookingData({bookingId: bookingData.id, checkinTime: checkinTime, hasCheckined: true})
+              updateBookingData({
+                bookingId: bookingData.id,
+                checkinTime: checkinTime,
+                hasCheckined: true,
+                status: Constants.BOOKING_STATUSES[2]
+              })
             }
             return resolve({
                 checkinTime: checkinTime.toISOString(),
@@ -453,6 +464,28 @@ function searchRecordsForVisitorManagement (params){
   });
 }
 
+function createOrUpdateRecordForPreBooking(params){
+  return new Promise((resolve, reject) => {
+    var recordQuery   = new Parse.Query("Record");
+    if (params.bookingId) {
+      recordQuery.equalTo("booking", { "__type": "Pointer","className": "Booking", "objectId": params.bookingId });
+    }
+    recordQuery.equalTo("hasCheckined", false);
+
+    recordQuery.first()
+      .then(function (recordData) {
+        if (recordData) {
+          recordData.set("checkinTime", params.checkinTime);
+          return recordData.save();
+        } else {
+          return createNewRecord(params);
+        }
+      }).catch((error) => {
+        return reject(error);
+      })
+  })
+}
+
 exports.getStart_EndDay = getStart_EndDay;
 exports.getRecords          = getRecords;
 exports.getRecordByParams   = getRecordByParams;
@@ -462,3 +495,4 @@ exports.recordCheckout      = recordCheckout;
 exports.recordCheckoutAndPreviewBooking = recordCheckoutAndPreviewBooking;
 exports.getAllRecordsForVisitorManagement = getAllRecordsForVisitorManagement;
 exports.searchRecordsForVisitorManagement = searchRecordsForVisitorManagement;
+exports.createOrUpdateRecordForPreBooking = createOrUpdateRecordForPreBooking;

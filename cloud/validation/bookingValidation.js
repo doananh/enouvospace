@@ -2,12 +2,13 @@
 var _      = require('underscore');
 var moment = require('moment');
 
-var Constants = require('./../constant.js');
+var Constants = require('../constant');
 var PushApi   = require('./../notification/pushAPI.js');
 var Mailgun = require('mailgun-js')({
     apiKey: process.env.EMAIL_API_KEY,
     domain: process.env.EMAIL_DOMAIN
 });
+var recordModal = require('../models/recordModel');
 var userModel = require('./../models/userModel.js');
 var bookingModel = require('./../models/bookingModel.js');
 var htmlConvert = require('./../emailTemplate/htmlConvert.js');
@@ -67,7 +68,10 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
     return res.error('Require number of users params');
   }
 
-  if (Constants.BOOKING_STATUSES.indexOf(status) < 0) {
+  console.log("########");
+  console.log(status);
+  console.log("########");
+  if (_.indexOf(Constants.BOOKING_STATUSES, status) !== -1) {
     return res.error('Invalid status - please change it to OPEN or PENDING or CLOSED');
   }
 
@@ -129,5 +133,9 @@ Parse.Cloud.afterSave("Booking", function(request, response) {
     .catch(function (error) {
         console.log(error);
     });
+  }
+  //Update record for pre-booking
+  if(request.object.get('hasCheckined') === false) {
+    recordModal.createOrUpdateRecordForPreBooking(request.object.toJSON());
   }
 })
