@@ -19,6 +19,9 @@ Parse.Cloud.beforeSave("Record", function(req, res) {
   if (!_.isString(username) || !username.length) {
     return res.error('Require username param');
   }
+  if (_.isNull(req.object.get('hasCheckined')) || _.isUndefined(req.object.get('hasCheckined'))) {
+    req.object.set('hasCheckined', true);
+  }
 
   if (booking) {
     /* valid something later */

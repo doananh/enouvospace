@@ -23,6 +23,8 @@ function createNewRecord (_params) {
       record.set("userId", _params.user && _params.user.id);
       record.set("booking", { "__type":"Pointer","className":"Booking","objectId": _params.bookingId });
       record.set("packageId", _params.packageId);
+      if(!_.isNull(_params.hasCheckined) && !_.isUndefined(_params.hasCheckined))
+        record.set("hasCheckined", _params.hasCheckined);
       record.save()
       .then(function (recordData) {
           return resolve(recordData);
@@ -467,9 +469,8 @@ function searchRecordsForVisitorManagement (params){
 function createOrUpdateRecordForPreBooking(params){
   return new Promise((resolve, reject) => {
     var recordQuery   = new Parse.Query("Record");
-    if (params.bookingId) {
-      recordQuery.equalTo("booking", { "__type": "Pointer","className": "Booking", "objectId": params.bookingId });
-    }
+
+    recordQuery.equalTo("booking", { "__type": "Pointer","className": "Booking", "objectId": params.bookingId });
     recordQuery.equalTo("hasCheckined", false);
 
     recordQuery.first()
@@ -478,7 +479,11 @@ function createOrUpdateRecordForPreBooking(params){
           recordData.set("checkinTime", params.checkinTime);
           return recordData.save();
         } else {
-          return createNewRecord(params);
+          return createNewRecord(_.extend(params, {
+            bookingId: params.objectId,
+            packageId: params.package.objectId,
+            hasCheckined: false
+          }));
         }
       }).catch((error) => {
         return reject(error);

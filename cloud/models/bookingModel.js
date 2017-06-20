@@ -443,7 +443,6 @@ function searchBookingsForVisitorManagement (params){
 }
 
 function changeStatusBooking(params) {
-  console.log(params);
   return new Promise((resolve, reject) => {
     if(!params.bookingId) return reject("Missing bookingId");
 
