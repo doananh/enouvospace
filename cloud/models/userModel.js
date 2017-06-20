@@ -33,7 +33,7 @@ function loginWithEmail (params) {
             }
           }
           else {
-            return reject("This email hasn't been registered");
+            return reject("Invalid username/password");
           }
       })
       .then(function (user) {
