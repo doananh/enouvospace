@@ -362,10 +362,11 @@ function updateBookingAndCheckingTable(_params) {
       bookingQuery.equalTo("objectId", _params.bookingId);
       bookingQuery.first().then(function(bookingData) {
         if (bookingData) {
-          var user = bookingData.get("user");
           bookingData.set('package', _params.bookingPackage);
           bookingData.set('numOfUsers', _params.numOfUsers);
-          bookingData.set('user', _.extend(user, {username: _params.customerName}));
+          bookingData.set('paymentMethod', _params.paymentMethod);
+          bookingData.set('discountAmount', _params.discountAmount);
+          bookingData.set('status', _params.status);
           return bookingData.save(null)
         } else {
           return reject("No found booking to update");
@@ -376,7 +377,6 @@ function updateBookingAndCheckingTable(_params) {
             recordQuery.equalTo("objectId", _params.recordId);
             recordQuery.first().then(function(recordData) {
               if (recordData) {
-                recordData.set('username', _params.customerName);
                 recordData.set('checkinTime', moment(checkinTime).toDate());
                 return recordData.save(null)
               } else {
