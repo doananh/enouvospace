@@ -68,10 +68,7 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
     return res.error('Require number of users params');
   }
 
-  console.log("########");
-  console.log(status);
-  console.log("########");
-  if (_.indexOf(Constants.BOOKING_STATUSES, status) !== -1) {
+  if (_.indexOf(Constants.BOOKING_STATUSES, status) === -1) {
     return res.error('Invalid status - please change it to OPEN or PENDING or CLOSED');
   }
 
