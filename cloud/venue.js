@@ -33,8 +33,7 @@ Parse.Cloud.afterSave("Venue", function(request, response) {
 	        		});
 	        		package.save(null);
 	        	})
-	        }
-	        else {
+	        } else {
 	          throw('No package data found');
 	        }
         })

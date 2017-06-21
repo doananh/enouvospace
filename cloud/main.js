@@ -4,6 +4,7 @@ require('./booking.js');
 require('./package.js');
 require('./service.js');
 require('./venue.js');
+require('./packageType.js');
 
 require('./checkin.js');
 require('./checkout.js');
