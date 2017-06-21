@@ -70,7 +70,8 @@ Parse.Cloud.define("getLastValidUserRecord", function(req, res) {
             objectId: recordData.id,
             checkinTime: recordData.get('checkinTime'),
             checkoutTime: recordData.get('checkoutTime'),
-            booking: recordData.get('booking').toJSON()
+            booking: recordData.get('booking').toJSON(),
+            hasCheckined: recordData.get('hasCheckined')
           };
           return res.success(recordObject);
         }
