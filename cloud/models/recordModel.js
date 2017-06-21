@@ -229,7 +229,7 @@ function recordCheckout (bookingData) {
 
         var recordQuery   = new Parse.Query("Record");
         if (user.username) {
-          recordQuery.equalTo("username", user.username);
+          recordQuery.equalTo("username", user.name);
         }
         if (user.id) {
           recordQuery.equalTo("userId", user.id);
