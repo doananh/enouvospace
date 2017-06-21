@@ -109,6 +109,10 @@ function createNewBooking(_params, _code) {
         booking.set("numOfUsers", 1);
       }
 
+      if (_params.paymentMethod) {
+        booking.set("paymentMethod", _params.paymentMethod);
+      }
+
       // anonymous package pointer default on GlobalVariable Table
       if (_params && _params.package) {
         booking.set("package", _params.package);
