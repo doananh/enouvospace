@@ -59,6 +59,46 @@ function getLastValidRecord (_params) {
   });
 }
 
+function getLastInvalidRecord(_params){
+  return new Promise((resolve, reject) => {
+    var bookingId = _params.bookingId;
+    var query = new Parse.Query("Record");
+    query.equalTo("booking", { "__type": "Pointer", "className": "Booking", "objectId": bookingId });
+    query.doesNotExist("checkoutTime");
+    query.descending("createdAt");
+    query.equalTo("hasCheckined", false);
+    query.include("booking");
+    query.find()
+      .then(function (recordData) {
+        if (recordData && recordData.length) {
+          return resolve(recordData[0]);
+        }
+        else {
+          return resolve(null);
+        }
+      })
+      .catch(function (error) {
+        return reject(error);
+      });
+  });
+}
+
+function updateLastInvalidRecord(_params){
+  return new Promise((resolve, reject) => {
+    getLastInvalidRecord(_params)
+      .then((recordData) => {
+        if(!recordData) return resolve(null);
+
+        recordData.set('hasCheckined', true);
+        recordData.set('checkinTime', _params.checkinTime ?  _params.checkinTime : moment().toDate())
+        return recordData.save();
+      })
+      .catch(function (error) {
+        return reject(error);
+      });
+  });
+}
+
 function updateBookingData (_params) {
   return new Promise((resolve, reject) => {
       var hasCheckined = _params.hasCheckined;
@@ -90,7 +130,6 @@ function recordCheckin (bookingData) {
       var hasCheckined  = bookingData.get('hasCheckined');
       var packageData   = bookingData.get('package');
       var packageId     = packageData && packageData.objectId;
-      console.log(packageId);
       var code  = user.code;
       if (code) {
         var newRecordData = {
@@ -134,16 +173,23 @@ function recordCheckin (bookingData) {
               return recordData;
             }
             else {
-              var newRecordData = {
-                user: {
-                  id: user.id,
-                  username: user.name
-                },
-                bookingId: bookingData.id,
-                packageId: packageId
-              }
-              return createNewRecord(newRecordData);
+              return updateLastInvalidRecord({bookingId: bookingData.id});
             }
+        }).then(function (recordData) {
+          if (recordData) {
+            return recordData;
+          }
+          else {
+            var newRecordData = {
+              user: {
+                id: user.id,
+                username: user.name
+              },
+              bookingId: bookingData.id,
+              packageId: packageId
+            }
+            return createNewRecord(newRecordData);
+          }
         })
         .then(function (recordData) {
             var checkinTime = recordData.get('checkinTime');
@@ -445,6 +491,10 @@ function searchRecordsForVisitorManagement (params){
       query.startsWith('username', params.visitorName);
     if(params.packageId)
       query.equalTo('packageId', params.packageId);
+    if (params.bookingStatus)
+      query.equalTo('status', params.bookingStatus);
+    if (params.paymentMethod)
+      query.equalTo('paymentMethod', params.paymentMethod);
     if(params.startTime && params.endTime && new moment(params.startTime).isBefore(new moment(params.endTime))){
       if(new moment(params.startTime).isBefore(new moment(params.endTime))){
         query.greaterThanOrEqualTo('checkinTime', new Date(params.startTime))

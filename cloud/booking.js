@@ -5,6 +5,7 @@ var Constants             = require('./constant');
 var BookingModel          = require('./models/bookingModel.js');
 var CheckoutModel         = require('./models/checkoutModel.js');
 var PriceCalculatingModel = require('./models/priceCalculatingModel.js');
+var userModel          = require('./models/userModel.js');
 
 Parse.Cloud.define("previewBooking", function(req, res) {
     var params = req.params;
@@ -83,8 +84,19 @@ Parse.Cloud.define("rejectBooking", function(req, res){
   BookingModel.changeStatusBooking({
     bookingId: req.params.bookingId,
     status: Constants.BOOKING_STATUSES[3]
-  }).then(function(data){
-    return res.success(data ? data.toJSON() : {});
+  }).then(function(bookingData){
+    var user = bookingData.get("user");
+    userModel.getUserWithId(user.id)
+    .then(function (userData) {
+        var email = userData.get('email');
+        if (email) {
+            var subject = 'You booking is cancelled. Please contact to our email: '+process.env.EMAIL_FROM;
+            BookingModel.sendMail(email, process.env.EMAIL_FROM, subject, '<p>'+subject+'</p>');
+        } else {
+            console.log("Require email");
+        }
+        return res.success(bookingData ? bookingData.toJSON() : {});
+    })
   }).catch(function(error){
     return res.error(error);
   })
