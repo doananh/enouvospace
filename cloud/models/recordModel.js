@@ -440,6 +440,10 @@ function searchRecordsForVisitorManagement (params){
       query.startsWith('username', params.visitorName);
     if(params.packageId)
       query.equalTo('packageId', params.packageId);
+    if (params.bookingStatus)
+      query.equalTo('status', params.bookingStatus);
+    if (params.paymentMethod)
+      query.equalTo('paymentMethod', params.paymentMethod);
     if(params.startTime && params.endTime && new moment(params.startTime).isBefore(new moment(params.endTime))){
       if(new moment(params.startTime).isBefore(new moment(params.endTime))){
         query.greaterThanOrEqualTo('checkinTime', new Date(params.startTime))
