@@ -16,6 +16,10 @@ Parse.Cloud.beforeSave("Record", function(req, res) {
     return res.error('Require checkin time params');
   }
 
+  if (new moment(checkinTime).isAfter(new moment(checkoutTime))) {
+    return res.error('Please check in time must be before checkout time!');
+  }
+
   if (!_.isString(username) || !username.length) {
     return res.error('Require username param');
   }

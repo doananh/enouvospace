@@ -7,6 +7,10 @@ var Tool            = require('./../utils/tools.js');
 var DiscountModel   = require('./discountModel.js');
 var PackageModel    = require('./packageModel.js');
 var GlobalVariable  = require('./globalVariable.js');
+var Mailgun = require('mailgun-js')({
+    apiKey: process.env.EMAIL_API_KEY,
+    domain: process.env.EMAIL_DOMAIN
+});
 
 const Parse = require('parse/node');
 Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MASTER_KEY);
@@ -108,6 +112,10 @@ function createNewBooking(_params, _code) {
       }
       else {
         booking.set("numOfUsers", 1);
+      }
+
+      if (_params.paymentMethod) {
+        booking.set("paymentMethod", _params.paymentMethod);
       }
 
       if(!_.isNull(_params.hasCheckined) && !_.isUndefined(_params.hasCheckined))
@@ -423,6 +431,10 @@ function searchBookingsForVisitorManagement (params){
       query.startsWith('user.name', params.visitorName);
     if (params.packageId)
       query.equalTo('package.objectId', params.packageId);
+    if (params.bookingStatus)
+      query.equalTo('status', params.bookingStatus);
+    if (params.paymentMethod)
+      query.equalTo('paymentMethod', params.paymentMethod);
     if (params.startTime && params.endTime){
       if(new moment(params.startTime).isBefore(new moment(params.endTime))){
         query.greaterThanOrEqualTo('startTime', new Date(params.startTime))
@@ -455,7 +467,7 @@ function changeStatusBooking(params) {
     bookingQuery.first().then(function(bookingData) {
       if (bookingData) {
         bookingData.set('status', params.status);
-        return bookingData.save(null)
+        return resolve(bookingData.save(null))
       } else {
         return reject("No found booking to update");
       }
@@ -463,6 +475,21 @@ function changeStatusBooking(params) {
       return reject(error);
     })
   });
+}
+
+function sendMail (email_to, email_from, subject, html) {
+  return Mailgun.messages().send({
+      to: email_to,
+      from: email_from,
+      subject: subject,
+      html: html,
+    }, function (error, body) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent!");
+      }
+  })
 }
 
 exports.updateBookingAndCheckingTable = updateBookingAndCheckingTable;
@@ -478,3 +505,4 @@ exports.previewBooking                = previewBooking;
 exports.getAllBookingsForVisitorManagement       = getAllBookingsForVisitorManagement;
 exports.searchBookingsForVisitorManagement       = searchBookingsForVisitorManagement;
 exports.changeStatusBooking                      = changeStatusBooking;
+exports.sendMail = sendMail;
