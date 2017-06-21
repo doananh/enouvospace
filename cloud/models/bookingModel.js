@@ -451,7 +451,6 @@ function searchBookingsForVisitorManagement (params){
 }
 
 function changeStatusBooking(params) {
-  // console.log('00000'+JSON.stringify(params));
   return new Promise((resolve, reject) => {
     if(!params.bookingId) return reject("Missing bookingId");
 

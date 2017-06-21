@@ -23,6 +23,8 @@ function createNewRecord (_params) {
       record.set("userId", _params.user && _params.user.id);
       record.set("booking", { "__type":"Pointer","className":"Booking","objectId": _params.bookingId });
       record.set("packageId", _params.packageId);
+      if(!_.isNull(_params.hasCheckined) && !_.isUndefined(_params.hasCheckined))
+        record.set("hasCheckined", _params.hasCheckined);
       record.save()
       .then(function (recordData) {
           return resolve(recordData);
@@ -40,6 +42,7 @@ function getLastValidRecord (_params) {
       query.equalTo("booking", { "__type": "Pointer", "className": "Booking", "objectId": bookingId });
       query.doesNotExist("checkoutTime");
       query.descending("createdAt");
+      query.equalTo("hasCheckined", true);
       query.include("booking");
       query.find()
       .then(function (recordData) {
@@ -52,6 +55,46 @@ function getLastValidRecord (_params) {
       })
       .catch(function (error) {
           return reject(error);
+      });
+  });
+}
+
+function getLastInvalidRecord(_params){
+  return new Promise((resolve, reject) => {
+    var bookingId = _params.bookingId;
+    var query = new Parse.Query("Record");
+    query.equalTo("booking", { "__type": "Pointer", "className": "Booking", "objectId": bookingId });
+    query.doesNotExist("checkoutTime");
+    query.descending("createdAt");
+    query.equalTo("hasCheckined", false);
+    query.include("booking");
+    query.find()
+      .then(function (recordData) {
+        if (recordData && recordData.length) {
+          return resolve(recordData[0]);
+        }
+        else {
+          return resolve(null);
+        }
+      })
+      .catch(function (error) {
+        return reject(error);
+      });
+  });
+}
+
+function updateLastInvalidRecord(_params){
+  return new Promise((resolve, reject) => {
+    getLastInvalidRecord(_params)
+      .then((recordData) => {
+        if(!recordData) return resolve(null);
+
+        recordData.set('hasCheckined', true);
+        recordData.set('checkinTime', _params.checkinTime ?  _params.checkinTime : moment().toDate())
+        return recordData.save();
+      })
+      .catch(function (error) {
+        return reject(error);
       });
   });
 }
@@ -87,7 +130,6 @@ function recordCheckin (bookingData) {
       var hasCheckined  = bookingData.get('hasCheckined');
       var packageData   = bookingData.get('package');
       var packageId     = packageData && packageData.objectId;
-      console.log(packageId);
       var code  = user.code;
       if (code) {
         var newRecordData = {
@@ -116,7 +158,8 @@ function recordCheckin (bookingData) {
                   username: recordData.get('username'),
                   code: code
                 },
-                booking: bookingData.toJSON()
+                booking: bookingData.toJSON(),
+                hasCheckined: recordData.get('hasCheckined')
             });
         })
         .catch(function (error) {
@@ -130,16 +173,23 @@ function recordCheckin (bookingData) {
               return recordData;
             }
             else {
-              var newRecordData = {
-                user: {
-                  id: user.id,
-                  username: user.name
-                },
-                bookingId: bookingData.id,
-                packageId: packageId
-              }
-              return createNewRecord(newRecordData);
+              return updateLastInvalidRecord({bookingId: bookingData.id});
             }
+        }).then(function (recordData) {
+          if (recordData) {
+            return recordData;
+          }
+          else {
+            var newRecordData = {
+              user: {
+                id: user.id,
+                username: user.name
+              },
+              bookingId: bookingData.id,
+              packageId: packageId
+            }
+            return createNewRecord(newRecordData);
+          }
         })
         .then(function (recordData) {
             var checkinTime = recordData.get('checkinTime');
@@ -160,7 +210,8 @@ function recordCheckin (bookingData) {
                   userId: recordData.get('userId'),
                   username: recordData.get('username')
                 },
-                booking: isNewRecord ? booking.toJSON() : bookingData.toJSON()
+                booking: isNewRecord ? booking.toJSON() : bookingData.toJSON(),
+                hasCheckined: recordData.get('hasCheckined')
             });
         })
         .catch(function (error) {
@@ -471,9 +522,8 @@ function searchRecordsForVisitorManagement (params){
 function createOrUpdateRecordForPreBooking(params){
   return new Promise((resolve, reject) => {
     var recordQuery   = new Parse.Query("Record");
-    if (params.bookingId) {
-      recordQuery.equalTo("booking", { "__type": "Pointer","className": "Booking", "objectId": params.bookingId });
-    }
+
+    recordQuery.equalTo("booking", { "__type": "Pointer","className": "Booking", "objectId": params.bookingId });
     recordQuery.equalTo("hasCheckined", false);
 
     recordQuery.first()
@@ -482,7 +532,11 @@ function createOrUpdateRecordForPreBooking(params){
           recordData.set("checkinTime", params.checkinTime);
           return recordData.save();
         } else {
-          return createNewRecord(params);
+          return createNewRecord(_.extend(params, {
+            bookingId: params.objectId,
+            packageId: params.package.objectId,
+            hasCheckined: false
+          }));
         }
       }).catch((error) => {
         return reject(error);
