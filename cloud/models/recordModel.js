@@ -158,7 +158,8 @@ function recordCheckin (bookingData) {
                   username: recordData.get('username'),
                   code: code
                 },
-                booking: bookingData.toJSON()
+                booking: bookingData.toJSON(),
+                hasCheckined: recordData.get('hasCheckined')
             });
         })
         .catch(function (error) {
@@ -209,7 +210,8 @@ function recordCheckin (bookingData) {
                   userId: recordData.get('userId'),
                   username: recordData.get('username')
                 },
-                booking: isNewRecord ? booking.toJSON() : bookingData.toJSON()
+                booking: isNewRecord ? booking.toJSON() : bookingData.toJSON(),
+                hasCheckined: recordData.get('hasCheckined')
             });
         })
         .catch(function (error) {
