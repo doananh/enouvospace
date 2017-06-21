@@ -466,6 +466,9 @@ function changeStatusBooking(params) {
     bookingQuery.equalTo("objectId", params.bookingId);
     bookingQuery.first().then(function(bookingData) {
       if (bookingData) {
+        if(!_.isNull(params.hasCheckined) && !_.isUndefined(params.hasCheckined))
+          bookingData.set("hasCheckined", params.hasCheckined);
+
         bookingData.set('status', params.status);
         return resolve(bookingData.save(null))
       } else {

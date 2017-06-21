@@ -83,20 +83,20 @@ Parse.Cloud.define("approveBooking", function(req, res){
 Parse.Cloud.define("rejectBooking", function(req, res){
   BookingModel.changeStatusBooking({
     bookingId: req.params.bookingId,
-    status: Constants.BOOKING_STATUSES[3]
+    status: Constants.BOOKING_STATUSES[3],
+    hasCheckined: true
   }).then(function(bookingData){
     var user = bookingData.get("user");
-    userModel.getUserWithId(user.id)
-    .then(function (userData) {
-        var email = userData.get('email');
-        if (email) {
-            var subject = 'You booking is cancelled. Please contact to our email: '+process.env.EMAIL_FROM;
-            BookingModel.sendMail(email, process.env.EMAIL_FROM, subject, '<p>'+subject+'</p>');
-        } else {
-            console.log("Require email");
-        }
-        return res.success(bookingData ? bookingData.toJSON() : {});
-    })
+    return userModel.getUserWithId(user.id)
+  }).then(function (userData) {
+    var email = userData.get('email');
+    if (email) {
+      var subject = 'You booking is cancelled. Please contact to our email: '+process.env.EMAIL_FROM;
+      BookingModel.sendMail(email, process.env.EMAIL_FROM, subject, '<p>'+subject+'</p>');
+    } else {
+      console.log("Require email");
+    }
+    return res.success(bookingData ? bookingData.toJSON() : {});
   }).catch(function(error){
     return res.error(error);
   })

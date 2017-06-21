@@ -523,7 +523,7 @@ function createOrUpdateRecordForPreBooking(params){
   return new Promise((resolve, reject) => {
     var recordQuery   = new Parse.Query("Record");
 
-    recordQuery.equalTo("booking", { "__type": "Pointer","className": "Booking", "objectId": params.bookingId });
+    recordQuery.equalTo("booking", { "__type": "Pointer","className": "Booking", "objectId": params.objectId });
     recordQuery.equalTo("hasCheckined", false);
 
     recordQuery.first()
