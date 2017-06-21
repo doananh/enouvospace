@@ -42,6 +42,7 @@ function getLastValidRecord (_params) {
       query.equalTo("booking", { "__type": "Pointer", "className": "Booking", "objectId": bookingId });
       query.doesNotExist("checkoutTime");
       query.descending("createdAt");
+      query.equalTo("hasCheckined", true);
       query.include("booking");
       query.find()
       .then(function (recordData) {
