@@ -47,6 +47,7 @@ function createBookingForAnonymousUser(_params) {
   return new Promise((resolve, reject) => {
       GlobalVariable.generateAnonymousCode()
       .then(function (latestCode){
+          _params.hasCheckined = true;
           return createNewBooking(_params, latestCode);
       })
       .then(function (bookingData) {
@@ -108,6 +109,9 @@ function createNewBooking(_params, _code) {
       else {
         booking.set("numOfUsers", 1);
       }
+
+      if(!_.isNull(_params.hasCheckined) && !_.isUndefined(_params.hasCheckined))
+        booking.set("hasCheckined", _params.hasCheckined);
 
       // anonymous package pointer default on GlobalVariable Table
       if (_params && _params.package) {
