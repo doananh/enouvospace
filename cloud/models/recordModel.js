@@ -537,7 +537,9 @@ function createOrUpdateRecordForPreBooking(params){
             bookingId: params.objectId,
             packageId: params.package.objectId,
             hasCheckined: false,
-            username: params.user.name
+            user: {
+              username: params.user.name
+            }
           }));
         }
       }).catch((error) => {
