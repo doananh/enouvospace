@@ -229,7 +229,7 @@ function recordCheckout (bookingData, _params) {
         var checkoutTime  = moment().toDate();
 
         var recordQuery   = new Parse.Query("Record");
-        if (user.username) {
+        if (user.name) {
           recordQuery.equalTo("username", user.name);
         }
         if (user.id) {
