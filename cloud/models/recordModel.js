@@ -222,7 +222,7 @@ function recordCheckin (bookingData) {
   });
 }
 
-function recordCheckout (bookingData) {
+function recordCheckout (bookingData, _params) {
     return new Promise((resolve, reject) => {
         var user          = bookingData.get('user');
         var bookingId     = bookingData.id;
@@ -244,6 +244,8 @@ function recordCheckout (bookingData) {
         .then(function (recordData) {
             if (recordData && recordData.length) {
               recordData[0].set("checkoutTime", checkoutTime);
+              if(_params && _params.checkoutByAdmin)
+                recordData[0].set("checkoutByAdmin", _params.checkoutByAdmin);
               return recordData[0].save();
             }
             else {
@@ -265,9 +267,9 @@ function recordCheckout (bookingData) {
     });
 }
 
-function recordCheckoutAndPreviewBooking (bookingData) {
+function recordCheckoutAndPreviewBooking (bookingData, _params) {
   return new Promise( (resolve, reject) => {
-      recordCheckout(bookingData)
+      recordCheckout(bookingData, _params)
       .then(function (recordData) {
           return PriceCalculatingModel.previewPricing(bookingData)
           .then(function (previewData) {

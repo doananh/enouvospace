@@ -47,10 +47,10 @@ Parse.Cloud.define("recordCheckout", function(req, res) {
   .then(function (bookingData) {
       var bookingDataJSON = bookingData.toJSON();
       if (bookingDataJSON.package && bookingDataJSON.package.willPayWhenCheckout) {
-        return RecordModel.recordCheckoutAndPreviewBooking(bookingData);
+        return RecordModel.recordCheckoutAndPreviewBooking(bookingData, params);
       }
       else {
-        return RecordModel.recordCheckout(bookingData);
+        return RecordModel.recordCheckout(bookingData, params);
       }
   })
   .then(function (data) {
