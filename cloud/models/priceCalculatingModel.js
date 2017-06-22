@@ -139,6 +139,8 @@ function calculateBookingPricing (bookingObject) {
       var user            = bookingObject.get('user');
       var status          = bookingObject.get('status');
       var isPaid          = bookingObject.get('isPaid');
+      var discountAmount  = bookingObject.get('discountAmount');
+      var downPayment  = bookingObject.get('downPayment');
       var checkinTime     = bookingObject.get('startTime'); // this for fixing hourly price with checkinTime - not startTime
 
       shouldChangeToDayPackage(packageObject, startTime, endTime, packageCount, bookingId)
@@ -162,8 +164,8 @@ function calculateBookingPricing (bookingObject) {
       .then(function (servicePricing) {
           var packagePricing  = getPackagePricingDetail(packageObject, packageCount, numOfUsers);
           var packageAmount   = packagePricing.total;
-          var discountPricing = getDiscountDetailPricing(null, packageAmount); // temp remove discount
-          var payAmount       = servicePricing.total + packageAmount - discountPricing.total;
+          // var discountPricing = getDiscountDetailPricing(null, packageAmount); // temp remove discount
+          var payAmount       = servicePricing.total + packageAmount - discountAmount - downPayment;
           var formatedPayAmout =  Tool.formatToVNDValue(payAmount);
 
           return resolve({
