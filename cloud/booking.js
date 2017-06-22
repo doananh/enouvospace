@@ -96,7 +96,7 @@ Parse.Cloud.define("rejectBooking", function(req, res){
     } else {
       console.log("Require email");
     }
-    return res.success(bookingData ? bookingData.toJSON() : {});
+    return res.success({});
   }).catch(function(error){
     return res.error(error);
   })
