@@ -213,6 +213,14 @@ function checkPricing (_bookingParams) {
           var packageCount  = _bookingParams.packageCount;
           var startTime     = _bookingParams.startTime;
           var endTime       = _bookingParams.endTime;
+          var mNow          = moment();
+          if (moment(endTime).isBefore(moment(startTime))) {
+            throw('Please choose end time is after start time');
+          }
+          if (moment(startTime).isBefore(mNow)) {
+            throw('Start time can\'t be in the past');
+          }
+
           if ( !_.isUndefined(isPaidOnPersons) &&  !_.isNull(isPaidOnPersons) && !isPaidOnPersons) {
             numOfUsers = 1;
           }
@@ -224,6 +232,9 @@ function checkPricing (_bookingParams) {
               if (endTime) {
                 var duration  = moment.duration(moment(endTime).diff(moment(startTime)));
                 var hours     = duration.asHours();
+                if (hours < 1) {
+                  throw('Number of hours should be more than one');
+                }
                 var price     = hours * chargeRate * numOfUsers;
                 var message   = Tool.formatToVNDString(price);
                 return resolve({text: message, price: price.toFixed(2)})
