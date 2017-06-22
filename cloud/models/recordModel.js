@@ -91,7 +91,7 @@ function updateLastInvalidRecord(_params){
 
         recordData.set('hasCheckined', true);
         recordData.set('checkinTime', _params.checkinTime ?  _params.checkinTime : moment().toDate())
-        return recordData.save();
+        return resolve(recordData.save());
       })
       .catch(function (error) {
         return reject(error);
@@ -107,6 +107,7 @@ function updateBookingData (_params) {
       query.equalTo("objectId", _params.bookingId);
       query.first().then(function(booking) {
         if (booking) {
+          booking.set('status', _params.status);
           booking.set("startTime", checkinTime);
           booking.set("hasCheckined", hasCheckined);
           booking.save()
