@@ -536,7 +536,8 @@ function createOrUpdateRecordForPreBooking(params){
           return createNewRecord(_.extend(params, {
             bookingId: params.objectId,
             packageId: params.package.objectId,
-            hasCheckined: false
+            hasCheckined: false,
+            username: params.user.name
           }));
         }
       }).catch((error) => {
