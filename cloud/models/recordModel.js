@@ -540,7 +540,8 @@ function createOrUpdateRecordForPreBooking(params){
             packageId: params.package.objectId,
             hasCheckined: false,
             user: {
-              username: params.user.name
+              username: params.user.name,
+              id: params.user.id
             }
           }));
         }
