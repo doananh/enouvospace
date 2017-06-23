@@ -135,7 +135,7 @@ function calculateBookingPricing (bookingObject) {
       var packageCount    = bookingObject.get('packageCount');
       var numOfUsers      = bookingObject.get('numOfUsers');
       var startTime       = bookingObject.get('startTime');
-      var endTime         = bookingObject.get('endTime');
+      var endTime;
       var user            = bookingObject.get('user');
       var status          = bookingObject.get('status');
       var isPaid          = bookingObject.get('isPaid');
@@ -178,7 +178,7 @@ function calculateBookingPricing (bookingObject) {
               checkinTime: checkinTime,
               endTime: endTime,
               numOfUsers: numOfUsers,
-              packageCount: packageCount,
+              packageCount: packageCount || 0,
               bookingId: bookingId,
               payAmount: formatedPayAmout,
               status: status
