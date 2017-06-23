@@ -369,7 +369,6 @@ function updateBookingAndCheckingTable(_params) {
   return new Promise((resolve, reject) => {
     var recordQuery = new Parse.Query("Record");
     var bookingQuery = new Parse.Query("Booking");
-    var checkinTime = _params.checkinTime;
     if (_params && _params.bookingId) {
       bookingQuery.equalTo("objectId", _params.bookingId);
       bookingQuery.first().then(function(bookingData) {
@@ -379,6 +378,7 @@ function updateBookingAndCheckingTable(_params) {
           bookingData.set('paymentMethod', _params.paymentMethod);
           bookingData.set('discountAmount', _params.discountAmount);
           bookingData.set('status', _params.status);
+          bookingData.set('downPayment', _params.downPayment);
           return bookingData.save(null)
         } else {
           return reject("No found booking to update");
@@ -389,7 +389,12 @@ function updateBookingAndCheckingTable(_params) {
             recordQuery.equalTo("objectId", _params.recordId);
             recordQuery.first().then(function(recordData) {
               if (recordData) {
-                recordData.set('checkinTime', moment(checkinTime).toDate());
+                if (_params && _params.checkinTime) {
+                  recordData.set('checkinTime', moment(_params.checkinTime).toDate());
+                }
+                if (_params && _params.checkoutTime) {
+                  recordData.set('checkoutTime', moment(_params.checkoutTime).toDate());
+                }
                 return recordData.save(null)
               } else {
                 return reject("No found record to update");
