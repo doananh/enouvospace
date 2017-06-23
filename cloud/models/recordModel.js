@@ -539,6 +539,7 @@ function createOrUpdateRecordForPreBooking(params){
             bookingId: params.objectId,
             packageId: params.package.objectId,
             hasCheckined: false,
+            checkinTime: params.startTime,
             user: {
               username: params.user.name,
               id: params.user.id
