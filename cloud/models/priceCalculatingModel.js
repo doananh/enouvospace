@@ -233,7 +233,7 @@ function checkPricing (_bookingParams) {
                 var mStartTime  = moment(startTime);
                 var mEndTime    = moment(endTime);
                 var days        = mEndTime.diff(startTime, 'days');
-                mEndTime        = moment(mEndTime).subtract(dats, 'days');
+                mEndTime        = moment(mEndTime).subtract(days, 'days');
                 var duration  = moment.duration(mEndTime.diff(mStartTime));
                 var hours     = duration.asHours();
                 if (hours < 1) {
@@ -241,7 +241,7 @@ function checkPricing (_bookingParams) {
                 }
                 var price     = hours * chargeRate * numOfUsers;
                 if (days > 0) {
-                  price = price * days;
+                  price = price * (days + 1);
                 }
                 var message   = Tool.formatToVNDString(price);
                 return resolve({text: message, price: price.toFixed(2)})
