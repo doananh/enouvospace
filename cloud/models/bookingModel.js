@@ -411,6 +411,9 @@ function updateBookingAndCheckingTable(_params) {
           return resolve({booking: saveBooking});
         }
       })
+      .catch(function (error) {
+        return reject(error);
+      })
     } else {
       return reject('Require booking id');
     }
