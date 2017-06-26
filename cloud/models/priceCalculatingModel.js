@@ -185,6 +185,7 @@ function calculateBookingPricing (bookingObject) {
               packageCount: packageCount || 0,
               bookingId: bookingId,
               payAmount: formatedPayAmout,
+              calculatedPrice: Tool.formatToVNDValue((servicePricing.total || 0) + packageAmount),
               status: status
           });
       })

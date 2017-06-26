@@ -56,9 +56,13 @@ function formatResponseData (_priceDetail) {
         },
         discountAmount: {
           text: discountAmountString,
-          value: _priceDetail.discountPricing.total
+          value: _priceDetail.discountPricing
         },
         numOfUsers: _priceDetail.numOfUsers,
+        calculatedPrice: {
+          text: Tool.formatToVNDString(_priceDetail.calculatedPrice),
+          value: _priceDetail.calculatedPrice
+        },
         totalPrice: {
           text: totalPriceString,
           value: _priceDetail.payAmount
