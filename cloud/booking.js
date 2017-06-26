@@ -101,3 +101,17 @@ Parse.Cloud.define("rejectBooking", function(req, res){
     return res.error(error);
   })
 });
+
+Parse.Cloud.define('calculatePricing', function(req, res){
+  BookingModel.getBookingByParams({id: req.params.bookingId})
+    .then(function (bookingData) {
+      console.log(bookingData);
+      return PriceCalculatingModel.previewPricing(bookingData);
+    })
+    .then(function (formatData) {
+      return res.success(formatData);
+    })
+    .catch(function (error) {
+      return res.error(error);
+    });
+})

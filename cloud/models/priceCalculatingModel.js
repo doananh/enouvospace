@@ -165,7 +165,11 @@ function calculateBookingPricing (bookingObject) {
           var packagePricing  = getPackagePricingDetail(packageObject, packageCount, numOfUsers);
           var packageAmount   = packagePricing.total;
           // var discountPricing = getDiscountDetailPricing(null, packageAmount); // temp remove discount
-          var payAmount       = servicePricing.total + packageAmount - discountAmount - downPayment;
+          var payAmount       = (servicePricing.total || 0) + packageAmount;
+          if(discountAmount)
+            payAmount -= discountAmount;
+          if(downPayment)
+            payAmount -= downPayment;
           var formatedPayAmout =  Tool.formatToVNDValue(payAmount);
 
           return resolve({
@@ -209,11 +213,11 @@ function checkPricing (_bookingParams) {
       PackageModel.getPackageById(packageId)
       .then(function (packageData) {
           var isPaidOnPersons = packageData.get('isPaidOnPersons');
-          var numOfUsers    = _bookingParams.numOfUsers;
-          var packageCount  = _bookingParams.packageCount;
-          var startTime     = _bookingParams.startTime;
-          var endTime       = _bookingParams.endTime;
-          var mNow          = moment();
+          var numOfUsers      = _bookingParams.numOfUsers;
+          var packageCount    = _bookingParams.packageCount;
+          var startTime       = _bookingParams.startTime;
+          var endTime         = _bookingParams.endTime;
+          var mNow            = moment();
           if (moment(endTime).isBefore(moment(startTime))) {
             throw('Please choose end time is after start time');
           }
@@ -230,12 +234,19 @@ function checkPricing (_bookingParams) {
             var packageType     = packageTypeName && packageTypeName.toUpperCase();
             if (packageType === 'HOURLY') {
               if (endTime) {
-                var duration  = moment.duration(moment(endTime).diff(moment(startTime)));
+                var mStartTime  = moment(startTime);
+                var mEndTime    = moment(endTime);
+                var days        = mEndTime.diff(startTime, 'days');
+                mEndTime        = moment(mEndTime).subtract(days, 'days');
+                var duration  = moment.duration(mEndTime.diff(mStartTime));
                 var hours     = duration.asHours();
                 if (hours < 1) {
                   throw('Number of hours should be more than one');
                 }
                 var price     = hours * chargeRate * numOfUsers;
+                if (days > 0) {
+                  price = price * (days + 1);
+                }
                 var message   = Tool.formatToVNDString(price);
                 return resolve({text: message, price: price.toFixed(2)})
               }
