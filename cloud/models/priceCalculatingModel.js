@@ -165,7 +165,11 @@ function calculateBookingPricing (bookingObject) {
           var packagePricing  = getPackagePricingDetail(packageObject, packageCount, numOfUsers);
           var packageAmount   = packagePricing.total;
           // var discountPricing = getDiscountDetailPricing(null, packageAmount); // temp remove discount
-          var payAmount       = servicePricing.total + packageAmount - discountAmount - downPayment;
+          var payAmount       = (servicePricing.total || 0) + packageAmount;
+          if(discountAmount)
+            payAmount -= discountAmount;
+          if(downPayment)
+            payAmount -= downPayment;
           var formatedPayAmout =  Tool.formatToVNDValue(payAmount);
 
           return resolve({
