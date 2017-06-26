@@ -121,7 +121,7 @@ Parse.Cloud.afterSave("Booking", function(request, response) {
     .then(function (data) {
       if (data && data.length > 0) {
         _.forEach(data, function(value) {
-          var subject = 'You have got new booking from user'+user.name+'.Please approval booking in this user';
+          var subject = 'You have got new booking from user '+user.name+'. Please approval booking in this user';
           bookingModel.sendMail(value.get('email'), process.env.EMAIL_FROM, subject, '<p>'+subject+'</p>');
         });
       } else {
