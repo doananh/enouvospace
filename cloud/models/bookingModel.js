@@ -379,6 +379,7 @@ function updateBookingAndCheckingTable(_params) {
           bookingData.set('discountAmount', _params.discountAmount);
           bookingData.set('status', _params.status);
           bookingData.set('downPayment', _params.downPayment);
+          bookingData.set('isPaid', _params.isPaid);
           return bookingData.save(null)
         } else {
           return reject("No found booking to update");

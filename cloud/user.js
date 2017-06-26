@@ -1,6 +1,15 @@
 var _ = require('lodash');
 var UserModel = require('./models/userModel');
 
+Parse.Cloud.define('getUser', function(request, response) {
+  var userParams = request.params;
+  var userQuery = new Parse.Query(Parse.User);
+  userQuery.get(userParams.userId, {useMasterKey: true}).then(function(userData) {
+    response.success(userData);
+  }, function(err) {
+    response.error(err);
+  });
+});
 
 Parse.Cloud.define('getUsers', function(request, response) {
   var userQuery = new Parse.Query(Parse.User);
