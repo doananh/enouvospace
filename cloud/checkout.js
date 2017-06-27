@@ -53,6 +53,7 @@ Parse.Cloud.define("checkoutByBookingId", function(req, res) {
     .then(function (bookingObject) {
         return PriceCalculatingModel.calculateBookingPricing(bookingObject)
         .then(function (data) {
+            bookingObject.set("calculatedPrice", data.calculatedPrice);
             bookingObject.set("payAmount", data.payAmount);
             bookingObject.set("packageCount", data.packageCount);
             bookingObject.set("numOfUsers", data.numOfUsers);
