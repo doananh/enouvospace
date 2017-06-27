@@ -105,7 +105,6 @@ Parse.Cloud.define("rejectBooking", function(req, res){
 Parse.Cloud.define('calculatePricing', function(req, res){
   BookingModel.getBookingByParams({id: req.params.bookingId})
     .then(function (bookingData) {
-      console.log(bookingData);
       return PriceCalculatingModel.previewPricing(bookingData);
     })
     .then(function (formatData) {

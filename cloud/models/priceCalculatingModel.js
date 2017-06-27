@@ -114,7 +114,6 @@ function shouldChangeToDayPackage (_package, _startTime, _endTime, _packageCount
         else if (packageType) {
           var endTime   = Tool.getEndTimeFromPackage(_startTime, packageType, _packageCount);
           var fixTime   = Tool.fixOpenAndCloseTime(packageType, _startTime, endTime);
-          console.log(_packageCount);
           return resolve({
             packageObject: _package,
             packageCount: _packageCount,

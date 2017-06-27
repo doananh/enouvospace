@@ -6,6 +6,7 @@ var Constants       = require('./../constant.js');
 var Tool            = require('./../utils/tools.js');
 var DiscountModel   = require('./discountModel.js');
 var PackageModel    = require('./packageModel.js');
+var userModel       = require('./userModel');
 var GlobalVariable  = require('./globalVariable.js');
 var Mailgun = require('mailgun-js')({
     apiKey: process.env.EMAIL_API_KEY,
@@ -21,25 +22,30 @@ function createBookingForLoginUser(_params) {
       var packageId = _params.packageId;
       var user      = _params.user;
       if (packageId) {
-        getLastValidUserBooking({user: user})
-        .then(function (lastValidBooking) {
+        userModel.getUserWithId(user.id)
+          .then((userData) => {
+            user.username = userData.get('username');
+            user.name = userData.get('name');
+            return getLastValidUserBooking({user: user});
+          })
+          .then(function (lastValidBooking) {
             if (lastValidBooking) {
               throw('you can only register one booking');
             }
             else {
               return PackageModel.getPackageById(packageId);
             }
-        })
-        .then(function (packageData) {
-            var bookingParams = _.extend({}, _params, {"package": packageData.toJSON()});
-            return createNewBooking(bookingParams, null);
-        })
-        .then(function (data) {
-            return resolve(data.toJSON());
-        })
-        .catch(function (error) {
-            return reject(error);
-        });
+          })
+          .then(function (packageData) {
+              var bookingParams = _.extend({}, _params, {"package": packageData.toJSON()});
+              return createNewBooking(bookingParams, null);
+          })
+          .then(function (data) {
+              return resolve(data.toJSON());
+          })
+          .catch(function (error) {
+              return reject(error);
+          });
       }
       else {
         return reject('Missing packageId params');

@@ -13,13 +13,14 @@ Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MA
 Parse.serverURL = process.env.SERVER_URL;
 
 function createNewRecord (_params) {
-  console.log(_params);
   return new Promise((resolve, reject) => {
       var checkinTime = _params.checkinTime ?  _params.checkinTime : moment().toDate();
       var Record = Parse.Object.extend("Record");
       var record = new Record();
       record.set("checkinTime", checkinTime);
+      //TODO remove username field
       record.set("username", _params.user && _params.user.username);
+      record.set("name", _params.user && _params.user.name);
       record.set("userId", _params.user && _params.user.id);
       record.set("booking", { "__type":"Pointer","className":"Booking","objectId": _params.bookingId });
       record.set("packageId", _params.packageId);
