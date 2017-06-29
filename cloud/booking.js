@@ -5,7 +5,8 @@ var Constants             = require('./constant');
 var BookingModel          = require('./models/bookingModel.js');
 var CheckoutModel         = require('./models/checkoutModel.js');
 var PriceCalculatingModel = require('./models/priceCalculatingModel.js');
-var userModel          = require('./models/userModel.js');
+var userModel             = require('./models/userModel.js');
+var RecordModel           = require('./models/recordModel.js');
 
 Parse.Cloud.define("previewBooking", function(req, res) {
     var params = req.params;
@@ -57,12 +58,23 @@ Parse.Cloud.define("loadUserBooking", function(req, res) {
     });
 });
 
-Parse.Cloud.define("getLastValidUserBooking", function(req, res) {
+Parse.Cloud.define("getCurrentBookingAndRecord", function(req, res) {
     var params  = req.params;
     var user    = params.user;
-    BookingModel.getLastValidUserBooking({user: user})
-    .then(function (bookingData) {
-        return res.success(bookingData ? bookingData.toJSON() : {});
+    var userId  = user.id;
+    RecordModel.getRecordByParams({userId: userId})
+    .then(function (recordData) {
+      if (recordData) {
+        var booking = recordData.get('booking');
+        var record  = recordData.toJSON();
+        if (booking) {
+          return res.success({booking: booking.toJSON(), record: record});
+        }
+        return res.success({});
+      }
+      else {
+        return res.success({});
+      }
     })
     .catch(function (error) {
         return res.error(error);
