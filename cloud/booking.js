@@ -67,7 +67,8 @@ Parse.Cloud.define("getCurrentBookingAndRecord", function(req, res) {
       if (recordData) {
         var booking = recordData.get('booking');
         var record  = recordData.toJSON();
-        if (booking) {
+        var status  = booking && booking.get('status');
+        if (booking && status && (status !== "CLOSED") && (status !== "CANCELED")) {
           return res.success({booking: booking.toJSON(), record: record});
         }
         return res.success({});
