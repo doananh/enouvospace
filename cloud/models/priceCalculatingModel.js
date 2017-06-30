@@ -103,7 +103,8 @@ function shouldChangeToDayPackage (_package, _startTime, _endTime, _packageCount
           var strFormatedEnd   = moment(_endTime).format(format);
           var mStartTime       = moment(strFormatedStart);
           var mEndTime         = moment(strFormatedEnd);
-          var dayCount         = Tool.getWorkDay(mStartTime, mEndTime);
+          var options          = {useSaturday: true, useSunday: false};
+          var dayCount         = Tool.getWorkDay(mStartTime, mEndTime, options);
           return resolve({
             packageObject: _package,
             packageCount: dayCount,
@@ -261,7 +262,8 @@ function checkPricing (_bookingParams) {
               var strFormatedEnd   = moment(endTime).format(format);
               var mStartTime       = moment(strFormatedStart);
               var mEndTime         = moment(strFormatedEnd);
-              var dayCount  = Tool.getWorkDay(mStartTime, mEndTime);
+              var options          = {useSaturday: true, useSunday: false};
+              var dayCount         = Tool.getWorkDay(mStartTime, mEndTime, options);
               var price     = dayCount * chargeRate * numOfUsers;
               var message   = Tool.formatToVNDString(price);
               return resolve({text: message, price: price.toFixed(2)})
