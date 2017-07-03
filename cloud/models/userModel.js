@@ -13,6 +13,16 @@ function getUserWithId (_id) {
   return userQuery.get(_id, { useMasterKey: true });
 }
 
+function createUserDocument (data) {
+  var User = Parse.Object.extend(Parse.User);
+  var user = new User();
+  user.set("username", data.username);
+  user.set("password", data.password);
+  user.set("email", data.email);
+  user.set("mobile", data.mobile);
+  return user.save(null, { useMasterKey: true });
+}
+
 function loginWithEmail (params) {
   return new Promise((resolve, reject) => {
       var userQuery = new Parse.Query(Parse.User);
@@ -55,6 +65,7 @@ function getAllAdmin () {
   return userQuery.find({useMasterKey: true});
 }
 
+exports.createUserDocument = createUserDocument;
 exports.getAllAdmin = getAllAdmin;
 exports.loginWithEmail      = loginWithEmail;
 exports.getUserWithBusiness = getUserWithBusiness;

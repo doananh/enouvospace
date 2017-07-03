@@ -379,13 +379,30 @@ function updateBookingAndCheckingTable(_params) {
       bookingQuery.equalTo("objectId", _params.bookingId);
       bookingQuery.first().then(function(bookingData) {
         if (bookingData) {
-          bookingData.set('package', _params.bookingPackage);
-          bookingData.set('numOfUsers', _params.numOfUsers);
-          bookingData.set('paymentMethod', _params.paymentMethod);
-          bookingData.set('discountAmount', _params.discountAmount);
-          bookingData.set('status', _params.status);
-          bookingData.set('downPayment', _params.downPayment);
-          bookingData.set('isPaid', _params.isPaid);
+          if (_params.bookingPackage) {
+            bookingData.set('package', _params.bookingPackage);
+          }
+          if (_params.numOfUsers) {
+            bookingData.set('numOfUsers', _params.numOfUsers);
+          }
+          if (_params.paymentMethod) {
+            bookingData.set('paymentMethod', _params.paymentMethod);
+          }
+          if (_params.discountAmount) {
+            bookingData.set('discountAmount', _params.discountAmount);
+          }
+          if (_params.status) {
+            bookingData.set('status', _params.status);
+          }
+          if (_params.downPayment) {
+            bookingData.set('downPayment', _params.downPayment);
+          }
+          if (_params.user) {
+            bookingData.set('user', _params.user);
+          }
+          if (_params.isPaid) {
+            bookingData.set('isPaid', _params.isPaid);
+          }
           return bookingData.save(null)
         } else {
           return reject("No found booking to update");
@@ -396,6 +413,13 @@ function updateBookingAndCheckingTable(_params) {
             recordQuery.equalTo("objectId", _params.recordId);
             recordQuery.first().then(function(recordData) {
               if (recordData) {
+                if (_params && _params.username) {
+                  recordData.set('username', _params.username);
+                  recordData.set('name', _params.username);
+                }
+                if (_params && _params.userId) {
+                  recordData.set('userId', _params.userId);
+                }
                 if (_params && _params.checkinTime) {
                   recordData.set('checkinTime', moment(_params.checkinTime).toDate());
                 }
