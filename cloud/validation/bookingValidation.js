@@ -20,7 +20,7 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
   var isNewBooking  = !req.object.id;
   var preStatus     = req.original && req.original.get('status');
 
-  if (status === "CANCELED") {
+  if (status === Constants.BOOKING_STATUSES[1] || status === Constants.BOOKING_STATUSES[3]) {
     req.object.set("endTime", moment().toDate());
   }
 
