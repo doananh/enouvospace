@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var UserModel = require('./models/userModel');
+var BookingModel          = require('./models/bookingModel.js');
 
 Parse.Cloud.define('getUser', function(request, response) {
   var userParams = request.params;
@@ -22,8 +23,27 @@ Parse.Cloud.define('getUsers', function(request, response) {
 
 Parse.Cloud.define("createUser", function(req, res) {
   var params    = req.params;
-  UserModel.createUserDocument(params)
+  var userToJSON = JSON.parse(JSON.stringify(params.user));
+  UserModel.createUserDocument(userToJSON)
   .then(function (response) {
+    var user = response.toJSON();
+    var recordToJSON = JSON.parse(JSON.stringify(params.recordSelected));
+    let userData = {
+      recordId: recordToJSON.objectId,
+      bookingId: recordToJSON.booking.objectId,
+      username: user.username,
+      userId: user.objectId,
+      user: {
+        id: user.objectId,
+        username: user.username,
+        name: user.name,
+        type: "customer"
+      }
+    }
+    BookingModel.updateBookingAndCheckingTable(userData)
+    .then(function (data) {
+      console.log('debug update user'+JSON.stringify(data));
+    })
     return res.success(response);
   })
   .catch(function (error) {
