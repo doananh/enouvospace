@@ -222,9 +222,6 @@ function checkPricing (_bookingParams) {
           if (moment(endTime).isBefore(moment(startTime))) {
             throw('Please choose end time is after start time');
           }
-          if (moment(startTime).isBefore(mNow)) {
-            throw('Start time can\'t be in the past');
-          }
 
           if ( !_.isUndefined(isPaidOnPersons) &&  !_.isNull(isPaidOnPersons) && !isPaidOnPersons) {
             numOfUsers = 1;

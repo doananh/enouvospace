@@ -8,14 +8,14 @@ Parse.Cloud.define("loadStartupData", function(req, res) {
     VenueModel.getAllVenue(),
     PackageModel.getAllPackage(),
     PackageModel.getAllPackageType(),
-    ConfigModel.getConfig()
+    ConfigModel.getConfigTableData()
   ])
   .then(function (results) {
       return res.success({
         venues: results[0],
         packages: results[1],
         packageTypes: results[2],
-        remoteConfig: results[3] && results[3].attributes
+        remoteConfig: results[3]
       });
   })
   .catch(function (error) {

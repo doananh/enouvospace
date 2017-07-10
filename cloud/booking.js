@@ -7,6 +7,7 @@ var CheckoutModel         = require('./models/checkoutModel.js');
 var PriceCalculatingModel = require('./models/priceCalculatingModel.js');
 var userModel             = require('./models/userModel.js');
 var RecordModel           = require('./models/recordModel.js');
+var GlobalVariable        = require('./models/globalVariable.js');
 
 Parse.Cloud.define("previewBooking", function(req, res) {
     var params = req.params;
@@ -64,18 +65,18 @@ Parse.Cloud.define("getCurrentBookingAndRecord", function(req, res) {
     var userId  = user.id;
     RecordModel.getRecordByParams({userId: userId})
     .then(function (recordData) {
-      if (recordData) {
-        var booking = recordData.get('booking');
-        var record  = recordData.toJSON();
-        var status  = booking && booking.get('status');
-        if (booking && status && (status !== "CLOSED") && (status !== "CANCELED")) {
-          return res.success({booking: booking.toJSON(), record: record});
+        if (recordData) {
+          var booking = recordData.get('booking');
+          var record  = recordData.toJSON();
+          var status  = booking && booking.get('status');
+          if (booking && status && (status !== "CLOSED") && (status !== "CANCELED")) {
+            return res.success({booking: booking.toJSON(), record: record});
+          }
         }
-        return res.success({});
-      }
-      else {
-        return res.success({});
-      }
+        return GlobalVariable.getAnonymousPackage()
+    })
+    .then(function (anonymousPackage) {
+        return res.success({anonymousPackage: anonymousPackage.toJSON()});
     })
     .catch(function (error) {
         return res.error(error);
