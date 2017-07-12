@@ -3,6 +3,9 @@ var ParseServer = require('parse-server').ParseServer;
 var links = require('docker-links').parseLinks(process.env);
 var fs = require('fs');
 var AzureStorageAdapter = require('parse-server-azure-storage').AzureStorageAdapter;
+var nodeExcel = require('excel-export');
+var recordModel = require('./cloud/models/recordModel');
+var _ = require('lodash');
 
 if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
     require('dotenv').config();
@@ -309,3 +312,60 @@ if (liveQuery) {
         console.log('docker-parse-server running on ' + serverURL + ' (:' + port + mountPath + ')');
     });
 }
+
+app.post('/1/exportExcelForVisitorManagement', (req, res) => {
+  var conf ={};
+  conf.name = "mysheet";
+  conf.cols = [{
+    caption:'Date',
+    type:'date'
+  },{
+    caption:'Start Time',
+    type:'string'
+  },{
+    caption:'Finish Time',
+    type:'string'
+  },{
+    caption:'Total Hours',
+    type:'string'
+  },{
+    caption:'Username',
+    type:'string'
+  },{
+    caption:'Package',
+    type:'string'
+  },{
+    caption:'Calculated Fee',
+    type:'string'
+  },{
+    caption:'Discount',
+    type:'string'
+  },{
+    caption:'Down Payment',
+    type:'string'
+  },{
+    caption:'Fee Paid',
+    type:'string'
+  },{
+    caption:'Payment Method',
+    type:'string'
+  },{
+    caption:'Booking Status',
+    type:'string'
+  },{
+    caption:'Staff',
+    type:'string'
+  }];
+  conf.rows = [];
+  recordModel.formatDataforExcel()
+    .then((data) => {
+      conf.rows = _.map(data)
+      var result = nodeExcel.execute(conf);
+      res.set('Content-Type', 'application/vnd.openxmlformats');
+      res.set("Content-Disposition", "attachment; filename=" + "Report.xlsx");
+      res.end(new Buffer(result, 'binary'));
+    })
+    .catch((err) => {
+      res.status(err.status).send();
+    })
+})

@@ -560,6 +560,35 @@ function createOrUpdateRecordForPreBooking(params){
   })
 }
 
+function formatDataforExcel() {
+  return new Promise((resolve, reject) => {
+    getAllRecordsForVisitorManagement()
+      .then((data) => {
+        return resolve(_.map(data, (record) => {
+          var recordJSON = record.toJSON();
+          return [
+            new moment(recordJSON.checkinTime).format('DD-MM-YYYY'),
+            new moment(recordJSON.checkinTime).format('HH:mm'),
+            recordJSON.checkoutTime ? new moment(recordJSON.checkoutTime).format('HH:mm') : '',
+            recordJSON.totalHours,
+            recordJSON.booking.user.name || '',
+            recordJSON.booking.package.shortName || '',
+            recordJSON.booking.calculatedPrice || '',
+            recordJSON.booking.discountAmount || '',
+            recordJSON.booking.downPayment || '',
+            recordJSON.booking.payAmount || '',
+            recordJSON.booking.paymentMethod || '',
+            recordJSON.booking.status || '',
+            recordJSON.checkoutByAdmin || '',
+          ];
+        }));
+      })
+      .catch((err) => {
+        return reject(err);
+      })
+  });
+}
+
 exports.getStart_EndDay = getStart_EndDay;
 exports.getRecords          = getRecords;
 exports.getRecordByParams   = getRecordByParams;
@@ -570,3 +599,4 @@ exports.recordCheckoutAndPreviewBooking = recordCheckoutAndPreviewBooking;
 exports.getAllRecordsForVisitorManagement = getAllRecordsForVisitorManagement;
 exports.searchRecordsForVisitorManagement = searchRecordsForVisitorManagement;
 exports.createOrUpdateRecordForPreBooking = createOrUpdateRecordForPreBooking;
+exports.formatDataforExcel                = formatDataforExcel;
