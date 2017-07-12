@@ -13,6 +13,7 @@
     "cron": "^1.2.1",
     "docker-links": "^1.0.2",
     "dotenv": "^2.0.0",
+    "excel-export": "^0.5.1",
     "express": "~4.11.x",
     "jimp": "~0.2.21",
     "kerberos": "~0.0.x",
