@@ -379,6 +379,9 @@ function updateBookingAndCheckingTable(_params) {
       bookingQuery.equalTo("objectId", _params.bookingId);
       bookingQuery.first().then(function(bookingData) {
         if (bookingData) {
+          if (_params.calculatedPrice) {
+            bookingData.set('calculatedPrice', _params.calculatedPrice);
+          }
           if (_params.bookingPackage) {
             bookingData.set('package', _params.bookingPackage);
           }
