@@ -384,12 +384,10 @@ function unCheckoutRecord(_params) {
       }
     })
     .then(function (recordResult) {
-        console.log(recordResult.toJSON())
-      // return resolve(recordResult);
+      return resolve(recordResult);
     })
     .catch(function (error) {
-      console.log(error)
-      // return reject(error);
+      return reject(error);
     })
   });
 }

@@ -49,7 +49,7 @@ Parse.Cloud.define("unCheckoutRecord", function(req, res) {
     var params = req.params;
     BookingModel.unCheckoutRecord(params)
     .then(function (data) {
-        // return res.success(data);
+        return res.success(data);
     })
     .catch(function (error) {
         return res.error(error);
