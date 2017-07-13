@@ -367,6 +367,33 @@ function getRecordByBookingId (_params) {
   });
 }
 
+function unCheckoutRecord(_params) {
+  console.log('debug params'+JSON.stringify(_params))
+  return new Promise((resolve, reject) => {
+    var recordQuery = new Parse.Query("Record");
+    recordQuery.equalTo("objectId", _params.objectId);
+    recordQuery.include('booking')
+    recordQuery.first().then(function(recordData) {
+      if (recordData) {
+        var booking = recordData.get("booking");
+        booking.set("status", "IN PROGRESS");
+        recordData.set("checkoutTime", null);
+        return recordData.save(null)
+      } else {
+        return reject("No found record to update");
+      }
+    })
+    .then(function (recordResult) {
+        console.log(recordResult.toJSON())
+      // return resolve(recordResult);
+    })
+    .catch(function (error) {
+      console.log(error)
+      // return reject(error);
+    })
+  });
+}
+
 function updateBookingAndCheckingTable(_params) {
   return new Promise((resolve, reject) => {
     var recordQuery = new Parse.Query("Record");
@@ -547,3 +574,4 @@ exports.getAllBookingsForVisitorManagement       = getAllBookingsForVisitorManag
 exports.searchBookingsForVisitorManagement       = searchBookingsForVisitorManagement;
 exports.changeStatusBooking                      = changeStatusBooking;
 exports.sendMail = sendMail;
+exports.unCheckoutRecord = unCheckoutRecord;
