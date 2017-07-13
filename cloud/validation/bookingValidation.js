@@ -94,7 +94,7 @@ Parse.Cloud.afterSave("Booking", function(request, response) {
   var htmlMail = htmlConvert.convert(request);
   var status = request.object.get('status');
   if (status === "CANCELED") {
-    bookingModel.getRecordByBookingId(request.object)
+    bookingModel.updateRecordByBookingId(request.object)
     .then(function (data) {
       console.log('Update checkoutTime field in record successfully');
     })

@@ -342,7 +342,7 @@ function getBookingById (_params) {
   });
 }
 
-function getRecordByBookingId (_params) {
+function updateRecordByBookingId (_params) {
   return new Promise((resolve, reject) => {
       var query = new Parse.Query("Record");
       if (_params && _params.id) {
@@ -558,7 +558,7 @@ function sendMail (email_to, email_from, subject, html) {
 }
 
 exports.updateBookingAndCheckingTable = updateBookingAndCheckingTable;
-exports.getRecordByBookingId = getRecordByBookingId;
+exports.updateRecordByBookingId = updateRecordByBookingId;
 exports.getBookingById = getBookingById;
 exports.createNewBooking              = createNewBooking;
 exports.createBookingForLoginUser     = createBookingForLoginUser;
