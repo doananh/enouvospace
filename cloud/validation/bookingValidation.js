@@ -65,7 +65,7 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
   }
 
   if (_.indexOf(Constants.BOOKING_STATUSES, status) === -1) {
-    return res.error('Invalid status - please change it to OPEN or PENDING or CLOSED');
+    return res.error('Invalid status - please change it to IN PROGRESS or PENDING or CLOSED');
   }
 
   if (endTime && !pPackage.willPayWhenCheckout) {
@@ -76,7 +76,7 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
   }
 
   // if (!isNewBooking && (status !== "CLOSED") && (preStatus === "CLOSED")) {
-  //   return res.error('Cannot OPEN a CLOSED booking');
+  //   return res.error('Cannot IN PROGRESS a CLOSED booking');
   // }
 
   if (!isNewBooking && (status !== preStatus)) {
