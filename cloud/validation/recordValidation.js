@@ -11,12 +11,13 @@ Parse.Cloud.beforeSave("Record", function(req, res) {
   var checkinTime   = req.object.get('checkinTime');
   var checkoutTime  = req.object.get('checkoutTime');
   var booking       = req.object.get('booking');
+  var hasCheckined  = req.object.get('hasCheckined');
 
   if (_.isNull(checkinTime) || _.isUndefined(checkinTime)) {
     return res.error('Require checkin time params');
   }
 
-  if (checkinTime && checkoutTime && new moment(checkinTime).isAfter(new moment(checkoutTime))) {
+  if (hasCheckined && checkinTime && checkoutTime && moment(checkinTime).isAfter(new moment(checkoutTime))) {
     return res.error('Please check in time must be before checkout time!');
   }
 
