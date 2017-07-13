@@ -1,5 +1,4 @@
 var _ = require('underscore');
-const Parse = require('parse/node');
 
 function getUserWithBusiness (_businessData) {
   var userQuery = new Parse.Query("User");
