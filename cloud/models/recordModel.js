@@ -8,10 +8,6 @@ var Tool      = require('./../utils/tools.js');
 var PriceCalculatingModel = require('./priceCalculatingModel.js');
 var BookingModel          = require('./bookingModel.js');
 
-const Parse = require('parse/node');
-Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MASTER_KEY);
-Parse.serverURL = process.env.SERVER_URL;
-
 function createNewRecord (_params) {
   return new Promise((resolve, reject) => {
       var checkinTime = _params.checkinTime ?  _params.checkinTime : moment().toDate();

@@ -13,10 +13,6 @@ var Mailgun = require('mailgun-js')({
     domain: process.env.EMAIL_DOMAIN
 });
 
-const Parse = require('parse/node');
-Parse.initialize(process.env.APP_ID, process.env.JAVASCRIPT_KEY , process.env.MASTER_KEY);
-Parse.serverURL = process.env.SERVER_URL;
-
 function createBookingForLoginUser(_params) {
   return new Promise((resolve, reject) => {
       var packageId = _params.packageId;
