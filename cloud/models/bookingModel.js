@@ -85,7 +85,7 @@ function createNewBooking(_params, _code) {
       booking.set("hasCheckined", false);
 
       if (_code) {
-        booking.set("status", "OPEN");
+        booking.set("status", Constants.BOOKING_STATUSES[2]);
       }
       else {
         booking.set("status", "PENDING");
@@ -187,7 +187,7 @@ function getBookingByParams (_params) {
         query.equalTo("status", "CLOSED");
       }
       else if (isUserBooking) {
-        query.containedIn("status", ["CLOSED", "OPEN", "PENDING"]);
+        query.containedIn("status", ["CLOSED", "IN PROGRESS", "PENDING"]);
       }
       else if (!_.isUndefined(status)) {
         query.equalTo("status", status);

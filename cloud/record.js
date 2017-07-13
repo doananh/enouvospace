@@ -3,6 +3,7 @@ var moment = require('moment');
 
 var BookingModel  = require('./models/bookingModel.js');
 var RecordModel   = require('./models/recordModel.js');
+var Constant = require('./constant');
 
 Parse.Cloud.define("recordCheckin", function(req, res) {
   var params  = req.params;
@@ -43,7 +44,7 @@ Parse.Cloud.define("recordCheckout", function(req, res) {
   var params    = req.params;
   var bookingId = params.bookingId;
 
-  BookingModel.getBookingByParams({ id: bookingId, status: "OPEN" })
+  BookingModel.getBookingByParams({ id: bookingId, status: Constant.BOOKING_STATUSES[2] })
   .then(function (bookingData) {
       var bookingDataJSON = bookingData.toJSON();
       if (bookingDataJSON.package && bookingDataJSON.package.willPayWhenCheckout) {
