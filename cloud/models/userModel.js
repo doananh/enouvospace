@@ -17,7 +17,6 @@ function createUserDocument (data) {
   var User = Parse.Object.extend(Parse.User);
   var user = new User();
   user.set("username", data.username);
-  user.set("name", data.username);
   user.set("password", data.password);
   user.set("email", data.email);
   user.set("mobile", data.mobile);
