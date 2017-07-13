@@ -368,7 +368,6 @@ function getRecordByBookingId (_params) {
 }
 
 function unCheckoutRecord(_params) {
-  console.log('debug params'+JSON.stringify(_params))
   return new Promise((resolve, reject) => {
     var recordQuery = new Parse.Query("Record");
     recordQuery.equalTo("objectId", _params.objectId);
