@@ -315,33 +315,6 @@ function getUserBooking (_params) {
   });
 }
 
-function getBookingById (_params) {
-  return new Promise((resolve, reject) => {
-      var query = new Parse.Query("Booking");
-      var booking = _params.booking;
-      var checkinTime = _params.checkinTime;
-      if (booking && booking.objectId) {
-        query.equalTo("objectId", booking.objectId);
-        query.first().then(function(bookingData) {
-          if (bookingData) {
-            bookingData.set('startTime', checkinTime);
-            return bookingData.save(null)
-          } else {
-            return reject("No found booking to update");
-          }
-        })
-        .then(function (saveResult) {
-          return resolve(saveResult);
-        })
-        .catch(function (error) {
-          return reject(error);
-        })
-      } else {
-        return reject('Require booking id');
-      }
-  });
-}
-
 function updateRecordByBookingId (_params) {
   return new Promise((resolve, reject) => {
       var query = new Parse.Query("Record");
@@ -558,8 +531,7 @@ function sendMail (email_to, email_from, subject, html) {
 }
 
 exports.updateBookingAndCheckingTable = updateBookingAndCheckingTable;
-exports.updateRecordByBookingId = updateRecordByBookingId;
-exports.getBookingById = getBookingById;
+exports.updateRecordByBookingId       = updateRecordByBookingId;
 exports.createNewBooking              = createNewBooking;
 exports.createBookingForLoginUser     = createBookingForLoginUser;
 exports.createBookingForAnonymousUser = createBookingForAnonymousUser;
@@ -567,8 +539,8 @@ exports.getBookingByParams            = getBookingByParams;
 exports.getUserBooking                = getUserBooking;
 exports.getLastValidUserBooking       = getLastValidUserBooking;
 exports.previewBooking                = previewBooking;
+exports.sendMail                      = sendMail;
+exports.unCheckoutRecord              = unCheckoutRecord;
 exports.getAllBookingsForVisitorManagement       = getAllBookingsForVisitorManagement;
 exports.searchBookingsForVisitorManagement       = searchBookingsForVisitorManagement;
 exports.changeStatusBooking                      = changeStatusBooking;
-exports.sendMail = sendMail;
-exports.unCheckoutRecord = unCheckoutRecord;

@@ -7,6 +7,7 @@ var PackageModel  = require('./packageModel.js');
 var Constants     = require('../constant.js');
 var CheckoutModel = require('./checkoutModel.js');
 var RecordModel   = require('./recordModel.js');
+var BookingModel  = require('./bookingModel.js');
 
 function getDiscountDetailPricing (_discount, _packageAmount) {
     var result = {total: 0, percent: 0, amount: 0};
@@ -81,19 +82,28 @@ function shouldChangeToDayPackage (_package, _startTime, _endTime, _packageCount
         var packageTypeName = _package.packageType.name;
         var packageType     = packageTypeName && packageTypeName.toUpperCase();
         if (packageType === 'HOURLY') {
-          RecordModel.getRecordByParams({bookingId: _bookingId})
+          RecordModel.getRecordByParams({bookingId: _bookingId, exlucdeBooking: true})
           .then(function (recordData) {
-              var checkinTime = recordData && recordData.get('checkinTime');
-              var startTime   = checkinTime || _startTime;
-              var endTime     = _endTime || moment().toDate();
-              var duration    = moment.duration(moment(endTime).diff(moment(startTime)));
-              var hours       = duration.asHours();
+              if (!recordData) {
+                throw('No record data found');
+              }
+
+              var totalHours  = 0;
+              recordData.forEach(function(record) {
+                var checkinTime   = record.get('checkinTime');
+                var checkoutTime  = record.get('checkoutTime') || moment().utc().toDate();
+                var duration      = moment.duration(moment(checkoutTime).diff(moment(checkinTime)));
+                var hours         = duration.asHours();
+                totalHours += hours;
+              });
+              var startTime = recordData[0].get('checkinTime');
+              var endTime   = recordData[recordData.length - 1].get('checkoutTime') || moment().utc().toDate();
               return resolve({
                 packageObject: _package,
-                packageCount: hours,
-                startTime: _startTime,
+                packageCount: totalHours,
+                startTime: startTime,
                 endTime: endTime,
-                checkinTime: checkinTime
+                checkinTime: startTime
               });
           });
         }
@@ -140,8 +150,7 @@ function calculateBookingPricing (bookingObject) {
       var status          = bookingObject.get('status');
       var isPaid          = bookingObject.get('isPaid');
       var discountAmount  = bookingObject.get('discountAmount');
-      var downPayment  = bookingObject.get('downPayment');
-      var checkinTime     = bookingObject.get('startTime'); // this for fixing hourly price with checkinTime - not startTime
+      var downPayment     = bookingObject.get('downPayment');
 
       shouldChangeToDayPackage(packageObject, startTime, endTime, packageCount, bookingId)
       .then(function (afterChangeData) {
@@ -149,13 +158,10 @@ function calculateBookingPricing (bookingObject) {
           packageObject = afterChangeData.packageObject;
           startTime     = afterChangeData.startTime;
           endTime       = afterChangeData.endTime;
-          if (afterChangeData.checkinTime) {
-            checkinTime = afterChangeData.checkinTime;
-          }
           // ------------------------------------------------
           var servicesQuery     = new Parse.Query('Service');
           servicesQuery.include('servicePackage');
-          servicesQuery.equalTo('booking', { __type: 'Pointer', className: 'Booking',objectId: bookingId });
+          servicesQuery.equalTo('booking', {__type: 'Pointer', className: 'Booking',objectId: bookingId });
           return servicesQuery.find();
       })
       .then(function (services) {
@@ -166,10 +172,13 @@ function calculateBookingPricing (bookingObject) {
           var packageAmount   = packagePricing.total;
           // var discountPricing = getDiscountDetailPricing(null, packageAmount); // temp remove discount
           var payAmount       = (servicePricing.total || 0) + packageAmount;
-          if(discountAmount)
+          if (discountAmount) {
             payAmount -= discountAmount;
-          if(downPayment)
+          }
+          if (downPayment) {
             payAmount -= downPayment;
+          }
+
           var formatedPayAmout =  Tool.formatToVNDValue(payAmount);
 
           return resolve({
@@ -179,7 +188,6 @@ function calculateBookingPricing (bookingObject) {
               discountPricing: discountAmount,
               downPayment: downPayment,
               startTime: startTime,
-              checkinTime: checkinTime,
               endTime: endTime,
               numOfUsers: numOfUsers,
               packageCount: packageCount || 0,

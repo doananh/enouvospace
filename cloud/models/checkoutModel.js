@@ -7,12 +7,11 @@ function formatResponseData (_priceDetail) {
     if (_priceDetail) {
       var startTime   = _priceDetail.startTime;
       var endTime     = _priceDetail.endTime;
-      var checkinTime = _priceDetail.checkinTime;
 
       var displayName = _priceDetail.packagePricing.package.packageType.displayName;
       var packageType = Tool.getPackageType(displayName);
 
-      var duration              = Tool.getDurationDetail(checkinTime || startTime , endTime, packageType);
+      var duration              = Tool.getDurationDetail(startTime , endTime, packageType);
       var packageAmountString   = Tool.formatToVNDString(_priceDetail.packagePricing.total);
       var discountAmountString  = Tool.formatToVNDString(_priceDetail.discountPricing.total);
       var serviceAmountString   = Tool.formatToVNDString(_priceDetail.servicePricing.total);
@@ -32,7 +31,7 @@ function formatResponseData (_priceDetail) {
       return {
         customerName: _priceDetail.user.username,
         customerCode: _priceDetail.user.code,
-        checkinTime: checkinTime ? checkinTime.toISOString() : startTime.toISOString(),
+        checkinTime: startTime.toISOString(),
         checkoutTime: endTime ? endTime.toISOString() : now,
         duration: {
           text: duration.text,

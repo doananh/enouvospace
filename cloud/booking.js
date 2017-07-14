@@ -74,7 +74,7 @@ Parse.Cloud.define("getCurrentBookingAndRecord", function(req, res) {
     var params  = req.params;
     var user    = params.user;
     var userId  = user.id;
-    RecordModel.getRecordByParams({userId: userId})
+    RecordModel.getRecordByParams({userId: userId, latest: true})
     .then(function (recordData) {
         if (recordData) {
           var booking = recordData.get('booking');

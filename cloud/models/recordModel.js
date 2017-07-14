@@ -290,29 +290,35 @@ function recordCheckoutAndPreviewBooking (bookingData, _params) {
 
 function getRecordByParams (_params) {
   return new Promise( (resolve, reject) => {
-    var bookingId = _params.bookingId;
-    var userId    = _params.userId;
-    var query = new Parse.Query("Record");
-    if (bookingId) {
-      query.equalTo("booking", { "__type":"Pointer","className":"Booking","objectId":bookingId });
-    }
-    if (userId) {
-      query.equalTo("userId", userId);
-    }
+      var bookingId       = _params.bookingId;
+      var userId          = _params.userId;
+      var exlucdeBooking  = _params.exlucdeBooking;
+      var latest          = _params.latest;
 
-    if (!bookingId && !userId) {
-      return reject('getRecordByParams: require bookingId or userId params');
-    }
+      var query = new Parse.Query("Record");
+      if (bookingId) {
+        query.equalTo("booking", {"__type": "Pointer","className": "Booking","objectId": bookingId});
+      }
+      if (userId) {
+        query.equalTo("userId", userId);
+      }
+      if (!exlucdeBooking) {
+        query.include("booking");
+      }
+      query.descending("createdAt");
+      if (!bookingId && !userId) {
+        return reject('getRecordByParams: require bookingId or userId params');
+      }
 
-    query.include("booking");
-    query.descending("createdAt");
-    query.first()
-    .then(function (recordData) {
-        return resolve(recordData);
-    })
-    .catch(function (error){
-        return reject(error);
-    });
+      query.find().then(function (recordData) {
+          if (latest) {
+            return resolve(recordData && recordData[0]);
+          }
+          return resolve(recordData);
+      })
+      .catch(function (error) {
+          return reject(error);
+      });
   });
 }
 
