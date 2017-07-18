@@ -259,27 +259,18 @@ function checkPricing (_bookingParams) {
             var packageTypeName = packageData.get('packageType') && packageData.get('packageType').name;
             var packageType     = packageTypeName && packageTypeName.toUpperCase();
             if (packageType === 'HOURLY') {
-              if (endTime) {
                 var mStartTime  = moment(startTime);
-                var mEndTime    = moment(endTime);
+                var mEndTime    = endTime ? moment(endTime) : moment();
                 var days        = mEndTime.diff(startTime, 'days');
                 mEndTime        = moment(mEndTime).subtract(days, 'days');
                 var duration  = moment.duration(mEndTime.diff(mStartTime));
                 var hours     = duration.asHours();
-                if (hours < 1) {
-                  throw('Number of hours should be more than one');
-                }
                 var price     = hours * chargeRate * numOfUsers;
                 if (days > 0) {
                   price = price * (days + 1);
                 }
                 var message   = Tool.formatToVNDString(price);
                 return resolve({text: message, price: price.toFixed(2)})
-              }
-              else {
-                var message = Tool.formatToVNDString(chargeRate);
-                return resolve({text: message + ' / HOUR'});
-              }
             }
             else if (packageType === 'DAILY') {
               var format           = 'YYYY-MM-DD';
