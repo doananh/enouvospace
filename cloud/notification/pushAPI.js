@@ -18,6 +18,7 @@ function notifyBookingChange (data, user, message) {
         console.log('Send Push Success');
     })
     .catch(function (error) {
+        console.log('send push failed ' + user.id );
         console.log(error);
     });
 }
