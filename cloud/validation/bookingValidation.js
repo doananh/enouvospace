@@ -4,7 +4,7 @@ var moment = require('moment');
 
 var Constants = require('../constant');
 var PushApi   = require('./../notification/pushAPI.js');
-var recordModal = require('../models/recordModel');
+var RecordModel = require('../models/recordModel.js');
 var userModel = require('./../models/userModel.js');
 var bookingModel = require('./../models/bookingModel.js');
 var PriceCalculatingModel = require('./../models/priceCalculatingModel.js');
@@ -149,7 +149,7 @@ Parse.Cloud.afterSave("Booking", function(request, response) {
   }
   //Update record for pre-booking
   if(request.object.get('hasCheckined') === false) {
-    recordModal.createOrUpdateRecordForPreBooking(request.object.toJSON())
+    RecordModel.createOrUpdateRecordForPreBooking(request.object.toJSON())
     .catch(function (error) {
         console.log(error);
     });
