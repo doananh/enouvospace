@@ -7,6 +7,8 @@ var PushApi   = require('./../notification/pushAPI.js');
 var recordModal = require('../models/recordModel');
 var userModel = require('./../models/userModel.js');
 var bookingModel = require('./../models/bookingModel.js');
+var PriceCalculatingModel = require('./../models/PriceCalculatingModel.js');
+
 var htmlConvert = require('./../emailTemplate/htmlConvert.js');
 
 Parse.Cloud.beforeSave("Booking", function(req, res) {
@@ -84,7 +86,20 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
     PushApi.notifyBookingChange(req.object.toJSON(), user, message);
   }
 
-  return res.success();
+  if (isNewBooking || !req.object.get('calculatedPrice')) {
+    PriceCalculatingModel.calculateBookingPricing(req.object)
+    .then(function (pricingDetail) {
+        var calculatedPrice = pricingDetail.calculatedPrice;
+        req.object.set("calculatedPrice", calculatedPrice);
+        return res.success();
+    })
+    .catch(function (error) {
+        return res.success();
+    });
+  }
+  else {
+    return res.success();
+  }
 });
 
 Parse.Cloud.afterSave("Booking", function(request, response) {
@@ -134,6 +149,9 @@ Parse.Cloud.afterSave("Booking", function(request, response) {
   }
   //Update record for pre-booking
   if(request.object.get('hasCheckined') === false) {
-    recordModal.createOrUpdateRecordForPreBooking(request.object.toJSON());
+    recordModal.createOrUpdateRecordForPreBooking(request.object.toJSON())
+    .catch(function (error) {
+        console.log(error);
+    });
   }
 })

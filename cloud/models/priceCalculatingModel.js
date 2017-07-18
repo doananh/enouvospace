@@ -82,30 +82,50 @@ function shouldChangeToDayPackage (_package, _startTime, _endTime, _packageCount
         var packageTypeName = _package.packageType.name;
         var packageType     = packageTypeName && packageTypeName.toUpperCase();
         if (packageType === 'HOURLY') {
-          RecordModel.getRecordByParams({bookingId: _bookingId, exlucdeBooking: true})
-          .then(function (recordData) {
-              if (!recordData) {
-                throw('No record data found');
-              }
+          if (_bookingId) {
+            RecordModel.getRecordByParams({bookingId: _bookingId, exlucdeBooking: true})
+            .then(function (recordData) {
+                if (recordData) {
+                  var totalHours  = 0;
+                  recordData.forEach(function(record) {
+                    var checkinTime   = record.get('checkinTime');
+                    var checkoutTime  = record.get('checkoutTime') || moment().utc().toDate();
+                    var duration      = moment.duration(moment(checkoutTime).diff(moment(checkinTime)));
+                    var hours         = duration.asHours();
+                    totalHours += hours;
+                  });
+                  var startTime = recordData[0].get('checkinTime');
+                  var endTime   = recordData[recordData.length - 1].get('checkoutTime') || moment().utc().toDate();
+                  return resolve({
+                    packageObject: _package,
+                    packageCount: totalHours,
+                    startTime: startTime,
+                    endTime: endTime,
+                    checkinTime: startTime
+                  });
+                }
+                else {
+                  throw('No record data found');
+                }
+            })
+            .catch(function (error) {
+                return reject(error);
+            });
+          }
+          else {
 
-              var totalHours  = 0;
-              recordData.forEach(function(record) {
-                var checkinTime   = record.get('checkinTime');
-                var checkoutTime  = record.get('checkoutTime') || moment().utc().toDate();
-                var duration      = moment.duration(moment(checkoutTime).diff(moment(checkinTime)));
-                var hours         = duration.asHours();
-                totalHours += hours;
-              });
-              var startTime = recordData[0].get('checkinTime');
-              var endTime   = recordData[recordData.length - 1].get('checkoutTime') || moment().utc().toDate();
-              return resolve({
-                packageObject: _package,
-                packageCount: totalHours,
-                startTime: startTime,
-                endTime: endTime,
-                checkinTime: startTime
-              });
-          });
+            var startTime   = _startTime;
+            var endTime     = _endTime || moment().utc().toDate();
+            var duration    = moment.duration(moment(endTime).diff(moment(startTime)));
+            var totalHours  = duration.asHours();
+            return resolve({
+              packageObject: _package,
+              packageCount: totalHours,
+              startTime: startTime,
+              endTime: endTime,
+              checkinTime: startTime
+            });
+          }
         }
         else if (packageType === 'DAILY') {
           var format           = 'YYYY-MM-DD';
@@ -145,7 +165,7 @@ function calculateBookingPricing (bookingObject) {
       var packageCount    = bookingObject.get('packageCount');
       var numOfUsers      = bookingObject.get('numOfUsers');
       var startTime       = bookingObject.get('startTime');
-      var endTime;
+      var endTime         = bookingObject.get('endTime');
       var user            = bookingObject.get('user');
       var status          = bookingObject.get('status');
       var isPaid          = bookingObject.get('isPaid');
