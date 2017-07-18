@@ -7,7 +7,7 @@ var PushApi   = require('./../notification/pushAPI.js');
 var recordModal = require('../models/recordModel');
 var userModel = require('./../models/userModel.js');
 var bookingModel = require('./../models/bookingModel.js');
-var PriceCalculatingModel = require('./../models/PriceCalculatingModel.js');
+var PriceCalculatingModel = require('./../models/priceCalculatingModel.js');
 
 var htmlConvert = require('./../emailTemplate/htmlConvert.js');
 
