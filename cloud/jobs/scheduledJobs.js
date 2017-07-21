@@ -53,16 +53,41 @@ function CheckoutRecordAutomatically () {
       recordQuery.greaterThanOrEqualTo('checkinTime', desTime);
       recordQuery.doesNotExist('checkoutTime');
       recordQuery.each(function (record) {
+          var recordId = record && record.id;
           record.set('checkoutTime', d);
-          return record.save();
+          record.save()
+          .then(function (record) {
+              const booking   = record && record.get('booking');
+              const bookingId = booking && booking.id;
+              var bookingQuery= new Parse.Query('Booking');
+              return bookingQuery.get(bookingId);
+          })
+          .then(function (booking) {
+              if (booking) {
+                var packageObject = booking.get('package');
+                var willPayWhenCheckout = packageObject.willPayWhenCheckout;
+                var status = booking.get('status');
+                if (willPayWhenCheckout
+                  && ((status === "IN PROGRESS") || (status === "OPEN"))
+                ) {
+                  booking.set("status", "CLOSED");
+                  return booking.save();
+                }
+                else {
+                  return booking;
+                }
+              }
+              else {
+                throw('No booking found to checkout automaticaly for recordId ' + recordId);
+              }
+          })
+          .then(function (result) {
+              // console.log(result);
+          })
+          .catch(function (error) {
+              console.log(error);
+          });
       })
-      .then(function (result) {
-          // console.log('Auto record checkout success');
-      })
-      .catch(function (error) {
-          // console.log('Auto record checkout failure');
-          // console.log(error);
-      });
   })
   .catch(function (error) {
       console.log(error);
