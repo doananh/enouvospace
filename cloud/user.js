@@ -52,6 +52,16 @@ Parse.Cloud.define("updateUser", function(req, res) {
         currentUser.set('email', params.email);
         currentUser.set('mobile', params.mobile);
         currentUser.set('address', params.address);
+        currentUser.set("name", params.name);
+        currentUser.set("job", params.job);
+        currentUser.set("note", params.note);
+        currentUser.set("source", params.source);
+        currentUser.set("facebookLink", params.facebookLink);
+        currentUser.set("instaLink", params.instaLink);
+        currentUser.set("nationality", params.nationality);
+        if (params.avatar) {
+          currentUser.set("avatar", params.avatar);
+        }
         return currentUser.save(null, {useMasterKey: true})
       }
       else {

@@ -19,6 +19,17 @@ function createUserDocument (data) {
   user.set("password", data.password);
   user.set("email", data.email);
   user.set("mobile", data.mobile);
+  user.set("name", data.name);
+  user.set("job", data.job);
+  user.set("note", data.note);
+  user.set("source", data.source);
+  user.set("facebookLink", data.facebookLink);
+  user.set("instaLink", data.instaLink);
+  user.set("address", data.address);
+  user.set("nationality", data.nationality);
+  if (data.avatar) {
+    user.set("avatar", data.avatar);
+  }
   return user.save(null, { useMasterKey: true });
 }
 
