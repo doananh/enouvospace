@@ -22,7 +22,7 @@ Parse.Cloud.define('getUsers', function(request, response) {
 
 Parse.Cloud.define("createUser", function(req, res) {
   var params    = req.params;
-  UserModel.createUserDocument(params)
+  UserModel.createUserDocument(params.user)
   .then(function (response) {
     return res.success(response);
   })
