@@ -49,6 +49,27 @@
             },
             "roleName": {
                 "type": "String"
+            },
+            "job": {
+                "type": "String"
+            },
+            "language": {
+                "type": "String"
+            },
+            "nationality": {
+                "type": "String"
+            },
+            "source": {
+                "type": "String"
+            },
+            "facebookLink": {
+                "type": "String"
+            },
+            "instaLink": {
+                "type": "String"
+            },
+            "note": {
+                "type": "String"
             }
         },
         "classLevelPermissions": {
@@ -133,6 +154,18 @@
             },
             "payAmount": {
                 "type": "Number"
+            },
+            "paymentMethod": {
+                "type": "String"
+            },
+            "hasCheckined": {
+                "type": "Boolean"
+            },
+            "downPayment": {
+                "type": "Number"
+            },
+            "calculatedPrice": {
+                "type": "Number"
             }
         },
         "classLevelPermissions": {
@@ -194,6 +227,24 @@
                 "type": "Object"
             },
             "willPayWhenCheckout": {
+                "type": "Boolean"
+            },
+            "shortName": {
+                "type": "String"
+            },
+            "isPaidOnPersons": {
+                "type": "Boolean"
+            },
+            "isActived": {
+                "type": "Boolean"
+            },
+            "en": {
+                "type": "String"
+            },
+            "vi": {
+                "type": "String"
+            },
+            "isHour": {
                 "type": "Boolean"
             }
         },
@@ -375,9 +426,6 @@
             "name": {
                 "type": "String"
             },
-            "capacity": {
-                "type": "Number"
-            },
             "displayName": {
                 "type": "String"
             },
@@ -386,6 +434,27 @@
             },
             "order": {
                 "type": "Number"
+            },
+            "minPersons": {
+                "type": "Number"
+            },
+            "maxPersons": {
+                "type": "Number"
+            },
+            "image": {
+                "type": "File"
+            },
+            "peopleNumber": {
+                "type": "String"
+            },
+            "isActived": {
+                "type": "Boolean"
+            },
+            "en": {
+                "type": "String"
+            },
+            "vi": {
+                "type": "String"
             }
         },
         "classLevelPermissions": {
@@ -720,6 +789,18 @@
             },
             "username": {
                 "type": "String"
+            },
+            "packageId": {
+                "type": "String"
+            },
+            "checkoutByAdmin": {
+                "type": "String"
+            },
+            "hasCheckined": {
+                "type": "Boolean"
+            },
+            "name": {
+                "type": "String"
             }
         },
         "classLevelPermissions": {
@@ -778,6 +859,18 @@
             },
             "order": {
                 "type": "Number"
+            },
+            "note": {
+                "type": "String"
+            },
+            "isActived": {
+                "type": "Boolean"
+            },
+            "en": {
+                "type": "String"
+            },
+            "vi": {
+                "type": "String"
             }
         },
         "classLevelPermissions": {
@@ -854,6 +947,83 @@
             },
             "parseVersion": {
                 "type": "String"
+            },
+            "user": {
+                "type": "Pointer",
+                "targetClass": "_User"
+            }
+        },
+        "classLevelPermissions": {
+            "find": {
+                "*": true
+            },
+            "get": {
+                "*": true
+            },
+            "create": {
+                "*": true
+            },
+            "update": {
+                "*": true
+            },
+            "delete": {
+                "*": true
+            },
+            "addField": {
+                "*": true
+            }
+        }
+    },
+    {
+        "className": "Configuration",
+        "fields": {
+            "objectId": {
+                "type": "String"
+            },
+            "createdAt": {
+                "type": "Date"
+            },
+            "updatedAt": {
+                "type": "Date"
+            },
+            "ACL": {
+                "type": "ACL"
+            },
+            "openDayOfWeek": {
+                "type": "Array"
+            },
+            "website": {
+                "type": "String"
+            },
+            "cellPhone": {
+                "type": "String"
+            },
+            "mobile": {
+                "type": "String"
+            },
+            "coordinate": {
+                "type": "GeoPoint"
+            },
+            "social": {
+                "type": "Array"
+            },
+            "email": {
+                "type": "String"
+            },
+            "address": {
+                "type": "Object"
+            },
+            "openTime": {
+                "type": "Object"
+            },
+            "closeTime": {
+                "type": "Object"
+            },
+            "appLink": {
+                "type": "Object"
+            },
+            "aboutApp": {
+                "type": "Object"
             }
         },
         "classLevelPermissions": {
