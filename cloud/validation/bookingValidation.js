@@ -77,9 +77,13 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
     // }
   }
 
-  // if (!isNewBooking && (status !== "CLOSED") && (preStatus === "CLOSED")) {
-  //   return res.error('Cannot IN PROGRESS a CLOSED booking');
-  // }
+  if (!isNewBooking && (status !== "CANCELED") && (preStatus === "CANCELED")) {
+    return res.error('Cannot OPEN OR IN PROGRESS OR CLOSED a CANCELED Booking');
+  }
+
+  if (!isNewBooking && (status === "OPEN" || status === "CANCELED") && (preStatus === "CLOSED")) {
+    return res.error('Cannot OPEN OR CANCELED a CLOSED Booking');
+  }
 
   if (!isNewBooking && (status !== preStatus)) {
     var message = "YOUR BOOKING HAS BEEN CHANGE FROM " + preStatus + " TO " + status;
