@@ -20,6 +20,8 @@ function createNewRecord (_params, _data) {
       record.set("userId", _params.user && _params.user.id);
       record.set("booking", { "__type":"Pointer","className":"Booking","objectId": _params.bookingId });
       record.set("packageId", _params.packageId);
+      record.set("venueId", _params.venueId);
+      record.set("packageTypeId", _params.packageTypeId);
       if (_data && _data.checkoutByAdmin) {
         record.set("checkoutByAdmin", _data.checkoutByAdmin);
       }
@@ -130,6 +132,8 @@ function recordCheckin (bookingData, _params) {
       var user          = bookingData.get('user');
       var hasCheckined  = bookingData.get('hasCheckined');
       var packageData   = bookingData.get('package');
+      var venueData     = packageData.venue;
+      var packageTypeData     = packageData.packageType;
       var packageId     = packageData && packageData.objectId;
       var code  = user.code;
       if (code) {
@@ -138,7 +142,9 @@ function recordCheckin (bookingData, _params) {
             username: user.name
           },
           bookingId: bookingData.id,
-          packageId: packageId
+          packageId: packageId,
+          venueId: venueData.objectId,
+          packageTypeId: packageTypeData.objectId
         }
         createNewRecord(newRecordData, _params)
         .then(function (recordData) {
@@ -187,7 +193,9 @@ function recordCheckin (bookingData, _params) {
                 username: user.name
               },
               bookingId: bookingData.id,
-              packageId: packageId
+              packageId: packageId,
+              venueId: venueData.objectId,
+              packageTypeId: packageTypeData.objectId
             }
             return createNewRecord(newRecordData, _params);
           }
