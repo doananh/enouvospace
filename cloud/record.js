@@ -26,7 +26,7 @@ Parse.Cloud.define("recordCheckin", function(req, res) {
           throw('Your booking has been canceled before');
         }
 
-        return RecordModel.recordCheckin(bookingData);
+        return RecordModel.recordCheckin(bookingData, params);
       }
       else {
         throw('No booking found. Please create new booking');

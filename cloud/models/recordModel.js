@@ -8,7 +8,7 @@ var Tool      = require('./../utils/tools.js');
 var PriceCalculatingModel = require('./priceCalculatingModel.js');
 var BookingModel          = require('./bookingModel.js');
 
-function createNewRecord (_params) {
+function createNewRecord (_params, _data) {
   return new Promise((resolve, reject) => {
       var checkinTime = _params.checkinTime ?  _params.checkinTime : moment().toDate();
       var Record = Parse.Object.extend("Record");
@@ -20,6 +20,9 @@ function createNewRecord (_params) {
       record.set("userId", _params.user && _params.user.id);
       record.set("booking", { "__type":"Pointer","className":"Booking","objectId": _params.bookingId });
       record.set("packageId", _params.packageId);
+      if (_data && _data.checkoutByAdmin) {
+        record.set("checkoutByAdmin", _data.checkoutByAdmin);
+      }
       if(!_.isNull(_params.hasCheckined) && !_.isUndefined(_params.hasCheckined))
         record.set("hasCheckined", _params.hasCheckined);
       record.save()
@@ -122,7 +125,7 @@ function updateBookingData (_params) {
   });
 }
 
-function recordCheckin (bookingData) {
+function recordCheckin (bookingData, _params) {
   return new Promise((resolve, reject) => {
       var user          = bookingData.get('user');
       var hasCheckined  = bookingData.get('hasCheckined');
@@ -137,7 +140,7 @@ function recordCheckin (bookingData) {
           bookingId: bookingData.id,
           packageId: packageId
         }
-        createNewRecord(newRecordData)
+        createNewRecord(newRecordData, _params)
         .then(function (recordData) {
             var checkinTime = recordData.get('checkinTime');
             if(!hasCheckined) {
@@ -186,7 +189,7 @@ function recordCheckin (bookingData) {
               bookingId: bookingData.id,
               packageId: packageId
             }
-            return createNewRecord(newRecordData);
+            return createNewRecord(newRecordData, _params);
           }
         })
         .then(function (recordData) {

@@ -22,7 +22,7 @@ Parse.Cloud.define("checkin", function(req, res) {
   else {
     BookingModel.createBookingForAnonymousUser(params)
     .then(function (bookingData) {
-        return RecordModel.recordCheckin(bookingData);
+        return RecordModel.recordCheckin(bookingData, params);
     })
     .then(function (recordData) {
         return res.success(recordData);
