@@ -790,6 +790,12 @@
             "username": {
                 "type": "String"
             },
+            "venueId": {
+                "type": "String"
+            },
+            "packageTypeId": {
+                "type": "String"
+            },
             "packageId": {
                 "type": "String"
             },
