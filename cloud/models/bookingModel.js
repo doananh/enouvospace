@@ -409,6 +409,9 @@ function updateBookingAndCheckingTable(_params) {
             recordQuery.equalTo("objectId", _params.recordId);
             recordQuery.first().then(function(recordData) {
               if (recordData) {
+                if (_params && _params.checkoutByAdmin) {
+                  recordData.set('checkoutByAdmin', _params.checkoutByAdmin);
+                }
                 if (_params && _params.username) {
                   recordData.set('username', _params.username);
                   recordData.set('name', _params.username);
