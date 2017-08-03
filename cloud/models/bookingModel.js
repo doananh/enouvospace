@@ -120,7 +120,7 @@ function createNewBooking(_params, _code) {
         booking.set("hasCheckined", false);
       }
 
-      if (_code) {
+      if (_code || _params.hasCheckined) {
         booking.set("status", Constants.BOOKING_STATUSES[2]);
       }
       else {
