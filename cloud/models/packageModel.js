@@ -58,6 +58,21 @@ function getPackageById (_id) {
   });
 }
 
+function getPackageDefault () {
+  return new Promise((resolve, reject) => {
+    var query = new Parse.Query("Package");
+    query.equalTo("isDefault", true);
+    query.first()
+    .then(function (package) {
+      return resolve(package);
+    })
+    .catch( function (error) {
+      return reject(error);
+    });
+  });
+}
+
+exports.getPackageDefault = getPackageDefault;
 exports.getPackageById    = getPackageById;
 exports.getAllPackage     = getAllPackage;
 exports.getAllPackageType = getAllPackageType;

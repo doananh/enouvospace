@@ -7,6 +7,7 @@ var Tool      = require('./../utils/tools.js');
 
 var PriceCalculatingModel = require('./priceCalculatingModel.js');
 var BookingModel          = require('./bookingModel.js');
+var packageModel  = require('./packageModel.js');
 
 function createNewRecord (_params, _data) {
   return new Promise((resolve, reject) => {
@@ -124,6 +125,28 @@ function updateBookingData (_params) {
       .catch(function (error) {
           console.log(error);
       });
+  });
+}
+
+function createRecordNoBooking (_params) {
+  return new Promise((resolve, reject) => {
+    packageModel.getPackageDefault()
+    .then(function (data) {
+      return data;
+    })
+    .then(function (packageData) {
+      var bookingParams = _.extend({}, _params, {"packageId": packageData.id, "hasCheckined": true});
+      return BookingModel.createBookingForLoginUserNoBooking(bookingParams);
+    })
+    .then(function (bookingData) {
+      return recordCheckin(bookingData, _params);
+    })
+    .then(function (recordData) {
+      return resolve(recordData);
+    })
+    .catch(function (error) {
+      return reject(error);
+    });
   });
 }
 
@@ -601,7 +624,7 @@ function formatDataforExcel() {
       })
   });
 }
-
+exports.createRecordNoBooking = createRecordNoBooking;
 exports.getStart_EndDay = getStart_EndDay;
 exports.getRecords          = getRecords;
 exports.getRecordByParams   = getRecordByParams;

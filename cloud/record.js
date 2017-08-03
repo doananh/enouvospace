@@ -27,9 +27,8 @@ Parse.Cloud.define("recordCheckin", function(req, res) {
         }
 
         return RecordModel.recordCheckin(bookingData, params);
-      }
-      else {
-        throw('No booking found. Please create new booking');
+      } else {
+        return RecordModel.createRecordNoBooking(params);
       }
   })
   .then( function (data) {

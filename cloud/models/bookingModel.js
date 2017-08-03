@@ -70,6 +70,42 @@ function createBookingForAnonymousUser(_params) {
   });
 }
 
+function createBookingForLoginUserNoBooking(_params) {
+  return new Promise((resolve, reject) => {
+      var packageId = _params.packageId;
+      var user      = _params.user;
+      if (packageId) {
+        userModel.getUserWithId(user.id)
+          .then((userData) => {
+            user.username = userData.get('username');
+            user.name = userData.get('name');
+            return getLastValidUserBooking({user: user});
+          })
+          .then(function (lastValidBooking) {
+            if (lastValidBooking) {
+              throw('you can only register one booking');
+            }
+            else {
+              return PackageModel.getPackageById(packageId);
+            }
+          })
+          .then(function (packageData) {
+              var bookingParams = _.extend({}, _params, {"package": packageData.toJSON()});
+              return createNewBooking(bookingParams, null);
+          })
+          .then(function (data) {
+              return resolve(data);
+          })
+          .catch(function (error) {
+              return reject(error);
+          });
+      }
+      else {
+        return reject('Missing packageId params');
+      }
+  });
+}
+
 function createNewBooking(_params, _code) {
   return new Promise((resolve, reject) => {
       var Booking = Parse.Object.extend("Booking");
@@ -78,7 +114,11 @@ function createNewBooking(_params, _code) {
       booking.set("isPaid", false);
       booking.set("payAmount", 0);
       booking.set("discountAmount", 0);
-      booking.set("hasCheckined", false);
+      if (_params.hasCheckined)  {
+        booking.set("hasCheckined", _params.hasCheckined);
+      } else {
+        booking.set("hasCheckined", false);
+      }
 
       if (_code) {
         booking.set("status", Constants.BOOKING_STATUSES[2]);
@@ -532,7 +572,7 @@ function sendMail (email_to, email_from, subject, html) {
       }
   })
 }
-
+exports.createBookingForLoginUserNoBooking = createBookingForLoginUserNoBooking;
 exports.updateBookingAndCheckingTable = updateBookingAndCheckingTable;
 exports.updateRecordByBookingId       = updateRecordByBookingId;
 exports.createNewBooking              = createNewBooking;
