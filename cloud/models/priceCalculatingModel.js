@@ -98,7 +98,7 @@ function shouldChangeToDayPackage (_package, _startTime, _endTime, _packageCount
                   var endTime   = recordData[recordData.length - 1].get('checkoutTime') || moment().utc().toDate();
                   return resolve({
                     packageObject: _package,
-                    packageCount: totalHours,
+                    packageCount: totalHours || 1,
                     startTime: startTime,
                     endTime: endTime,
                     checkinTime: startTime
@@ -120,7 +120,7 @@ function shouldChangeToDayPackage (_package, _startTime, _endTime, _packageCount
             var totalHours  = duration.asHours();
             return resolve({
               packageObject: _package,
-              packageCount: totalHours,
+              packageCount: totalHours || 1,
               startTime: startTime,
               endTime: endTime,
               checkinTime: startTime
@@ -137,7 +137,7 @@ function shouldChangeToDayPackage (_package, _startTime, _endTime, _packageCount
           var dayCount         = Tool.getWorkDay(mStartTime, mEndTime, options);
           return resolve({
             packageObject: _package,
-            packageCount: dayCount,
+            packageCount: dayCount || 1,
             startTime: _startTime,
             endTime: _endTime
           });
@@ -147,7 +147,7 @@ function shouldChangeToDayPackage (_package, _startTime, _endTime, _packageCount
           var fixTime   = Tool.fixOpenAndCloseTime(packageType, _startTime, endTime);
           return resolve({
             packageObject: _package,
-            packageCount: _packageCount,
+            packageCount: _packageCount || 1,
             startTime: fixTime.openTime,
             endTime: fixTime.closeTime
           });
