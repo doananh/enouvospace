@@ -15,7 +15,6 @@ function createNewRecord (_params, _data) {
       var Record = Parse.Object.extend("Record");
       var record = new Record();
       record.set("checkinTime", checkinTime);
-      //TODO remove username field
       record.set("username", _params.user && _params.user.username);
       record.set("name", _params.user && _params.user.name);
       record.set("userId", _params.user && _params.user.id);
@@ -579,7 +578,7 @@ function createOrUpdateRecordForPreBooking(params){
           recordData.set("checkinTime", params.checkinTime);
           return recordData.save();
         } else {
-          return createNewRecord(_.extend(params, {
+          const data = _.extend(params, {
             bookingId: params.objectId,
             packageId: params.package.objectId,
             hasCheckined: false,
@@ -587,13 +586,33 @@ function createOrUpdateRecordForPreBooking(params){
             user: {
               username: params.user.name,
               id: params.user.id
-            }
-          }));
+            },
+            venueId: params.venue.objectId,
+            packageTypeId: params.packageType.objectId
+          })
+          return createNewRecord(data);
         }
       }).catch((error) => {
         return reject(error);
       })
   })
+}
+
+function getVenueIdAndPackageTypeId (_packageId) {
+  return new Promise((resolve, reject) => {
+    packageModel.getPackageById(_packageId)
+    .then(function (packageDetail) {
+      var venue = packageDetail.get('venue');
+      var packageType = packageDetail.get('packageType');
+      return resolve({
+        venueId: venue.objectId,
+        packageTypeId: packageType.objectId
+      });
+    })
+    .catch((err) => {
+      return reject(err);
+    })
+  });
 }
 
 function formatDataforExcel() {
