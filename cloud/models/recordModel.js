@@ -587,8 +587,8 @@ function createOrUpdateRecordForPreBooking(params){
               username: params.user.name,
               id: params.user.id
             },
-            venueId: params.venue.objectId,
-            packageTypeId: params.packageType.objectId
+            venueId: params.package.venue.objectId,
+            packageTypeId: params.package.packageType.objectId
           })
           return createNewRecord(data);
         }
