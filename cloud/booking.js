@@ -138,4 +138,22 @@ Parse.Cloud.define('calculatePricing', function(req, res){
     .catch(function (error) {
       return res.error(error);
     });
-})
+});
+
+Parse.Cloud.beforeDelete("Booking", function(request, response) {
+  var params = request.object.toJSON();
+  RecordModel.getRecordsById(params).then(function(records) {
+    if (records) {
+      var final = _.after(records.length, function finalSuccess() {
+        response.success(params);
+      });
+      _.each(records, function(recordData) {
+        recordData.destroy({ useMasterKey: true });
+        final();
+      });
+    }
+  }, function(error) {
+    response.error(error);
+  });
+});
+

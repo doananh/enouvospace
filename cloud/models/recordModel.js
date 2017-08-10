@@ -624,6 +624,14 @@ function formatDataforExcel() {
       })
   });
 }
+
+function getRecordsById(_params) {
+  var recordQuery = new Parse.Query("Record");
+  recordQuery.equalTo("booking", { "__type": "Pointer", "className": "Booking", "objectId": _params.objectId });
+  return recordQuery.find();
+}
+
+exports.getRecordsById          = getRecordsById;
 exports.createRecordNoBooking = createRecordNoBooking;
 exports.getStart_EndDay = getStart_EndDay;
 exports.getRecords          = getRecords;
