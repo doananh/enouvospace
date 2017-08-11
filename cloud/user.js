@@ -99,3 +99,38 @@ Parse.Cloud.define('requestPasswordReset', function(req, res) {
     return res.error(error);
   });
 });
+
+Parse.Cloud.define('validateRole', function(req, response) {
+  var params = req.params;
+    Parse.Cloud.run("checkRole", {role: "ADMIN", user: params}).then(function(result) {
+        response.success(result);
+    }, function(error) {
+        Parse.Cloud.run("checkRole", {role: "MODERATOR", user: params}).then(function(result) {
+            response.success(result);
+        }, function(error) {
+            response.success('USER');
+        });
+    });
+});
+
+Parse.Cloud.define('checkRole', function(req, response) {
+    var queryRole = new Parse.Query(Parse.Role);
+    queryRole.equalTo('name', req.params.role);
+    queryRole.first()
+    .then(function(roleObject) {
+      var relation = new Parse.Relation(roleObject, 'users');
+      var admins = relation.query();
+      admins.equalTo('name', req.params.user.name);
+      return admins.first();
+    })
+    .then(function(userObject) {
+      if (userObject) {
+        response.success(req.params.role);
+      } else {
+        response.error('User is not this role');
+      }
+    })
+    .catch(function(error) {
+      response.error(error);
+    })
+});
