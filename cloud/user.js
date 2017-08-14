@@ -134,3 +134,20 @@ Parse.Cloud.define('checkRole', function(req, response) {
       response.error(error);
     })
 });
+
+Parse.Cloud.afterSave(Parse.User, function(request) {
+  var roleName = request.params.roleName || "USER";
+  var query = new Parse.Query(Parse.Role);
+  query.equalTo("name", roleName);
+  query.first()
+  .then(function(role) {
+    if (role) {
+      role.getACL().setRoleReadAccess(role, true);
+      role.getUsers().add(request.object);
+      role.save({},{useMasterKey: true});
+    }
+  })
+  .catch(function(error) {
+    response.error(error);
+  })
+});
