@@ -136,7 +136,7 @@ Parse.Cloud.define('checkRole', function(req, response) {
 });
 
 Parse.Cloud.afterSave(Parse.User, function(request) {
-  var roleName = request.params.roleName || "USER";
+  var roleName = request.object.roleName || "USER";
   var query = new Parse.Query(Parse.Role);
   query.equalTo("name", roleName);
   query.first()
