@@ -20,6 +20,15 @@ Parse.Cloud.define('getUsers', function(request, response) {
   });
 });
 
+Parse.Cloud.define('getModerators', function(request, response) {
+  var userQuery = new Parse.Query(Parse.User);
+  userQuery.equalTo("isUserApp", false).find({useMasterKey: true}).then(function(users) {
+    response.success(users);
+  }, function(err) {
+    response.error(err);
+  });
+});
+
 Parse.Cloud.define("createUser", function(req, res) {
   var params    = req.params;
   UserModel.createUserDocument(params.user)

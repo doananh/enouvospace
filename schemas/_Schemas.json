@@ -26,6 +26,9 @@
             "emailVerified": {
                 "type": "Boolean"
             },
+            "isUserApp": {
+                "type": "Boolean"
+            },
             "authData": {
                 "type": "Object"
             },
