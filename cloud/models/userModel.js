@@ -27,6 +27,9 @@ function createUserDocument (data) {
   user.set("instaLink", data.instaLink);
   user.set("address", data.address);
   user.set("nationality", data.nationality);
+  if (data.roleName) {
+    user.set("roleName", data.roleName);
+  }
   if (data.avatar) {
     user.set("avatar", data.avatar);
   }

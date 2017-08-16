@@ -10,5 +10,11 @@ Parse.Cloud.beforeSave("_User", function(req, res) {
      return res.error('invalid username');
   }
 
+  if(req.object && _.isUndefined(req.object.get("isUserApp")) && !req.object.roleName) {
+    req.object.set("isUserApp", true);
+  } else {
+  	req.object.set("isUserApp", false);
+  }
+
   return res.success()
 });

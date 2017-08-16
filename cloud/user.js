@@ -68,6 +68,9 @@ Parse.Cloud.define("updateUser", function(req, res) {
         currentUser.set("facebookLink", params.facebookLink);
         currentUser.set("instaLink", params.instaLink);
         currentUser.set("nationality", params.nationality);
+        if (params.roleName) {
+          currentUser.set("roleName", params.roleName);
+        }
         if (params.avatar) {
           currentUser.set("avatar", params.avatar);
         }
@@ -145,7 +148,7 @@ Parse.Cloud.define('checkRole', function(req, response) {
 });
 
 Parse.Cloud.afterSave(Parse.User, function(request) {
-  var roleName = request.object.roleName || "USER";
+  var roleName = request.object.get("roleName") || "USER";
   var query = new Parse.Query(Parse.Role);
   query.equalTo("name", roleName);
   query.first()
