@@ -29,6 +29,8 @@ function createUserDocument (data) {
   user.set("nationality", data.nationality);
   if (data.roleName) {
     user.set("roleName", data.roleName);
+  } else {
+    user.set("roleName", 'USER');
   }
   if (data.avatar) {
     user.set("avatar", data.avatar);
