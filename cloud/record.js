@@ -84,6 +84,17 @@ Parse.Cloud.define("getLastValidUserRecord", function(req, res) {
     });
 });
 
+Parse.Cloud.define("changeUserInfo", function(req, res) {
+    var params = req.params;
+    RecordModel.changeUserInfo(params)
+    .then(function(data) {
+      console.log('debug recordData'+JSON.stringify(data))
+    })
+    .catch( function (error) {
+      console.log(error)
+    });
+});
+
 Parse.Cloud.define("getStatisticUserCheckin", function(req, res) {
     var review = req.params;
     if (!review.type) return;

@@ -650,6 +650,33 @@ function getRecordsById(_params) {
   return recordQuery.find();
 }
 
+function changeUserInfo(_params) {
+  var userData = _params.user;
+  var recordData = _params.recordSelected;
+  return new Promise((resolve, reject) => {
+    var recordQuery   = new Parse.Query("Record");
+    recordQuery.equalTo("username", recordData.username);
+    recordQuery.include("booking");
+    recordQuery.first()
+    .then(function (record) {
+      var booking =  record.get("booking");
+      booking.set("user", {id: userData.objectId, username: userData.username, name: userData.name, type: "customer"});
+      booking.save();
+      record.set("userId", userData.objectId);
+      record.set("username", userData.username);
+      return record.save();
+    })
+    .then(function (response) {
+      resolve(response);
+    })
+    .catch((err) => {
+      return reject(err);
+    })
+
+  })
+}
+
+exports.changeUserInfo = changeUserInfo;
 exports.getRecordsById          = getRecordsById;
 exports.createRecordNoBooking = createRecordNoBooking;
 exports.getStart_EndDay = getStart_EndDay;
