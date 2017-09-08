@@ -412,7 +412,7 @@ function updateBookingAndCheckingTable(_params) {
       bookingQuery.equalTo("objectId", _params.bookingId);
       bookingQuery.first().then(function(bookingData) {
         if (bookingData) {
-          if (_params.calculatedPrice) {
+          if (_params.calculatedPrice > 0 || _params.calculatedPrice === 0) {
             bookingData.set('calculatedPrice', _params.calculatedPrice);
           }
           if (_params.bookingPackage) {
@@ -424,13 +424,13 @@ function updateBookingAndCheckingTable(_params) {
           if (_params.paymentMethod) {
             bookingData.set('paymentMethod', _params.paymentMethod);
           }
-          if (_params.discountAmount) {
+          if (_params.discountAmount > 0 || _params.discountAmount === 0) {
             bookingData.set('discountAmount', _params.discountAmount);
           }
           if (_params.status) {
             bookingData.set('status', _params.status);
           }
-          if (_params.downPayment) {
+          if (_params.downPayment > 0 || _params.downPayment === 0) {
             bookingData.set('downPayment', _params.downPayment);
           }
           if (_params.user) {

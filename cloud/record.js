@@ -88,7 +88,8 @@ Parse.Cloud.define("changeUserInfo", function(req, res) {
     var params = req.params;
     RecordModel.changeUserInfo(params)
     .then(function(data) {
-      console.log('debug recordData'+JSON.stringify(data))
+      return res.success(data);
+      // console.log('debug recordData'+JSON.stringify(data))
     })
     .catch( function (error) {
       console.log(error)

@@ -70,6 +70,12 @@ Parse.Cloud.beforeSave("Booking", function(req, res) {
     return res.error('Invalid status - please change it to IN PROGRESS or PENDING or CLOSED');
   }
 
+  if(endTime) {
+    if (moment(endTime).isBefore(startTime)) {
+      return res.error('EndTime should be after StartTime');
+    } 
+  }
+
   if (endTime && !pPackage.willPayWhenCheckout) {
     // temp remove for another bug about checkinTime & startTime - when checkinTime is early than startTime
     // if (moment(endTime).isBefore(startTime)) {
