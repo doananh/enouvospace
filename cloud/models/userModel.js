@@ -38,6 +38,27 @@ function createUserDocument (data) {
   return user.save(null, { useMasterKey: true });
 }
 
+function changePassword (params) {
+  return new Promise((resolve, reject) => {
+    var userQuery = new Parse.Query(Parse.User);
+    userQuery.equalTo("objectId", params.objectId);
+    userQuery.first().then(function(currentUser) {
+        if (currentUser) {
+          currentUser.set('password', params.newPassword);
+          return currentUser.save(null, {useMasterKey: true})
+        } else {
+          return reject("update user err");
+        }
+    })
+    .then(function (saveResult) {
+        return resolve(saveResult);
+    })
+    .catch(function (error) {
+        return reject(error);
+    })
+  })
+}
+
 function loginWithEmail (params) {
   return new Promise((resolve, reject) => {
       var userQuery = new Parse.Query(Parse.User);
@@ -79,7 +100,7 @@ function getAllAdmin () {
     userQuery.equalTo("roleName", "ADMIN");
   return userQuery.find({useMasterKey: true});
 }
-
+exports.changePassword = changePassword;
 exports.createUserDocument = createUserDocument;
 exports.getAllAdmin = getAllAdmin;
 exports.loginWithEmail      = loginWithEmail;

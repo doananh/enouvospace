@@ -40,6 +40,17 @@ Parse.Cloud.define("createUser", function(req, res) {
   });
 });
 
+Parse.Cloud.define("changePassword", function(req, res) {
+  var params    = req.params;
+  UserModel.changePassword(params)
+  .then(function (response) {
+      return res.success(response);
+  })
+  .catch(function (error) {
+      return res.error(error);
+  });
+});
+
 Parse.Cloud.define("loginWithEmail", function(req, res) {
   var params    = req.params;
   UserModel.loginWithEmail(params)
