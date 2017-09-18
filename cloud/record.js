@@ -108,3 +108,16 @@ Parse.Cloud.define("getStatisticUserCheckin", function(req, res) {
       return res.error(error);
     });
 });
+
+Parse.Cloud.define("getStatisticShifts", function(req, res) {
+    var review = req.params;
+    var timeRange = review.timeRange;
+    if (!review.type) return;
+    RecordModel.getRecords(review, timeRange)
+    .then(function(recordData) {
+      return res.success(recordData);
+    })
+    .catch( function (error) {
+      return res.error(error);
+    });
+});

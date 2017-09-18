@@ -389,6 +389,9 @@ function getRecords (_request, _periodOfTime) {
     var recordQuery   = new Parse.Query("Record");
     recordQuery.greaterThanOrEqualTo("checkinTime", startDateTime);
     recordQuery.lessThanOrEqualTo("checkinTime", endDateTime);
+    if (_request && _request.receptionist) {
+      recordQuery.equalTo("checkoutByAdmin", _request.receptionist);
+    }
     recordQuery.include("booking");
     recordQuery.find()
     .then(function (recordData) {
@@ -396,8 +399,7 @@ function getRecords (_request, _periodOfTime) {
         var recordDataToArrayJson = Tool.convertArrayParseObjToArrayJson(recordData);
         var groupUserFollowTime = groupUserCheckinFollowTime(_request, recordDataToArrayJson, _periodOfTime);
         return resolve(groupUserFollowTime);
-      }
-      else {
+      } else {
         return reject('No record found');
       }
     })
@@ -419,10 +421,24 @@ function groupUserCheckinFollowTime(_request, _recordDataToArrayJson, _periodOfT
     case 'yearly':
       groupUserFollowTime =  groupUserCheckinFollowYears(_recordDataToArrayJson, _periodOfTime);
       break;
+    case 'custom':
+      groupUserFollowTime =  groupUserCheckinFollowCustom(_recordDataToArrayJson, _periodOfTime);
+      break;
     default:
       groupUserFollowTime =  groupUserCheckinFollowDays(_recordDataToArrayJson, _periodOfTime);
   }
   return groupUserFollowTime;
+}
+
+function groupUserCheckinFollowCustom(_recordDataToArrayJson, _periodOfTime) {
+  var totalPrice = 0;
+  _.each(_recordDataToArrayJson, function(item) {
+    totalPrice += item.booking.calculatedPrice;
+  });
+  return {
+    count: _recordDataToArrayJson.length,
+    totalPrice: totalPrice
+  }
 }
 
 function groupUserCheckinFollowYears(_recordDataToArrayJson, _periodOfTime) {
