@@ -396,8 +396,7 @@ function getRecords (_request, _periodOfTime) {
     recordQuery.find()
     .then(function (recordData) {
       if (recordData) {
-        var recordDataToArrayJson = Tool.convertArrayParseObjToArrayJson(recordData);
-        var groupUserFollowTime = groupUserCheckinFollowTime(_request, recordDataToArrayJson, _periodOfTime);
+        var groupUserFollowTime = groupUserCheckinFollowTime(_request, recordData, _periodOfTime);
         return resolve(groupUserFollowTime);
       } else {
         return reject('No record found');
@@ -406,38 +405,41 @@ function getRecords (_request, _periodOfTime) {
   });
 }
 
-function groupUserCheckinFollowTime(_request, _recordDataToArrayJson, _periodOfTime) {
+function groupUserCheckinFollowTime(_request, _recordData, _periodOfTime) {
   var groupUserFollowTime;
+  var recordDataToArrayJson = Tool.convertArrayParseObjToArrayJson(_recordData);
   switch (_request.type) {
     case 'daily':
-      groupUserFollowTime =  groupUserCheckinFollowDays(_recordDataToArrayJson, _periodOfTime);
+      groupUserFollowTime =  groupUserCheckinFollowDays(recordDataToArrayJson, _periodOfTime);
       break;
     case 'weekly':
-      groupUserFollowTime =  groupUserCheckinFollowWeeks(_recordDataToArrayJson, _periodOfTime);
+      groupUserFollowTime =  groupUserCheckinFollowWeeks(recordDataToArrayJson, _periodOfTime);
       break;
     case 'monthly':
-      groupUserFollowTime =  groupUserCheckinFollowMonths(_recordDataToArrayJson, _periodOfTime);
+      groupUserFollowTime =  groupUserCheckinFollowMonths(recordDataToArrayJson, _periodOfTime);
       break;
     case 'yearly':
-      groupUserFollowTime =  groupUserCheckinFollowYears(_recordDataToArrayJson, _periodOfTime);
+      groupUserFollowTime =  groupUserCheckinFollowYears(recordDataToArrayJson, _periodOfTime);
       break;
     case 'custom':
-      groupUserFollowTime =  groupUserCheckinFollowCustom(_recordDataToArrayJson, _periodOfTime);
+      groupUserFollowTime =  groupUserCheckinFollowCustom(_recordData, _periodOfTime);
       break;
     default:
-      groupUserFollowTime =  groupUserCheckinFollowDays(_recordDataToArrayJson, _periodOfTime);
+      groupUserFollowTime =  groupUserCheckinFollowDays(recordDataToArrayJson, _periodOfTime);
   }
   return groupUserFollowTime;
 }
 
-function groupUserCheckinFollowCustom(_recordDataToArrayJson, _periodOfTime) {
+function groupUserCheckinFollowCustom(_recordData, _periodOfTime) {
   var totalPrice = 0;
-  _.each(_recordDataToArrayJson, function(item) {
+  var recordDataToArrayJson = Tool.convertArrayParseObjToArrayJson(_recordData);
+  _.each(recordDataToArrayJson, function(item) {
     totalPrice += item.booking.calculatedPrice;
   });
   return {
-    count: _recordDataToArrayJson.length,
-    totalPrice: totalPrice
+    count: recordDataToArrayJson.length,
+    totalPrice: totalPrice,
+    listRecord: _recordData
   }
 }
 
