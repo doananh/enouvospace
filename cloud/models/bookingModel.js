@@ -559,18 +559,20 @@ function changeStatusBooking(params) {
 }
 
 function sendMail (email_to, email_from, subject, html) {
-  return Mailgun.messages().send({
+  return new Promise((resolve, reject) => {
+    Mailgun.messages().send({
       to: email_to,
       from: email_from,
       subject: subject,
       html: html,
-    }, function (error, body) {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("Email sent!");
-      }
-  })
+    })
+    .then((data) => {
+      return resolve(data)
+    })
+    .catch((error) => {
+      return reject(error)
+    })
+  });
 }
 exports.createBookingForLoginUserNoBooking = createBookingForLoginUserNoBooking;
 exports.updateBookingAndCheckingTable = updateBookingAndCheckingTable;

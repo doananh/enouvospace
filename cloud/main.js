@@ -11,6 +11,7 @@ require('./checkout.js');
 require('./record.js');
 require('./startup.js');
 require('./visitorManagement');
+require('./shift');
 
 
 // require before save _ after save for validating here
