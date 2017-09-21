@@ -9,7 +9,7 @@ Parse.Cloud.define("sendEmailForShift", function(req, res) {
     var content = '<p><b>Statistic Shift For Receptionist:</b>'+params.visitorName+'</p>'
 				+ '<p><b>- Total Number Of Record:</b>'+params.count+' records</p>'
 				+ '<p><b>- Total Price:</b>'+params.totalPrice+ ' VND'+'</p';				
-    BookingModel.sendMail(params.email_to, params.email_from, subject, content)   
+    BookingModel.sendMail(params.email_to, process.env.EMAIL_FROM, subject, content)   
     .then(function (response) {	
       return res.success(response);
     })
