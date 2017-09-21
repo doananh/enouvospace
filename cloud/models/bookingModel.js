@@ -567,12 +567,10 @@ function sendMail (email_to, email_from, subject, html) {
       html: html,
     })
     .then((data) => {
-      console.log(data)
-      // return resolve(data)
+      return resolve(data)
     })
     .catch((error) => {
-      console.log(error)
-      // return reject(error)
+      return reject(error)
     })
   });
 }
