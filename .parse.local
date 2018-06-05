@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "_default": {
+      "link": "enouvospace"
+    },
+    "enouvospace": {
+      "applicationId": "moDYVczJlvEon7ANnjJr9B8tSfLosvuB6Fiu9Hx8"
+    }
+  }
+}

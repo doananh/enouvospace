@@ -1,4 +1,5 @@
 // require cloud function here
+console.log('error');
 require('./user.js');
 require('./booking.js');
 require('./package.js');
@@ -24,6 +25,3 @@ require('./validation/globalVariableValidation.js');
 require('./validation/businessValidation.js');
 require('./validation/recordValidation.js');
 require('./validation/userValidation.js');
-
-// require job
-require('./jobs/scheduledJobs.js');
